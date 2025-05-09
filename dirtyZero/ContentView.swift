@@ -24,6 +24,10 @@ struct ContentView: View {
                         Button("Hide home bar", action: {
                             dirtyZeroHide(path: "/System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car")
                         })
+                        Button("Hide SystemVersion.plist (May causes the screen to be black till a forced reboot has been done)", action: {
+                            
+                            dirtyZeroHide(path: "/System/Library/CoreServices/SystemVersion.plist")
+                        })                        
                         Button("Custom path (dangerous!)", action: {
                             Alertinator.shared.prompt(title: "Enter custom path", placeholder: "/path/to/the/file/to/hide") { path in
                                 if let isEmpty = path, !path!.isEmpty {
