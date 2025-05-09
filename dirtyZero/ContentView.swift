@@ -25,7 +25,6 @@ struct ContentView: View {
                             dirtyZeroHide(path: "/System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car")
                         })
                         Button("Hide SystemVersion.plist (May causes the screen to be black till a forced reboot has been done)", action: {
-                            
                             dirtyZeroHide(path: "/System/Library/CoreServices/SystemVersion.plist")
                         })                        
                         Button("Custom path (dangerous!)", action: {
