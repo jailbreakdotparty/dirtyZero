@@ -4,6 +4,7 @@
 //
 //  Created by Skadz on 5/8/25.
 //
+// modfied by Andres99 on 5/10/25.
 
 import SwiftUI
 import DeviceKit
@@ -189,7 +190,7 @@ struct ContentView: View {
                                 let promptController = UIAlertController(title: "Enter multiple paths", message: nil, preferredStyle: .alert)
                                 
                                 promptController.addTextField { textView in
-                                    textView.placeholder = "Enter paths separated by new lines or commas\n\nExample:\n/path/to/file1\n/path/to/file2\n/path/to/file3"
+                                    textView.placeholder = "Example:\n/path/to/file1, /path/to/file2"
                                     textView.text = ""
                                 }
                                 
