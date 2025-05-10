@@ -4,6 +4,7 @@
 //
 //  Created by Skadz on 5/8/25.
 //
+// modfied by Andres99 on 5/10/25.
 
 import SwiftUI
 import DeviceKit
@@ -65,6 +66,31 @@ struct ContentView: View {
         } else {
             enabledTweakIds.append(tweak.id)
         }
+    }
+    
+    private func parseMultiplePaths(_ input: String) -> [String] {
+        let paths = input.components(separatedBy: CharacterSet.newlines)
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+        
+        if paths.count == 1 {
+            return input.components(separatedBy: ",")
+                .map { $0.trimmingCharacters(in: .whitespaces) }
+                .filter { !$0.isEmpty }
+        }
+        
+        return paths
+    }
+    
+    private func dirtyZeroHideMultiple(paths: [String]) {
+        print("[*] Zeroing out \(paths.count) custom paths...")
+        
+        for (index, path) in paths.enumerated() {
+            print("[\(index + 1)/\(paths.count)] Zeroing: \(path)")
+            dirtyZeroHide(path: path)
+        }
+        
+        print("[*] Successfully zeroed out all \(paths.count) paths!")
     }
     
     var body: some View {
@@ -158,6 +184,64 @@ struct ContentView: View {
                                 }
                             } label: {
                                 Label("(Debug) Use custom file path", systemImage: "apple.terminal")
+                            }
+                            
+                            Button {
+                                let promptController = UIAlertController(title: "Enter multiple paths", message: nil, preferredStyle: .alert)
+                                
+                                promptController.addTextField { textView in
+                                    textView.placeholder = "/path/to/the/file/to/hide, /path/to/the/file/to/hide"
+                                    textView.text = ""
+                                }
+                                
+                                promptController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                                
+                                promptController.addAction(UIAlertAction(title: "Apply", style: .default) { _ in
+                                    if let text = promptController.textFields?.first?.text, !text.isEmpty {
+                                        let paths = parseMultiplePaths(text)
+                                        
+                                        if paths.isEmpty {
+                                            Alertinator.shared.alert(title: "No valid paths", body: "Please enter at least one valid path")
+                                        } else {
+                                            let confirmController = UIAlertController(
+                                                title: "Confirm paths",
+                                                message: "About to zero out \(paths.count) files:\n\n\(paths.joined(separator: "\n"))",
+                                                preferredStyle: .alert
+                                            )
+                                            
+                                            confirmController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                                            confirmController.addAction(UIAlertAction(title: "Apply", style: .destructive) { _ in
+                                                dirtyZeroHideMultiple(paths: paths)
+                                            })
+                                            
+                                            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                               let window = windowScene.windows.first,
+                                               var topController = window.rootViewController {
+                                                
+                                                while let presentedViewController = topController.presentedViewController {
+                                                    topController = presentedViewController
+                                                }
+                                                
+                                                topController.present(confirmController, animated: true)
+                                            }
+                                        }
+                                    } else {
+                                        Alertinator.shared.alert(title: "Invalid input", body: "Please enter at least one valid path to zero out")
+                                    }
+                                })
+                                
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                   let window = windowScene.windows.first,
+                                   var topController = window.rootViewController {
+                                    
+                                    while let presentedViewController = topController.presentedViewController {
+                                        topController = presentedViewController
+                                    }
+                                    
+                                    topController.present(promptController, animated: true)
+                                }
+                            } label: {
+                                Label("(Debug) Zero multiple paths", systemImage: "doc.text.fill")
                             }
                         }
                         .disabled(enabledTweaks.isEmpty)
