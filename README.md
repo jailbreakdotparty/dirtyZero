@@ -16,7 +16,11 @@ All file modifications are done in memory. If something goes wrong or you want t
 | iOS 18.4+ | Not Supported |
 
 # How can I respring after I apply the changes?
-Unfortunately, there isn't an easy way to do this yet. Here are two methods:
+Here are three methods:
+
+**Method 1: Use respringapp**
+1. Download respringapp.ipa https://cdn.discordapp.com/attachments/1196152389275746316/1370536621828739183/respringapp.ipa?ex=681fdb31&is=681e89b1&hm=92495a3eec4391a60ea0f649a7a9b603c58e8b66aecc8a3391d9da78760462d8&
+2. Sideload it, and when you are done applying tweaks just open the app, and it will respring.
 
 **Method 1: Display & Text Size**
 1. Before applying the tweaks, go into Settings > Display & Brightness > Display Zoom
