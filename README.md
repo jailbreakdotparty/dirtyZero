@@ -6,7 +6,7 @@
 # Disclaimer
 All file modifications are done in memory. If something goes wrong or you want to revert the tweaks, just force reboot your phone.
 
-# Support Table
+# Support Window
 | iOS Version | Support Status |
 | -------- | ------- |
 | iOS 16.0 - iOS 16.7.10  | Supported |
