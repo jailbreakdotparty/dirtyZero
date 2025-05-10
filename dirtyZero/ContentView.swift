@@ -190,7 +190,7 @@ struct ContentView: View {
                                 let promptController = UIAlertController(title: "Enter multiple paths", message: nil, preferredStyle: .alert)
                                 
                                 promptController.addTextField { textView in
-                                    textView.placeholder = "Example:\n/path/to/file1, /path/to/file2"
+                                    textView.placeholder = "/path/to/the/file/to/hide, /path/to/the/file/to/hide"
                                     textView.text = ""
                                 }
                                 
@@ -201,7 +201,7 @@ struct ContentView: View {
                                         let paths = parseMultiplePaths(text)
                                         
                                         if paths.isEmpty {
-                                            Alertinator.shared.alert(title: "No valid paths", body: "Please enter at least one valid path.")
+                                            Alertinator.shared.alert(title: "No valid paths", body: "Please enter at least one valid path")
                                         } else {
                                             let confirmController = UIAlertController(
                                                 title: "Confirm paths",
@@ -226,7 +226,7 @@ struct ContentView: View {
                                             }
                                         }
                                     } else {
-                                        Alertinator.shared.alert(title: "Invalid input", body: "Please enter at least one valid path to zero out.")
+                                        Alertinator.shared.alert(title: "Invalid input", body: "Please enter at least one valid path to zero out")
                                     }
                                 })
                                 
