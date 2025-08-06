@@ -109,200 +109,52 @@ struct ContentView: View {
                 VStack {
                     List {
                         Section(header: HStack {
-                            Image(systemName: "terminal")
-                            Text("Logs")
-                        }, footer: VStack(alignment: .leading) {
-                            Text("All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
-                            Text("[Join the jailbreak.party Discord!](https://discord.gg/XPj66zZ4gT)")
-                                .foregroundStyle(.accent)
-                        }) {
-                            LogView()
-                                .frame(width: 340, height: 260)
-                                .onAppear(perform: {
-                                    if !hasShownWelcome {
-                                        print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)")
-                                        hasShownWelcome = true
-                                    }
-                                })
-                                .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                        }
-                        
-                        Section(header: HStack {
-                            Image(systemName: "house")
-                            Text("SpringBoard")
+                            Image(systemName: "info.circle")
+                            Text("Version 1.1 (Release)")
                         }) {
                             VStack {
-                                ForEach(springBoard) { tweak in
-                                    Button(action: {
-                                        Haptic.shared.play(.soft)
-                                        toggleTweak(tweak)
-                                    }) {
-                                        HStack {
-                                            Image(systemName: tweak.icon)
-                                                .frame(width: 24, alignment: .center)
-                                            Text(tweak.name)
-                                                .lineLimit(1)
-                                                .scaledToFit()
-                                            Spacer()
-                                            if isTweakEnabled(tweak) {
-                                                Image(systemName: "checkmark.circle.fill")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            } else {
-                                                Image(systemName: "circle")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            }
+                                LogView()
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 260)
+                                    .onAppear(perform: {
+                                        if !hasShownWelcome {
+                                            print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
+                                            hasShownWelcome = true
                                         }
+                                    })
+                                    .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+                                    .padding()
+                                    .background(Color(.secondarySystemFill))
+                                    .clipShape(.rect(cornerRadius: 14))
+                                
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text("Made with love by the [jailbreak.party](https://jailbreak.party) team.\n[Join the jailbreak.party Discord!](https://discord.gg/XPj66zZ4gT)")
                                     }
-                                    .buttonStyle(TintedButton(color: .accent, fullWidth: false))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .font(.footnote)
                                 }
                             }
-                            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                         }
                         
-                        Section(header: HStack {
-                            Image(systemName: "lock")
-                            Text("Lock Screen")
-                        }) {
-                            VStack {
-                                ForEach(lockScreen) { tweak in
-                                    Button(action: {
-                                        Haptic.shared.play(.soft)
-                                        toggleTweak(tweak)
-                                    }) {
-                                        HStack {
-                                            Image(systemName: tweak.icon)
-                                                .frame(width: 24, alignment: .center)
-                                            Text(tweak.name)
-                                                .lineLimit(1)
-                                                .scaledToFit()
-                                            Spacer()
-                                            if isTweakEnabled(tweak) {
-                                                Image(systemName: "checkmark.circle.fill")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            } else {
-                                                Image(systemName: "circle")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            }
-                                        }
-                                    }
-                                    .buttonStyle(TintedButton(color: .accent, fullWidth: false))
-                                }
-                            }
-                            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                        }
-                        
-                        Section(header: HStack {
-                            Image(systemName: "gear")
-                            Text("Systemwide Customization")
-                        }) {
-                            VStack {
-                                ForEach(systemWideCustomization) { tweak in
-                                    Button(action: {
-                                        Haptic.shared.play(.soft)
-                                        toggleTweak(tweak)
-                                    }) {
-                                        HStack {
-                                            Image(systemName: tweak.icon)
-                                                .frame(width: 24, alignment: .center)
-                                            Text(tweak.name)
-                                                .lineLimit(1)
-                                                .scaledToFit()
-                                            Spacer()
-                                            if isTweakEnabled(tweak) {
-                                                Image(systemName: "checkmark.circle.fill")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            } else {
-                                                Image(systemName: "circle")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            }
-                                        }
-                                    }
-                                    .buttonStyle(TintedButton(color: .accent, fullWidth: false))
-                                }
-                            }
-                            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                        }
-                        
-                        Section(header: HStack {
-                            Image(systemName: "speaker.wave.2")
-                            Text("Sound Effects")
-                        }) {
-                            VStack {
-                                ForEach(soundEffects) { tweak in
-                                    Button(action: {
-                                        Haptic.shared.play(.soft)
-                                        toggleTweak(tweak)
-                                    }) {
-                                        HStack {
-                                            Image(systemName: tweak.icon)
-                                                .frame(width: 24, alignment: .center)
-                                            Text(tweak.name)
-                                                .lineLimit(1)
-                                                .scaledToFit()
-                                            Spacer()
-                                            if isTweakEnabled(tweak) {
-                                                Image(systemName: "checkmark.circle.fill")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            } else {
-                                                Image(systemName: "circle")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            }
-                                        }
-                                    }
-                                    .buttonStyle(TintedButton(color: .accent, fullWidth: false))
-                                }
-                            }
-                            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                        }
-                        
-                        Section(header: HStack {
-                            Image(systemName: "square.grid.2x2")
-                            Text("Control Center")
-                        }, footer: Text("**WARNING:** If you'd like to use the **Disable CC Module Background**, remove the Focus module first as it causes a respring loop.")
-                        ) {
-                            VStack {
-                                ForEach(controlCenter) { tweak in
-                                    Button(action: {
-                                        Haptic.shared.play(.soft)
-                                        toggleTweak(tweak)
-                                    }) {
-                                        HStack {
-                                            Image(systemName: tweak.icon)
-                                                .frame(width: 24, alignment: .center)
-                                            Text(tweak.name)
-                                                .lineLimit(1)
-                                                .scaledToFit()
-                                            Spacer()
-                                            if isTweakEnabled(tweak) {
-                                                Image(systemName: "checkmark.circle.fill")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            } else {
-                                                Image(systemName: "circle")
-                                                    .foregroundStyle(.accent)
-                                                    .imageScale(.medium)
-                                            }
-                                        }
-                                    }
-                                    .buttonStyle(TintedButton(color: .accent, fullWidth: false))
-                                }
-                            }
-                            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                        }
+                        TweakSectionList(sectionLabel: "SpringBoard", sectionIcon: "house", tweaks: springBoard, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
+                        TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
+                        TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
+                        TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
+                        TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
                     }
+                    .listStyle(.plain)
                     .listRowInsets(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
+                    // Bottom Buttons
                     .safeAreaInset(edge: .bottom) {
                         VStack {
-                            HStack {
-                                Button(action: {
+                            if enabledTweaks.isEmpty {
+                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", foregroundStyle: .gray, action: {
+                                    Alertinator.shared.alert(title: "No Tweaks Enabled!", body: "Please select some tweaks first.")
+                                })
+                                .opacity(0.8)
+                            } else {
+                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", foregroundStyle: .green, action: {
                                     var applyingString = "[*] Applying the selected tweaks: "
                                     let tweakNames = enabledTweaks.map { $0.name }.joined(separator: ", ")
                                     applyingString += tweakNames
@@ -314,87 +166,52 @@ struct ContentView: View {
                                             dirtyZeroHide(path: path)
                                         }
                                     }
-                                    
-                                    print("[*] All tweaks applied successfully!")
-                                    Alertinator.shared.alert(title: "Tweaks Applied", body: "Now, respring using your preferred method. If you have RespringApp installed, click the blue Respring button.")
-                                }) {
-                                    HStack {
-                                        Image(systemName: "checkmark.circle")
-                                        Text("Apply")
-                                    }
-                                }
-                                .padding(.vertical, 13)
-                                .frame(maxWidth: .infinity)
-                                .background(enabledTweaks.isEmpty ? .accent.opacity(0.06) : .accent.opacity(0.2))
-                                .background(.ultraThinMaterial)
-                                .cornerRadius(14)
-                                .foregroundStyle(enabledTweaks.isEmpty ? .accent.opacity(0.7) : .accent)
-                                .disabled(enabledTweaks.isEmpty)
-                                
-                                Button(action: {
+                                })
+                            }
+                            
+                            HStack {
+                                RegularButtonStyle(text: "Revert", icon: "xmark", foregroundStyle: .red, action: {
                                     Alertinator.shared.alert(title: "Device Will Reboot", body: "To revert all tweaks, your device will now reboot. Tap OK to continue.", action: {
                                         dirtyZeroHide(path: "/usr/lib/dyld")
                                     })
-                                }) {
-                                    HStack {
-                                        Image(systemName: "x.circle")
-                                        Text("Revert")
-                                    }
-                                }
-                                .padding(.vertical, 13)
-                                .frame(maxWidth: .infinity)
-                                .background(.red.opacity(0.2))
-                                .background(.ultraThinMaterial)
-                                .cornerRadius(14)
-                                .foregroundStyle(.red)
-                            }
-                            .padding(.horizontal, 25)
-                            .contextMenu {
-                                Button {
-                                    Alertinator.shared.prompt(title: "Custom Path", placeholder: "Path") { path in
-                                        if let _ = path, !path!.isEmpty {
-                                            dirtyZeroHide(path: path!)
-                                        } else {
-                                            Alertinator.shared.alert(title: "Invalid Path", body: "Enter a vaild path.")
-                                        }
-                                    }
-                                } label: {
-                                    Label("Custom Path", systemImage: "apple.terminal")
-                                }
+                                })
                                 
-                                Button {
-                                    dirtyZeroHide(path: "/usr/lib/dyld")
-                                } label: {
-                                    Label("Panic", systemImage: "ant")
-                                }
+                                RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", foregroundStyle: .orange, action: {
+                                    let respringBundleID = "com.respring.app"
+                                    if isDatAppInstalled(respringBundleID) {
+                                        LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
+                                    } else {
+                                        Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again.")
+                                    }
+                                })
                             }
-                            Button(action: {
-                                let respringBundleID = "com.respring.app"
-                                if isDatAppInstalled(respringBundleID) {
-                                    LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
-                                } else {
-                                    Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again.")
-                                }
-                            }) {
-                                HStack {
-                                    Image(systemName: "arrow.counterclockwise.circle")
-                                    Text("Respring")
-                                }
-                            }
-                            .padding(.vertical, 13)
-                            .frame(maxWidth: .infinity)
-                            .background(.blue.opacity(0.2))
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(14)
-                            .foregroundStyle(.blue)
-                            .padding(.horizontal, 25)
                         }
+                        .contextMenu {
+                            Button {
+                                Alertinator.shared.prompt(title: "Custom Path", placeholder: "Path") { path in
+                                    if let _ = path, !path!.isEmpty {
+                                        dirtyZeroHide(path: path!)
+                                    } else {
+                                        Alertinator.shared.alert(title: "Invalid Path", body: "Enter a vaild path.")
+                                    }
+                                }
+                            } label: {
+                                Label("Custom Path", systemImage: "apple.terminal")
+                            }
+                            
+                            Button {
+                                dirtyZeroHide(path: "/usr/lib/dyld")
+                            } label: {
+                                Label("Panic", systemImage: "ant")
+                            }
+                        }
+                        .padding(.horizontal, 25)
                         .padding(.top, 70)
                         .background(
                             LinearGradient(
                                 gradient: Gradient(colors: [
                                     Color.clear,
-                                    Color(.systemBackground).opacity(1)
+                                    Color(.systemBackground).opacity(0.8)
                                 ]),
                                 startPoint: .top,
                                 endPoint: .bottom
@@ -403,6 +220,15 @@ struct ContentView: View {
                     }
                 }
                 .navigationTitle("dirtyZero")
+                // this will make people who cannot read cry
+                .onAppear {
+                    print("\(Double(device.systemVersion!)!)")
+                    if Double(device.systemVersion!)! > 18.3 {
+                        Alertinator.shared.alert(title: "Device Unsupported", body: "Sorry, but this device is not and never will be supported by dirtyZero.", showCancel: false, action: {
+                            exit(0)
+                        })
+                    }
+                }
             }
         }
     }
@@ -410,11 +236,15 @@ struct ContentView: View {
     func dirtyZeroHide(path: String) {
         do {
             try zeroPoC(path: path)
+            print("[*] All tweaks applied successfully!")
+            Alertinator.shared.alert(title: "Tweaks Applied", body: "Now, respring using your preferred method. If you have RespringApp installed, click the blue Respring button.")
         } catch {
             Alertinator.shared.alert(title: "Exploit Failed", body: "There was an error while running the exploit: \(error).")
+            print("[!] Exploit Failed: There was an error while running the exploit: \(error).")
         }
     }
     
+    // The "sandbox escape" :fire: (it literally just shows you installed apps and does nothing else of actual use)
     func isDatAppInstalled(_ bundleID: String) -> Bool {
         typealias SBSLaunchFunction = @convention(c) (
             String,
@@ -464,7 +294,76 @@ struct MaterialView: UIViewRepresentable {
     }
 }
 
-struct TintedButton: ButtonStyle {
+// Lists out tweak sections
+struct TweakSectionList: View {
+    let sectionLabel: String
+    let sectionIcon: String
+    let tweaks: [ZeroTweak]
+    let toggleTweak: (ZeroTweak) -> Void
+    let isTweakEnabled: (ZeroTweak) -> Bool
+    
+    var body: some View {
+        Section(header: HStack {
+            Image(systemName: sectionIcon)
+            Text(sectionLabel)
+        }) {
+            VStack {
+                ForEach(tweaks) { tweak in
+                    Button(action: {
+                        Haptic.shared.play(.soft)
+                        toggleTweak(tweak)
+                    }) {
+                        HStack {
+                            Image(systemName: tweak.icon)
+                                .frame(width: 24, alignment: .center)
+                            Text(tweak.name)
+                                .lineLimit(1)
+                                .scaledToFit()
+                            Spacer()
+                            if isTweakEnabled(tweak) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.accent)
+                                    .imageScale(.medium)
+                            } else {
+                                Image(systemName: "circle")
+                                    .foregroundStyle(.accent)
+                                    .imageScale(.medium)
+                            }
+                        }
+                    }
+                    .buttonStyle(ListButtonStyle(color: .accent, fullWidth: false))
+                }
+            }
+            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+        }
+    }
+}
+
+// Buttons :fire:
+struct RegularButtonStyle: View {
+    let text: String
+    let icon: String
+    let foregroundStyle: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                Text(text)
+            }
+            .padding(.vertical, 13)
+            .frame(maxWidth: .infinity)
+            .background(foregroundStyle.opacity(0.2))
+            .background(.ultraThinMaterial)
+            .cornerRadius(14)
+            .foregroundStyle(foregroundStyle)
+        }
+    }
+}
+
+// List Styling
+struct ListButtonStyle: ButtonStyle {
     var color: Color
     var material: UIBlurEffect.Style?
     var fullWidth: Bool = false
