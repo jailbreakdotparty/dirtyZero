@@ -110,7 +110,7 @@ struct ContentView: View {
                     List {
                         Section(header: HStack {
                             Image(systemName: "info.circle")
-                            Text("Version 1.1 (Release)")
+                            Text("Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))")
                         }) {
                             VStack {
                                 LogView()

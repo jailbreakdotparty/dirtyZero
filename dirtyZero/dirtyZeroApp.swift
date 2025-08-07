@@ -37,3 +37,9 @@ struct dirtyZeroApp: App {
 }
 
 extension String: @retroactive Error {}
+
+extension UIApplication {
+    static var appVersion: String? {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    }
+}
