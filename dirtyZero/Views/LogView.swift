@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct LogView: View {
-    let pipe = Pipe()
-    let sema = DispatchSemaphore(value: 0)
     @State var log: String = ""
     
     var body: some View {

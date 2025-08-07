@@ -137,6 +137,7 @@ struct ContentView: View {
                             }
                         }
                         
+                        // i hate that we have to pass this toggleTweak and isTweakEnabled thing to each view but even i couldn't figure out a better way. i hate this. - Skadz
                         TweakSectionList(sectionLabel: "SpringBoard", sectionIcon: "house", tweaks: springBoard, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
                         TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
                         TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
@@ -222,10 +223,10 @@ struct ContentView: View {
                 .navigationTitle("dirtyZero")
                 // this will make people who cannot read cry
                 .onAppear {
-                    print("\(Double(device.systemVersion!)!)")
-                    if Double(device.systemVersion!)! > 18.3 {
-                        Alertinator.shared.alert(title: "Device Unsupported", body: "Sorry, but this device is not and never will be supported by dirtyZero.", showCancel: false, action: {
-                            exit(0)
+                    let version = Double(device.systemVersion!)!
+                    if version >= 18.4 && !weOnADebugBuild { // let us pass through if we're on a debug build (previews, xcode, etc.)
+                        Alertinator.shared.alert(title: "Unsupported iOS", body: "Sorry, but your current iOS version (\(version)) is not and never will be supported by dirtyZero. You also cannot downgrade to a supported version. :(", showCancel: false, action: {
+                            exitinator()
                         })
                     }
                 }
