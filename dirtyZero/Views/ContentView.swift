@@ -13,10 +13,12 @@ struct ZeroTweak: Identifiable, Codable {
     var id: String { name }
     var icon: String
     var name: String
+    var minSupportedVersion: Double
+    var maxSupportedVersion: Double
     var paths: [String]
     
     enum CodingKeys: String, CodingKey {
-        case icon, name, paths
+        case icon, name, minSupportedVersion, maxSupportedVersion, paths
     }
 }
 
@@ -41,38 +43,38 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
 }
 
 var springBoard: [ZeroTweak] = [
-    ZeroTweak(icon: "dock.rectangle", name: "Hide Dock", paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"]),
-    ZeroTweak(icon: "folder", name: "Hide Folder Backgrounds", paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/folderDark.materialrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/folderLight.materialrecipe"]),
-    ZeroTweak(icon: "list.bullet.rectangle", name: "Hide Alert & Touch Backgrounds", paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platformContentDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platformContentLight.materialrecipe"]),
-    ZeroTweak(icon: "magnifyingglass", name: "Hide Spotlight Background", paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundDarkZoomed.descendantrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundZoomed.descendantrecipe"]),
-    ZeroTweak(icon: "square.text.square", name: "Hide Widget Config BG", paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/stackConfigurationBackground.materialrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/stackConfigurationForeground.materialrecipe"]),
-    ZeroTweak(icon: "square.dashed", name: "Hide App Library BG", paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/coplanarLeadingTrailingBackgroundBlur.materialrecipe"]),
+    ZeroTweak(icon: "dock.rectangle", name: "Hide Dock", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"]),
+    ZeroTweak(icon: "folder", name: "Hide Folder Backgrounds", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/folderDark.materialrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/folderLight.materialrecipe"]),
+    ZeroTweak(icon: "list.bullet.rectangle", name: "Hide Alert & Touch Backgrounds", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platformContentDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platformContentLight.materialrecipe"]),
+    ZeroTweak(icon: "magnifyingglass", name: "Hide Spotlight Background", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundDarkZoomed.descendantrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundZoomed.descendantrecipe"]),
+    ZeroTweak(icon: "square.text.square", name: "Hide Widget Config BG", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/stackConfigurationBackground.materialrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/stackConfigurationForeground.materialrecipe"]),
+    ZeroTweak(icon: "square.dashed", name: "Hide App Library BG", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/coplanarLeadingTrailingBackgroundBlur.materialrecipe"]),
 ]
 
 var lockScreen: [ZeroTweak] = [
-    ZeroTweak(icon: "ellipsis.rectangle", name: "Hide Passcode Background", paths: ["/System/Library/PrivateFrameworks/CoverSheet.framework/dashBoardPasscodeBackground.materialrecipe"]),
-    ZeroTweak(icon: "lock", name: "Hide Lock Icon", paths: ["/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@2x-812h.ca/main.caml", "/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@2x-896h.ca/main.caml", "/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-812h.ca/main.caml", "/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca/main.caml", "/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-d73.ca/main.caml"]),
-    ZeroTweak(icon: "bolt", name: "Hide Large Battery Icon", paths: ["/System/Library/PrivateFrameworks/CoverSheet.framework/Assets.car"])
+    ZeroTweak(icon: "ellipsis.rectangle", name: "Hide Passcode Background", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoverSheet.framework/dashBoardPasscodeBackground.materialrecipe"]),
+    ZeroTweak(icon: "lock", name: "Hide Lock Icon", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@2x-812h.ca/main.caml", "/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@2x-896h.ca/main.caml", "/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-812h.ca/main.caml", "/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-896h.ca/main.caml", "/System/Library/PrivateFrameworks/SpringBoardUIServices.framework/lock@3x-d73.ca/main.caml"]),
+    ZeroTweak(icon: "bolt", name: "Hide Large Battery Icon", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoverSheet.framework/Assets.car"])
 ]
 
 var systemWideCustomization: [ZeroTweak] = [
-    ZeroTweak(icon: "bell", name: "Hide Notification & Widget BGs", paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeLight.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeDark.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/plattersDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platters.materialrecipe"]),
-    ZeroTweak(icon: "line.3.horizontal", name: "Hide Home Bar", paths: ["/System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car"]),
-    ZeroTweak(icon: "character.cursor.ibeam", name: "Helvetica Font", paths: ["/System/Library/Fonts/Core/SFUI.ttf"]),
-    ZeroTweak(icon: "circle.slash", name: "Remove Emojis", paths: ["/System/Library/Fonts/CoreAddition/AppleColorEmoji-160px.ttc"])
+    ZeroTweak(icon: "bell", name: "Hide Notification & Widget BGs", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeLight.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeDark.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/plattersDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platters.materialrecipe"]),
+    ZeroTweak(icon: "line.3.horizontal", name: "Hide Home Bar", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car"]),
+    ZeroTweak(icon: "character.cursor.ibeam", name: "Helvetica Font", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Fonts/Core/SFUI.ttf"]),
+    ZeroTweak(icon: "circle.slash", name: "Remove Emojis", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Fonts/CoreAddition/AppleColorEmoji-160px.ttc"])
 ]
 
 var soundEffects: [ZeroTweak] = [
-    ZeroTweak(icon: "dot.radiowaves.left.and.right", name: "Disable AirDrop Ping", paths: ["/System/Library/Audio/UISounds/Modern/airdrop_invite.cat"]),
-    ZeroTweak(icon: "bolt", name: "Disable Charge Sound", paths: ["/System/Library/Audio/UISounds/connect_power.caf"]),
-    ZeroTweak(icon: "battery.25", name: "Disable Low Battery Sound", paths: ["/System/Library/Audio/UISounds/low_power.caf"]),
-    ZeroTweak(icon: "creditcard", name: "Disable Payment Sounds", paths: ["/System/Library/Audio/UISounds/payment_success.caf", "/System/Library/Audio/UISounds/payment_failure.caf"])
+    ZeroTweak(icon: "dot.radiowaves.left.and.right", name: "Disable AirDrop Ping", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/Modern/airdrop_invite.cat"]),
+    ZeroTweak(icon: "bolt", name: "Disable Charge Sound", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/connect_power.caf"]),
+    ZeroTweak(icon: "battery.25", name: "Disable Low Battery Sound", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/low_power.caf"]),
+    ZeroTweak(icon: "creditcard", name: "Disable Payment Sounds", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/payment_success.caf", "/System/Library/Audio/UISounds/payment_failure.caf"])
 ]
 
 var controlCenter: [ZeroTweak] = [
-    ZeroTweak(icon: "circle.grid.2x2", name: "Disable CC Module Background", paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/modulesSheer.descendantrecipe"]),
-    ZeroTweak(icon: "sun.max", name: "Disable Brightness Icon", paths: ["/System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/main.caml"]),
-    ZeroTweak(icon: "moon", name: "Disable DND Icon", paths: ["/System/Library/PrivateFrameworks/FocusUI.framework/dnd_cg_02.ca/main.caml"])
+    ZeroTweak(icon: "circle.grid.2x2", name: "Disable CC Module Background", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/modulesSheer.descendantrecipe"]),
+    ZeroTweak(icon: "sun.max", name: "Disable Brightness Icon", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/main.caml"]),
+    ZeroTweak(icon: "moon", name: "Disable DND Icon", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/FocusUI.framework/dnd_cg_02.ca/main.caml"])
 ]
 
 struct ContentView: View {
@@ -303,6 +305,8 @@ struct TweakSectionList: View {
     let toggleTweak: (ZeroTweak) -> Void
     let isTweakEnabled: (ZeroTweak) -> Bool
     
+    let device = Device.current
+    
     var body: some View {
         Section(header: HStack {
             Image(systemName: sectionIcon)
@@ -310,29 +314,31 @@ struct TweakSectionList: View {
         }) {
             VStack {
                 ForEach(tweaks) { tweak in
-                    Button(action: {
-                        Haptic.shared.play(.soft)
-                        toggleTweak(tweak)
-                    }) {
-                        HStack {
-                            Image(systemName: tweak.icon)
-                                .frame(width: 24, alignment: .center)
-                            Text(tweak.name)
-                                .lineLimit(1)
-                                .scaledToFit()
-                            Spacer()
-                            if isTweakEnabled(tweak) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.accent)
-                                    .imageScale(.medium)
-                            } else {
-                                Image(systemName: "circle")
-                                    .foregroundStyle(.accent)
-                                    .imageScale(.medium)
+                    if Double(device.systemVersion!)! <= tweak.maxSupportedVersion && Double(device.systemVersion!)! >= tweak.minSupportedVersion {
+                        Button(action: {
+                            Haptic.shared.play(.soft)
+                            toggleTweak(tweak)
+                        }) {
+                            HStack {
+                                Image(systemName: tweak.icon)
+                                    .frame(width: 24, alignment: .center)
+                                Text(tweak.name)
+                                    .lineLimit(1)
+                                    .scaledToFit()
+                                Spacer()
+                                if isTweakEnabled(tweak) {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.accent)
+                                        .imageScale(.medium)
+                                } else {
+                                    Image(systemName: "circle")
+                                        .foregroundStyle(.accent)
+                                        .imageScale(.medium)
+                                }
                             }
                         }
+                        .buttonStyle(ListButtonStyle(color: .accent, fullWidth: false))
                     }
-                    .buttonStyle(ListButtonStyle(color: .accent, fullWidth: false))
                 }
             }
             .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
