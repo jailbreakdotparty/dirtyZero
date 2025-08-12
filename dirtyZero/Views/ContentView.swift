@@ -139,12 +139,48 @@ struct ContentView: View {
                             }
                         }
                         
-                        // i hate that we have to pass this toggleTweak and isTweakEnabled thing to each view but even i couldn't figure out a better way. i hate this. - Skadz
-                        TweakSectionList(sectionLabel: "SpringBoard", sectionIcon: "house", tweaks: springBoard, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
-                        TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
-                        TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
-                        TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
-                        TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, toggleTweak: toggleTweak, isTweakEnabled: isTweakEnabled)
+                        if weOnADebugBuild {
+                            Section(header: HStack {
+                                Image(systemName: "ant")
+                                Text("Debugging")
+                            }) {
+                                VStack {
+                                    RegularButtonStyle(text: "Print enabledTweakIds", icon: "list.bullet", useMaxHeight: false, foregroundStyle: .red, action: {
+                                        print(enabledTweakIds)
+                                    })
+                                    HStack {
+                                        TextField("Custom Path", text: $customZeroPath, axis: .vertical)
+                                            .padding(13)
+                                            .frame(width: 250)
+                                            .background(.accent.opacity(0.2))
+                                            .background(.ultraThinMaterial)
+                                            .cornerRadius(14)
+                                            .foregroundStyle(.accent)
+                                        RegularButtonStyle(text: "", icon: "arrow.up.doc", useMaxHeight: false, foregroundStyle: .blue, action: {
+                                            if customZeroPath.isEmpty {
+                                                Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
+                                            } else {
+                                                dirtyZeroHide(path: customZeroPath)
+                                            }
+                                        })
+                                        RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, foregroundStyle: .blue, action: {
+                                            if let clipboardText = UIPasteboard.general.string {
+                                                customZeroPath = clipboardText
+                                            } else {
+                                                print("[!] epic pasteboard fail :fire:")
+                                            }
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // nuh uh, trollstore. - lunginspector
+                        TweakSectionList(sectionLabel: "SpringBoard", sectionIcon: "house", tweaks: springBoard, enabledTweakIds: $enabledTweakIds)
+                        TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
+                        TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, enabledTweakIds: $enabledTweakIds)
+                        TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
+                        TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, enabledTweakIds: $enabledTweakIds)
                     }
                     .listStyle(.plain)
                     .listRowInsets(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
@@ -152,12 +188,12 @@ struct ContentView: View {
                     .safeAreaInset(edge: .bottom) {
                         VStack {
                             if enabledTweaks.isEmpty {
-                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", foregroundStyle: .gray, action: {
+                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, foregroundStyle: .gray, action: {
                                     Alertinator.shared.alert(title: "No Tweaks Enabled!", body: "Please select some tweaks first.")
                                 })
                                 .opacity(0.8)
                             } else {
-                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", foregroundStyle: .green, action: {
+                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, foregroundStyle: .green, action: {
                                     var applyingString = "[*] Applying the selected tweaks: "
                                     let tweakNames = enabledTweaks.map { $0.name }.joined(separator: ", ")
                                     applyingString += tweakNames
@@ -173,13 +209,13 @@ struct ContentView: View {
                             }
                             
                             HStack {
-                                RegularButtonStyle(text: "Revert", icon: "xmark", foregroundStyle: .red, action: {
-                                    Alertinator.shared.alert(title: "Device Will Reboot", body: "To revert all tweaks, your device will now reboot. Tap OK to continue.", action: {
+                                RegularButtonStyle(text: "Revert", icon: "xmark", useMaxHeight: false, foregroundStyle: .red, action: {
+                                    Alertinator.shared.alert(title: "Device Will Reboot", body: "Your device will have to reboot in order to revert all tweaks. Tap OK to continue.", action: {
                                         dirtyZeroHide(path: "/usr/lib/dyld")
                                     })
                                 })
                                 
-                                RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", foregroundStyle: .orange, action: {
+                                RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", useMaxHeight: false, foregroundStyle: .orange, action: {
                                     let respringBundleID = "com.respring.app"
                                     if isDatAppInstalled(respringBundleID) {
                                         LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
@@ -240,7 +276,7 @@ struct ContentView: View {
         do {
             try zeroPoC(path: path)
             print("[*] All tweaks applied successfully!")
-            Alertinator.shared.alert(title: "Tweaks Applied", body: "Now, respring using your preferred method. If you have RespringApp installed, click the blue Respring button.")
+            Alertinator.shared.alert(title: "Tweaks Applied", body: "Now, respring using your preferred method. If you have RespringApp installed, click the now smaller, orange Respring button.")
         } catch {
             Alertinator.shared.alert(title: "Exploit Failed", body: "There was an error while running the exploit: \(error).")
             print("[!] Exploit Failed: There was an error while running the exploit: \(error).")
@@ -297,15 +333,26 @@ struct MaterialView: UIViewRepresentable {
     }
 }
 
-// Lists out tweak sections
+// just trust me skadz
 struct TweakSectionList: View {
     let sectionLabel: String
     let sectionIcon: String
     let tweaks: [ZeroTweak]
-    let toggleTweak: (ZeroTweak) -> Void
-    let isTweakEnabled: (ZeroTweak) -> Bool
+    @Binding var enabledTweakIds: [String]
     
     let device = Device.current
+    
+    private func isTweakEnabled(_ tweak: ZeroTweak) -> Bool {
+        enabledTweakIds.contains(tweak.id)
+    }
+    
+    private func toggleTweak(_ tweak: ZeroTweak) {
+        if isTweakEnabled(tweak) {
+            enabledTweakIds.removeAll { $0 == tweak.id }
+        } else {
+            enabledTweakIds.append(tweak.id)
+        }
+    }
     
     var body: some View {
         Section(header: HStack {
@@ -322,9 +369,11 @@ struct TweakSectionList: View {
                             HStack {
                                 Image(systemName: tweak.icon)
                                     .frame(width: 24, alignment: .center)
+                                    .foregroundStyle(.accent)
                                 Text(tweak.name)
                                     .lineLimit(1)
                                     .scaledToFit()
+                                    .foregroundStyle(.accent)
                                 Spacer()
                                 if isTweakEnabled(tweak) {
                                     Image(systemName: "checkmark.circle.fill")
@@ -337,7 +386,7 @@ struct TweakSectionList: View {
                                 }
                             }
                         }
-                        .buttonStyle(ListButtonStyle(color: .accent, fullWidth: false))
+                        .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? .accent : .accent.opacity(0.8), fullWidth: false))
                     }
                 }
             }
@@ -350,6 +399,7 @@ struct TweakSectionList: View {
 struct RegularButtonStyle: View {
     let text: String
     let icon: String
+    let useMaxHeight: Bool
     let foregroundStyle: Color
     let action: () -> Void
     
@@ -357,15 +407,21 @@ struct RegularButtonStyle: View {
         Button(action: action) {
             HStack {
                 Image(systemName: icon)
-                Text(text)
+                    .frame(minWidth: 22, minHeight: 22)
+                if text.isEmpty {
+                    
+                } else {
+                    Text(text)
+                }
             }
-            .padding(.vertical, 13)
-            .frame(maxWidth: .infinity)
-            .background(foregroundStyle.opacity(0.2))
-            .background(.ultraThinMaterial)
-            .cornerRadius(14)
-            .foregroundStyle(foregroundStyle)
         }
+        .padding(.vertical, 13)
+        .frame(maxWidth: .infinity, maxHeight: useMaxHeight ? .infinity : nil)
+        .background(foregroundStyle.opacity(0.2))
+        .background(.ultraThinMaterial)
+        .cornerRadius(14)
+        .foregroundStyle(foregroundStyle)
+        .buttonStyle(.plain)
     }
 }
 
