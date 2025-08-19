@@ -89,6 +89,7 @@ struct ContentView: View {
     @State private var hasShownWelcome = false
     @State private var customZeroPath: String = ""
     @State private var addedCustomPaths: [String] = []
+    @State private var isSupported: Bool = true
     
     private var tweaks: [ZeroTweak] {
         springBoard + lockScreen + systemWideCustomization + soundEffects + controlCenter
@@ -150,7 +151,7 @@ struct ContentView: View {
                                 Text("Debugging")
                             }) {
                                 VStack {
-                                    RegularButtonStyle(text: "Print enabledTweakIds", icon: "list.bullet", useMaxHeight: false, foregroundStyle: .red, action: {
+                                    RegularButtonStyle(text: "Print enabledTweakIds", icon: "list.bullet", useMaxHeight: false, disabled: false, foregroundStyle: .red, action: {
                                         print(enabledTweakIds)
                                     })
                                     HStack {
@@ -161,14 +162,14 @@ struct ContentView: View {
                                             .background(.ultraThinMaterial)
                                             .cornerRadius(14)
                                             .foregroundStyle(.accent)
-                                        RegularButtonStyle(text: "", icon: "arrow.up.doc", useMaxHeight: false, foregroundStyle: .blue, action: {
+                                        RegularButtonStyle(text: "", icon: "arrow.up.doc", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
                                             if customZeroPath.isEmpty {
                                                 Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
                                             } else {
                                                 dirtyZeroHide(path: customZeroPath)
                                             }
                                         })
-                                        RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, foregroundStyle: .blue, action: {
+                                        RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
                                             if let clipboardText = UIPasteboard.general.string {
                                                 customZeroPath = clipboardText
                                             } else {
@@ -179,11 +180,34 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: springBoard, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, enabledTweakIds: $enabledTweakIds)
+                        
+                        if isSupported {
+                            TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: springBoard, enabledTweakIds: $enabledTweakIds)
+                            TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
+                            TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, enabledTweakIds: $enabledTweakIds)
+                            TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
+                            TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, enabledTweakIds: $enabledTweakIds)
+                        } else {
+                            VStack {
+                                Image(systemName: "iphone.slash")
+                                    .foregroundStyle(.secondary)
+                                    .font(.system(size: 40).weight(.regular))
+                                    .imageScale(.large)
+                                
+                                Text("**Unsupported Version**")
+                                    .multilineTextAlignment(.center)
+                                    .font(.title2)
+                                    .foregroundStyle(.secondary)
+                                Text("Your current software version (\(device.systemVersion!)) is not and never will be supported by dirtyZero.\nYou also cannot downgrade to a supported version.")
+                                    .multilineTextAlignment(.center)
+                                    .font(.system(size: 16))
+                                    .foregroundStyle(.secondary)
+                                
+                                RegularButtonStyle(text: "Exit App", icon: "apps.iphone", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
+                                    exitinator()
+                                })
+                            }
+                        }
                     }
                     .listStyle(.plain)
                     .listRowInsets(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
@@ -191,12 +215,11 @@ struct ContentView: View {
                     .safeAreaInset(edge: .bottom) {
                         VStack {
                             if enabledTweaks.isEmpty {
-                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, foregroundStyle: .gray, action: {
+                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .gray, action: {
                                     Alertinator.shared.alert(title: "No Tweaks Enabled!", body: "Please select some tweaks first.")
                                 })
-                                .opacity(0.8)
                             } else {
-                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, foregroundStyle: .green, action: {
+                                RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .green, action: {
                                     var applyingString = "[*] Applying the selected tweaks: "
                                     let tweakNames = enabledTweaks.map { $0.name }.joined(separator: ", ")
                                     applyingString += tweakNames
@@ -212,13 +235,13 @@ struct ContentView: View {
                             }
                             
                             HStack {
-                                RegularButtonStyle(text: "Revert", icon: "xmark", useMaxHeight: false, foregroundStyle: .red, action: {
+                                RegularButtonStyle(text: "Revert", icon: "xmark", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .red, action: {
                                     Alertinator.shared.alert(title: "Device Will Reboot", body: "Your device will have to reboot in order to revert all tweaks. Tap OK to continue.", action: {
                                         dirtyZeroHide(path: "/usr/lib/dyld")
                                     })
                                 })
                                 
-                                RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", useMaxHeight: false, foregroundStyle: .orange, action: {
+                                RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .orange, action: {
                                     let respringBundleID = "com.respring.app"
                                     if isDatAppInstalled(respringBundleID) {
                                         LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
@@ -240,12 +263,14 @@ struct ContentView: View {
                             } label: {
                                 Label("Custom Path", systemImage: "apple.terminal")
                             }
+                            .disabled(!isSupported)
                             
                             Button {
                                 dirtyZeroHide(path: "/usr/lib/dyld")
                             } label: {
                                 Label("Panic", systemImage: "ant")
                             }
+                            .disabled(!isSupported)
                         }
                         .padding(.horizontal, 25)
                         .padding(.top, 70)
@@ -265,10 +290,8 @@ struct ContentView: View {
                 // this will make people who cannot read cry
                 .onAppear {
                     let version = Double(device.systemVersion!)!
-                    if version >= 18.4 && !weOnADebugBuild { // let us pass through if we're on a debug build (previews, xcode, etc.)
-                        Alertinator.shared.alert(title: "Unsupported iOS", body: "Sorry, but your current iOS version (\(version)) is not and never will be supported by dirtyZero. You also cannot downgrade to a supported version. :(", showCancel: false, action: {
-                            exitinator()
-                        })
+                    if version >= 18.4 {
+                        isSupported = false
                     }
                 }
             }
@@ -403,6 +426,7 @@ struct RegularButtonStyle: View {
     let text: String
     let icon: String
     let useMaxHeight: Bool
+    let disabled: Bool
     let foregroundStyle: Color
     let action: () -> Void
     
@@ -420,11 +444,12 @@ struct RegularButtonStyle: View {
         }
         .padding(.vertical, 13)
         .frame(maxWidth: .infinity, maxHeight: useMaxHeight ? .infinity : nil)
-        .background(foregroundStyle.opacity(0.2))
+        .background(disabled ? .gray.opacity(0.4) : foregroundStyle.opacity(0.2))
         .background(.ultraThinMaterial)
         .cornerRadius(14)
-        .foregroundStyle(foregroundStyle)
+        .foregroundStyle(disabled ? .gray : foregroundStyle)
         .buttonStyle(.plain)
+        .opacity(disabled ? 0.8 : 1)
     }
 }
 
