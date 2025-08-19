@@ -181,7 +181,7 @@ struct ContentView: View {
                             }
                         }
                         
-                        if isSupported {
+                        if isSupported || weOnADebugBuild {
                             TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: springBoard, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, enabledTweakIds: $enabledTweakIds)
@@ -220,17 +220,7 @@ struct ContentView: View {
                                 })
                             } else {
                                 RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .green, action: {
-                                    var applyingString = "[*] Applying the selected tweaks: "
-                                    let tweakNames = enabledTweaks.map { $0.name }.joined(separator: ", ")
-                                    applyingString += tweakNames
-                                    
-                                    print(applyingString)
-                                    
-                                    for tweak in enabledTweaks {
-                                        for path in tweak.paths {
-                                            dirtyZeroHide(path: path)
-                                        }
-                                    }
+                                    applyTweaks(tweaks: enabledTweaks)
                                 })
                             }
                             
@@ -290,11 +280,38 @@ struct ContentView: View {
                 // this will make people who cannot read cry
                 .onAppear {
                     let version = Double(device.systemVersion!)!
-                    if version >= 18.4 {
+                    if version >= 18.4 && !weOnADebugBuild {
                         isSupported = false
                     }
                 }
             }
+        }
+    }
+    
+    func applyTweaks(tweaks: [ZeroTweak]) {
+        var applyingString = "[*] Applying the selected tweaks: "
+        let tweakNames = enabledTweaks.map { $0.name }.joined(separator: ", ")
+        applyingString += tweakNames
+        
+        print(applyingString)
+        
+        let totalTweaks = enabledTweaks.count
+        var currentTweak = 1
+        
+        do {
+            for tweak in enabledTweaks {
+                print("[\(currentTweak)/\(totalTweaks)] Applying \(tweak.name)...")
+                for path in tweak.paths {
+                    try zeroPoC(path: path)
+                    print("[*] Applied tweak \(currentTweak)/\(totalTweaks)!")
+                    currentTweak += 1
+                }
+            }
+            print("[*] Successfully applied all tweaks!")
+        } catch {
+            print("[!] \(error)")
+            Alertinator.shared.alert(title: "Failed to Apply", body: "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error).")
+            return
         }
     }
     
@@ -387,7 +404,7 @@ struct TweakSectionList: View {
         }) {
             VStack {
                 ForEach(tweaks) { tweak in
-                    if Double(device.systemVersion!)! <= tweak.maxSupportedVersion && Double(device.systemVersion!)! >= tweak.minSupportedVersion {
+                    if Double(device.systemVersion!)! <= tweak.maxSupportedVersion && Double(device.systemVersion!)! >= tweak.minSupportedVersion || weOnADebugBuild {
                         Button(action: {
                             Haptic.shared.play(.soft)
                             toggleTweak(tweak)
