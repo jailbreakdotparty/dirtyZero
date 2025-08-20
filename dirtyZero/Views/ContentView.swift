@@ -116,72 +116,69 @@ struct ContentView: View {
             NavigationStack {
                 VStack {
                     List {
-                        Section(header: HStack {
-                            Image(systemName: "info.circle")
-                            Text("Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))")
-                        }) {
-                            VStack {
-                                LogView()
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 260)
-                                    .onAppear(perform: {
-                                        if !hasShownWelcome {
-                                            print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
-                                            hasShownWelcome = true
-                                        }
-                                    })
-                                    .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                                    .padding()
-                                    .background(Color(.secondarySystemFill))
-                                    .clipShape(.rect(cornerRadius: 14))
-                                
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text("Made with love by the [jailbreak.party](https://jailbreak.party) team.\n[Join the jailbreak.party Discord!](https://discord.gg/XPj66zZ4gT)")
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .font(.footnote)
-                                }
-                            }
-                        }
-                        
-                        if weOnADebugBuild {
+                        if isSupported || weOnADebugBuild {
                             Section(header: HStack {
-                                Image(systemName: "ant")
-                                Text("Debugging")
+                                Image(systemName: "info.circle")
+                                Text("Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))")
                             }) {
                                 VStack {
-                                    RegularButtonStyle(text: "Print enabledTweakIds", icon: "list.bullet", useMaxHeight: false, disabled: false, foregroundStyle: .red, action: {
-                                        print(enabledTweakIds)
-                                    })
+                                    LogView()
+                                        .frame(maxWidth: .infinity)
+                                        .frame(height: 260)
+                                        .onAppear(perform: {
+                                            if !hasShownWelcome {
+                                                print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
+                                                hasShownWelcome = true
+                                            }
+                                        })
+                                        .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+                                        .padding()
+                                        .background(Color(.secondarySystemFill))
+                                        .clipShape(.rect(cornerRadius: 14))
+                                    
                                     HStack {
-                                        TextField("Custom Path", text: $customZeroPath, axis: .vertical)
-                                            .padding(13)
-                                            .frame(width: 250)
-                                            .background(.accent.opacity(0.2))
-                                            .background(.ultraThinMaterial)
-                                            .cornerRadius(14)
-                                            .foregroundStyle(.accent)
-                                        RegularButtonStyle(text: "", icon: "arrow.up.doc", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
-                                            if customZeroPath.isEmpty {
-                                                Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
-                                            } else {
-                                                dirtyZeroHide(path: customZeroPath)
-                                            }
-                                        })
-                                        RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
-                                            if let clipboardText = UIPasteboard.general.string {
-                                                customZeroPath = clipboardText
-                                            } else {
-                                                print("[!] epic pasteboard fail :fire:")
-                                            }
-                                        })
+                                        VStack(alignment: .leading) {
+                                            Text("Made with love by the [jailbreak.party](https://jailbreak.party) team.\n[Join the jailbreak.party Discord!](https://discord.gg/XPj66zZ4gT)")
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .font(.footnote)
                                     }
                                 }
                             }
-                        }
-                        
-                        if isSupported || weOnADebugBuild {
+                                Section(header: HStack {
+                                    Image(systemName: "ant")
+                                    Text("Debugging")
+                                }) {
+                                    VStack {
+                                        RegularButtonStyle(text: "Print enabledTweakIds", icon: "list.bullet", useMaxHeight: false, disabled: false, foregroundStyle: .red, action: {
+                                            print(enabledTweakIds)
+                                        })
+                                        HStack {
+                                            TextField("Custom Path", text: $customZeroPath, axis: .vertical)
+                                                .padding(13)
+                                                .frame(width: 250)
+                                                .background(.accent.opacity(0.2))
+                                                .background(.ultraThinMaterial)
+                                                .cornerRadius(14)
+                                                .foregroundStyle(.accent)
+                                            RegularButtonStyle(text: "", icon: "arrow.up.doc", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
+                                                if customZeroPath.isEmpty {
+                                                    Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
+                                                } else {
+                                                    dirtyZeroHide(path: customZeroPath)
+                                                }
+                                            })
+                                            RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
+                                                if let clipboardText = UIPasteboard.general.string {
+                                                    customZeroPath = clipboardText
+                                                } else {
+                                                    print("[!] epic pasteboard fail :fire:")
+                                                }
+                                            })
+                                        }
+                                    }
+                                }
+                            
                             TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: springBoard, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, enabledTweakIds: $enabledTweakIds)
@@ -203,7 +200,7 @@ struct ContentView: View {
                                     .font(.system(size: 16))
                                     .foregroundStyle(.secondary)
                                 
-                                RegularButtonStyle(text: "Exit App", icon: "apps.iphone", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
+                                RegularButtonStyle(text: "Exit App", icon: "xmark", useMaxHeight: false, disabled: false, foregroundStyle: .red, action: {
                                     exitinator()
                                 })
                             }
@@ -279,8 +276,8 @@ struct ContentView: View {
                 .navigationTitle("dirtyZero")
                 // this will make people who cannot read cry
                 .onAppear {
-                    let version = Double(device.systemVersion!)!
-                    if version >= 18.4 && !weOnADebugBuild {
+                    let doubleSystemVersion = Double(device.systemVersion!.split(separator: ".").prefix(2).joined(separator: "."))!
+                    if doubleSystemVersion >= 18.4 && !weOnADebugBuild {
                         isSupported = false
                     }
                 }
@@ -404,7 +401,9 @@ struct TweakSectionList: View {
         }) {
             VStack {
                 ForEach(tweaks) { tweak in
-                    if Double(device.systemVersion!)! <= tweak.maxSupportedVersion && Double(device.systemVersion!)! >= tweak.minSupportedVersion || weOnADebugBuild {
+                    let doubleSystemVersion = Double(device.systemVersion!.split(separator: ".").prefix(2).joined(separator: "."))!
+                    
+                    if doubleSystemVersion <= tweak.maxSupportedVersion && doubleSystemVersion >= tweak.minSupportedVersion || weOnADebugBuild {
                         Button(action: {
                             Haptic.shared.play(.soft)
                             toggleTweak(tweak)
@@ -448,7 +447,11 @@ struct RegularButtonStyle: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            if !disabled {
+                action()
+            }
+        }) {
             HStack {
                 Image(systemName: icon)
                     .frame(minWidth: 22, minHeight: 22)
