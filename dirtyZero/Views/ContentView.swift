@@ -168,7 +168,7 @@ struct ContentView: View {
                                                 if customZeroPath.isEmpty {
                                                     Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
                                                 } else {
-                                                    dirtyZeroHide(path: customZeroPath)
+                                                    try? zeroPoC(path: customZeroPath)
                                                 }
                                             })
                                             RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
@@ -226,7 +226,7 @@ struct ContentView: View {
                             HStack {
                                 RegularButtonStyle(text: "Revert", icon: "xmark", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .red, action: {
                                     Alertinator.shared.alert(title: "Device Will Reboot", body: "Your device will have to reboot in order to revert all tweaks. Tap OK to continue.", action: {
-                                        dirtyZeroHide(path: "/usr/lib/dyld")
+                                        try? zeroPoC(path: "/usr/lib/dyld")
                                     })
                                 })
                                 
@@ -244,7 +244,7 @@ struct ContentView: View {
                             Button {
                                 Alertinator.shared.prompt(title: "Custom Path", placeholder: "Path") { path in
                                     if let _ = path, !path!.isEmpty {
-                                        dirtyZeroHide(path: path!)
+                                        try? zeroPoC(path: path!)
                                     } else {
                                         Alertinator.shared.alert(title: "Invalid Path", body: "Enter a vaild path.")
                                     }
@@ -255,7 +255,7 @@ struct ContentView: View {
                             .disabled(!isSupported)
                             
                             Button {
-                                dirtyZeroHide(path: "/usr/lib/dyld")
+                                try? zeroPoC(path: "/usr/lib/dyld")
                             } label: {
                                 Label("Panic", systemImage: "ant")
                             }
@@ -303,27 +303,15 @@ struct ContentView: View {
                 print("[\(currentTweak)/\(totalTweaks)] Applying \(tweak.name)...")
                 for path in tweak.paths {
                     try zeroPoC(path: path)
-                    print("[*] Applied tweak \(currentTweak)/\(totalTweaks)!")
-                    currentTweak += 1
                 }
+                print("[*] Applied tweak \(currentTweak)/\(totalTweaks)!")
+                currentTweak += 1
             }
             print("[*] Successfully applied all tweaks!")
         } catch {
             print("[!] \(error)")
             Alertinator.shared.alert(title: "Failed to Apply", body: "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error).")
             return
-        }
-    }
-    
-    // this will tell the exploit to do the exploit.
-    func dirtyZeroHide(path: String) {
-        do {
-            try zeroPoC(path: path)
-            print("[*] All tweaks applied successfully!")
-            Alertinator.shared.alert(title: "Tweaks Applied", body: "Now, respring using your preferred method. If you have RespringApp installed, click the now smaller, orange Respring button.")
-        } catch {
-            Alertinator.shared.alert(title: "Exploit Failed", body: "There was an error while running the exploit: \(error).")
-            print("[!] Exploit Failed: There was an error while running the exploit: \(error).")
         }
     }
     
