@@ -62,6 +62,7 @@ var systemWideCustomization: [ZeroTweak] = [
     ZeroTweak(icon: "bell.slash", name: "Disable Notification & Widget BGs", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeLight.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeDark.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/plattersDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platters.materialrecipe"]),
     ZeroTweak(icon: "line.3.horizontal", name: "Disable Home Bar", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car"]),
     ZeroTweak(icon: "character.cursor.ibeam", name: "Enable Helvetica Font", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Fonts/Core/SFUI.ttf"]),
+    ZeroTweak(icon: "circle.slash", name: "Disable Emojis", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Fonts/CoreAddition/AppleColorEmoji-160px.ttc"]),
     ZeroTweak(icon: "sun.max", name: "Disable Slider Icons ", minSupportedVersion: 17.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/index.xml", "/System/Library/PrivateFrameworks/MediaControls.framework/Volume.ca/index.xml"]),
     ZeroTweak(icon: "sun.max", name: "Disable Slider Icons", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/index.xml", "/System/Library/PrivateFrameworks/MediaControls.framework/VolumeSemibold.ca/index.xml"]),
 ]
@@ -77,6 +78,7 @@ var controlCenter: [ZeroTweak] = [
     ZeroTweak(icon: "square.dashed", name: "Disable CC Background", minSupportedVersion: 17.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/modulesBackground.materialrecipe"]),
     ZeroTweak(icon: "circle.grid.2x2", name: "Disable CC Module Background", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/modulesSheer.descendantrecipe", "/System/Library/ControlCenter/Bundles/FocusUIModule.bundle/Info.plist"]),
     ZeroTweak(icon: "wifi", name: "Disable WiFi & Bluetooth Icons", minSupportedVersion: 17.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/ConnectivityModule.bundle/Bluetooth.ca/index.xml", "/System/Library/ControlCenter/Bundles/ConnectivityModule.bundle/WiFi.ca/index.xml"]),
+    ZeroTweak(icon: "moon", name: "Disable DND Icons", minSupportedVersion: 17.0, maxSupportedVersion: 17.9, paths: ["/System/Library/PrivateFrameworks/FocusUI.framework/dnd_cg_02.ca/main.caml"]),
     ZeroTweak(icon: "rectangle.on.rectangle", name: "Disable Screen Mirroring Module", minSupportedVersion: 17.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/AirPlayMirroringModule.bundle/Info.plist"]),
     ZeroTweak(icon: "lock.rotation", name: "Disable Orientation Lock Module", minSupportedVersion: 17.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/OrientationLockModule.bundle/Info.plist"]),
     ZeroTweak(icon: "moon", name: "Disable Focus Module", minSupportedVersion: 17.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/FocusUIModule.bundle/Info.plist"])
@@ -145,6 +147,7 @@ struct ContentView: View {
                                     }
                                 }
                             }
+                            if weOnADebugBuild {
                                 Section(header: HStack {
                                     Image(systemName: "ant")
                                     Text("Debugging")
@@ -178,13 +181,14 @@ struct ContentView: View {
                                         }
                                     }
                                 }
-                            
+                            }
                             TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: springBoard, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
-                            TweakSectionList(sectionLabel: "Systemwide Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, enabledTweakIds: $enabledTweakIds)
-                            TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
+                            TweakSectionList(sectionLabel: "Global Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, enabledTweakIds: $enabledTweakIds)
+                            TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
                         } else {
+                            // this too will make people who can't read cry
                             VStack {
                                 Image(systemName: "iphone.slash")
                                     .foregroundStyle(.secondary)
@@ -194,7 +198,6 @@ struct ContentView: View {
                                 Text("**Unsupported Version**")
                                     .multilineTextAlignment(.center)
                                     .font(.title2)
-                                    .foregroundStyle(.secondary)
                                 Text("Your current software version (\(device.systemVersion!)) is not and never will be supported by dirtyZero.\nYou also cannot downgrade to a supported version.")
                                     .multilineTextAlignment(.center)
                                     .font(.system(size: 16))
@@ -208,7 +211,6 @@ struct ContentView: View {
                     }
                     .listStyle(.plain)
                     .listRowInsets(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
-                    // Bottom Buttons
                     .safeAreaInset(edge: .bottom) {
                         VStack {
                             if enabledTweaks.isEmpty {
@@ -274,7 +276,7 @@ struct ContentView: View {
                     }
                 }
                 .navigationTitle("dirtyZero")
-                // this will make people who cannot read cry
+                // this will make people who cannot read cry.
                 .onAppear {
                     let doubleSystemVersion = Double(device.systemVersion!.split(separator: ".").prefix(2).joined(separator: "."))!
                     if doubleSystemVersion >= 18.4 && !weOnADebugBuild {
@@ -285,6 +287,7 @@ struct ContentView: View {
         }
     }
     
+    // this talks to the thing that will eventually exploit.
     func applyTweaks(tweaks: [ZeroTweak]) {
         var applyingString = "[*] Applying the selected tweaks: "
         let tweakNames = enabledTweaks.map { $0.name }.joined(separator: ", ")
@@ -312,6 +315,7 @@ struct ContentView: View {
         }
     }
     
+    // this will tell the exploit to do the exploit.
     func dirtyZeroHide(path: String) {
         do {
             try zeroPoC(path: path)
@@ -323,7 +327,7 @@ struct ContentView: View {
         }
     }
     
-    // The "sandbox escape" :fire: (it literally just shows you installed apps and does nothing else of actual use)
+    // the super useful "sandbox escape" that only tells you what apps are installed :fire:
     func isDatAppInstalled(_ bundleID: String) -> Bool {
         typealias SBSLaunchFunction = @convention(c) (
             String,
@@ -373,7 +377,7 @@ struct MaterialView: UIViewRepresentable {
     }
 }
 
-// just trust me skadz
+// i love the thing i did here. skadz does not. -lunginspector
 struct TweakSectionList: View {
     let sectionLabel: String
     let sectionIcon: String
@@ -428,7 +432,7 @@ struct TweakSectionList: View {
                                 }
                             }
                         }
-                        .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? .accent : .accent.opacity(0.8), fullWidth: false))
+                        .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? .accent : .accent.opacity(0.7), fullWidth: false))
                     }
                 }
             }
@@ -437,7 +441,7 @@ struct TweakSectionList: View {
     }
 }
 
-// Buttons :fire:
+// buttons :fire:
 struct RegularButtonStyle: View {
     let text: String
     let icon: String
@@ -473,7 +477,7 @@ struct RegularButtonStyle: View {
     }
 }
 
-// List Styling
+// why doesn't this also have a fun comment too. anyways, skadz wrote this one. it's... alright.
 struct ListButtonStyle: ButtonStyle {
     var color: Color
     var material: UIBlurEffect.Style?
