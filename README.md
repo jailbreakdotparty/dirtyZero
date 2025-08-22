@@ -49,7 +49,7 @@ All file modifications are done in memory. If something goes wrong or you want t
 
 # How do I respring after applying the tweaks?
 ## Option 1: Use RespringApp
-1. Install [RespringApp](https://github.com/jailbreakdotparty/dirtyZero/releases/download/respringapp/respringapp.ipa) using your preferred method of sideloading.
+1. Install [RespringApp](https://github.com/jailbreakdotparty/dirtyZero/releases/download/respringapp/respringapp.ipa) using your preferred method of sideloading. Make sure the bundle ID is exactly `com.respring.app`.
 2. In dirtyZero, click the orange "Respring" button.
 3. Profit 🔥
 
