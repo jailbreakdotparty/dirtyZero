@@ -209,7 +209,7 @@ struct ContentView: View {
                                     if !weOnADebugBuild {
                                         HStack {
                                             VStack(alignment: .leading) {
-                                                Text("Made with love by the [jailbreak.party](https://jailbreak.party) team.\n[Join the jailbreak.party Discord!](https://discord.gg/XPj66zZ4gT)")
+                                                Text("Made with love by the [jailbreak.party](https://jailbreak.party/) team.\n[Join the jailbreak.party Discord!](https://jailbreak.party/discord)")
                                             }
                                             .frame(maxWidth: .infinity, alignment: .leading)
                                             .font(.footnote)
