@@ -96,10 +96,11 @@ struct ContentView: View {
     @State private var customZeroPath: String = ""
     @State private var addedCustomPaths: [String] = []
     @State private var isSupported: Bool = true
-    @State private var showDebugSettings: Bool = false
     @State private var showSettingsPopover: Bool = false
-    @State private var showLogs: Bool = true
     @State private var tweakApplicationStatus: String = "Ready to Apply"
+    
+    @AppStorage("showLogs") private var showLogs: Bool = true
+    @AppStorage("showDebugSettings") private var showDebugSettings: Bool = false
     
     private var tweaks: [ZeroTweak] {
         springBoard + lockScreen + systemWideCustomization + soundEffects + controlCenter
