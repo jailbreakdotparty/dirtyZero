@@ -49,6 +49,7 @@ var springBoard: [ZeroTweak] = [
     ZeroTweak(icon: "magnifyingglass", name: "Disable Spotlight Background", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundDarkZoomed.descendantrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundZoomed.descendantrecipe"]),
     ZeroTweak(icon: "square.text.square", name: "Disable Widget Config BG", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/stackConfigurationBackground.materialrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/stackConfigurationForeground.materialrecipe"]),
     ZeroTweak(icon: "square.dashed", name: "Disable App Library BG", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/coplanarLeadingTrailingBackgroundBlur.materialrecipe"]),
+    ZeroTweak(icon: "magnifyingglass", name: "Disable App Library Search BG", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/homeScreenOverlay.materialrecipe"]),
 ]
 
 var lockScreen: [ZeroTweak] = [
@@ -59,7 +60,9 @@ var lockScreen: [ZeroTweak] = [
 ]
 
 var systemWideCustomization: [ZeroTweak] = [
-    ZeroTweak(icon: "bell.slash", name: "Disable Notification & Widget BGs", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeLight.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeDark.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/plattersDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platters.materialrecipe"]),
+    ZeroTweak(icon: "bell.slash", name: "Disable Notification & Widget BGs", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeLight.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeDark.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/plattersDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platters.materialrecipe", "/System/Library/PrivateFrameworks/UserNotificationsUIKit.framework/stackDimmingLight.visualstyleset", "/System/Library/PrivateFrameworks/UserNotificationsUIKit.framework/stackDimmingDark.visualstyleset"]),
+    ZeroTweak(icon: "bell", name: "Blue Notification BGs", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: [
+        "/System/Library/PrivateFrameworks/PlatterKit.framework/platterVibrantShadowLight.visualstyleset", "/System/Library/PrivateFrameworks/PlatterKit.framework/platterVibrantShadowDark.visualstyleset"]),
     ZeroTweak(icon: "line.3.horizontal", name: "Disable Home Bar", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car"]),
     ZeroTweak(icon: "character.cursor.ibeam", name: "Enable Helvetica Font", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Fonts/Core/SFUI.ttf"]),
     ZeroTweak(icon: "circle.slash", name: "Disable Emojis", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Fonts/CoreAddition/AppleColorEmoji-160px.ttc"]),
@@ -71,7 +74,8 @@ var soundEffects: [ZeroTweak] = [
     ZeroTweak(icon: "dot.radiowaves.left.and.right", name: "Disable AirDrop Ping", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/Modern/airdrop_invite.cat"]),
     ZeroTweak(icon: "bolt", name: "Disable Charge Sound", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/connect_power.caf"]),
     ZeroTweak(icon: "battery.25", name: "Disable Low Battery Sound", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/low_power.caf"]),
-    ZeroTweak(icon: "creditcard", name: "Disable Payment Sounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/payment_success.caf", "/System/Library/Audio/UISounds/payment_failure.caf"])
+    ZeroTweak(icon: "creditcard", name: "Disable Payment Sounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/payment_success.caf", "/System/Library/Audio/UISounds/payment_failure.caf"]),
+    ZeroTweak(icon: "phone", name: "Disable Dialing Sounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/nano/dtmf-0.caf", "/System/Library/Audio/UISounds/nano/dtmf-1.caf", "/System/Library/Audio/UISounds/nano/dtmf-2.caf", "/System/Library/Audio/UISounds/nano/dtmf-3.caf", "/System/Library/Audio/UISounds/nano/dtmf-4.caf", "/System/Library/Audio/UISounds/nano/dtmf-5.caf", "/System/Library/Audio/UISounds/nano/dtmf-6.caf", "/System/Library/Audio/UISounds/nano/dtmf-7.caf", "/System/Library/Audio/UISounds/nano/dtmf-8.caf", "/System/Library/Audio/UISounds/nano/dtmf-9.caf", "/System/Library/Audio/UISounds/nano/dtmf-pound.caf", "/System/Library/Audio/UISounds/nano/dtmf-star.caf"])
 ]
 
 var controlCenter: [ZeroTweak] = [
@@ -92,6 +96,10 @@ struct ContentView: View {
     @State private var customZeroPath: String = ""
     @State private var addedCustomPaths: [String] = []
     @State private var isSupported: Bool = true
+    @State private var showDebugSettings: Bool = false
+    @State private var showSettingsPopover: Bool = false
+    @State private var showLogs: Bool = true
+    @State private var tweakApplicationStatus: String = "Ready to Apply"
     
     private var tweaks: [ZeroTweak] {
         springBoard + lockScreen + systemWideCustomization + soundEffects + controlCenter
@@ -124,54 +132,114 @@ struct ContentView: View {
                                 Text("Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))")
                             }) {
                                 VStack {
-                                    LogView()
-                                        .frame(maxWidth: .infinity)
-                                        .frame(height: 260)
-                                        .onAppear(perform: {
-                                            if !hasShownWelcome {
-                                                print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
-                                                hasShownWelcome = true
-                                            }
-                                        })
-                                        .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                                        .padding()
-                                        .background(Color(.secondarySystemFill))
-                                        .clipShape(.rect(cornerRadius: 14))
-                                    
-                                    HStack {
+                                    VStack {
                                         VStack(alignment: .leading) {
-                                            Text("Made with love by the [jailbreak.party](https://jailbreak.party) team.\n[Join the jailbreak.party Discord!](https://discord.gg/XPj66zZ4gT)")
+                                            HStack {
+                                                VStack(alignment: .leading) {
+                                                    HStack {
+                                                        HStack {
+                                                            if tweakApplicationStatus == "Applying Tweaks..." {
+                                                                ProgressView()
+                                                            } else if tweakApplicationStatus == "Failed to Apply" {
+                                                                Image(systemName: "xmark.circle.fill")
+                                                                    .foregroundStyle(.red)
+                                                            } else if tweakApplicationStatus == "Ready to Apply" {
+                                                                Image(systemName: "checkmark.circle.fill")
+                                                                    .opacity(0.6)
+                                                            } else {
+                                                                Image(systemName: "checkmark.circle.fill")
+                                                                    .foregroundStyle(.green)
+                                                            }
+                                                            Text(tweakApplicationStatus)
+                                                        }
+                                                    }
+                                                }
+                                                .fontWeight(.medium)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
                                         }
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .font(.footnote)
+                                        VStack {
+                                            if showLogs {
+                                                LogView()
+                                                    .frame(maxWidth: .infinity)
+                                                    .frame(height: 250)
+                                                    .onAppear(perform: {
+                                                        if !hasShownWelcome {
+                                                            print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
+                                                            hasShownWelcome = true
+                                                        }
+                                                    })
+                                                    .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+                                                    .padding()
+                                                    .background(Color(.tertiarySystemBackground))
+                                                    .cornerRadius(14)
+                                            }
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(14)
+                                    .background(Color(.secondarySystemBackground))
+                                    .cornerRadius(12)
+                                    HStack {
+                                        HStack {
+                                            Image(systemName: "iphone")
+                                                .frame(width: 20, height: 20)
+                                            Text("\(device.systemName!) \(device.systemVersion!)")
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .padding(10)
+                                        .background(Color(.secondarySystemBackground))
+                                        .cornerRadius(12)
+                                        
+                                        HStack {
+                                            Image(systemName: "hammer")
+                                                .frame(width: 20, height: 20)
+                                            if enabledTweaks.count == 1 {
+                                                Text("\(enabledTweaks.count) tweak")
+                                            } else {
+                                                Text("\(enabledTweaks.count) tweaks")
+                                            }
+                                        }
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .padding(10)
+                                        .background(Color(.secondarySystemBackground))
+                                        .cornerRadius(12)
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    if !weOnADebugBuild {
+                                        HStack {
+                                            VStack(alignment: .leading) {
+                                                Text("Made with love by the [jailbreak.party](https://jailbreak.party) team.\n[Join the jailbreak.party Discord!](https://discord.gg/XPj66zZ4gT)")
+                                            }
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .font(.footnote)
+                                        }
                                     }
                                 }
+                                .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                             }
-                            if weOnADebugBuild {
+                            if weOnADebugBuild || showDebugSettings {
                                 Section(header: HStack {
                                     Image(systemName: "ant")
                                     Text("Debugging")
                                 }) {
                                     VStack {
-                                        RegularButtonStyle(text: "Print enabledTweakIds", icon: "list.bullet", useMaxHeight: false, disabled: false, foregroundStyle: .red, action: {
-                                            print(enabledTweakIds)
-                                        })
                                         HStack {
                                             TextField("Custom Path", text: $customZeroPath, axis: .vertical)
                                                 .padding(13)
                                                 .frame(width: 250)
                                                 .background(.accent.opacity(0.2))
-                                                .background(.ultraThinMaterial)
-                                                .cornerRadius(14)
+                                                .cornerRadius(12)
                                                 .foregroundStyle(.accent)
-                                            RegularButtonStyle(text: "", icon: "arrow.up.doc", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
+                                            RegularButtonStyle(text: "", icon: "arrow.up.doc", useMaxHeight: false, disabled: false, foregroundStyle: .accent, action: {
                                                 if customZeroPath.isEmpty {
                                                     Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
                                                 } else {
                                                     try? zeroPoC(path: customZeroPath)
+                                                    Alertinator.shared.alert(title: "Attempted to Zero", body: "Attempted to zero out \(customZeroPath)")
                                                 }
                                             })
-                                            RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
+                                            RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .accent, action: {
                                                 if let clipboardText = UIPasteboard.general.string {
                                                     customZeroPath = clipboardText
                                                 } else {
@@ -179,7 +247,11 @@ struct ContentView: View {
                                                 }
                                             })
                                         }
+                                        RegularButtonStyle(text: "Print enabledTweakIds", icon: "list.bullet", useMaxHeight: false, disabled: false, foregroundStyle: .yellow, action: {
+                                            print(enabledTweakIds)
+                                        })
                                     }
+                                    .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                                 }
                             }
                             TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: springBoard, enabledTweakIds: $enabledTweakIds)
@@ -210,7 +282,6 @@ struct ContentView: View {
                         }
                     }
                     .listStyle(.plain)
-                    .listRowInsets(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                     .safeAreaInset(edge: .bottom) {
                         VStack {
                             if enabledTweaks.isEmpty {
@@ -262,12 +333,12 @@ struct ContentView: View {
                             .disabled(!isSupported)
                         }
                         .padding(.horizontal, 25)
-                        .padding(.top, 70)
+                        .padding(.top, 50)
                         .background(
                             LinearGradient(
                                 gradient: Gradient(colors: [
                                     Color.clear,
-                                    Color(.systemBackground).opacity(0.8)
+                                    Color(.systemBackground).opacity(0.85)
                                 ]),
                                 startPoint: .top,
                                 endPoint: .bottom
@@ -276,6 +347,15 @@ struct ContentView: View {
                     }
                 }
                 .navigationTitle("dirtyZero")
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading, content: {
+                        Button(action: {
+                            showSettingsPopover = true
+                        }) {
+                            Image(systemName: "gearshape.fill")
+                        }
+                    })
+                }
                 // this will make people who cannot read cry.
                 .onAppear {
                     let doubleSystemVersion = Double(device.systemVersion!.split(separator: ".").prefix(2).joined(separator: "."))!
@@ -283,6 +363,22 @@ struct ContentView: View {
                         isSupported = false
                     }
                 }
+                .popover(isPresented: $showSettingsPopover, content: {
+                    NavigationStack {
+                        List {
+                            Toggle("Show Debug Settings", isOn: $showDebugSettings)
+                            if #available(iOS 17.0, *) {
+                                Toggle("Show Logs", isOn: $showLogs)
+                                    .onChange(of: showLogs) {
+                                        hasShownWelcome = false
+                                    }
+                            } else {
+                                Toggle("Show Logs", isOn: $showLogs)
+                            }
+                        }
+                        .navigationTitle("Settings")
+                    }
+                })
             }
         }
     }
@@ -306,9 +402,12 @@ struct ContentView: View {
                 }
                 print("[*] Applied tweak \(currentTweak)/\(totalTweaks)!")
                 currentTweak += 1
+                tweakApplicationStatus = "Applying Tweaks..."
             }
             print("[*] Successfully applied all tweaks!")
+            tweakApplicationStatus = "Applied Tweaks"
         } catch {
+            tweakApplicationStatus = "Failed to Apply"
             print("[!] \(error)")
             Alertinator.shared.alert(title: "Failed to Apply", body: "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error).")
             return
@@ -458,7 +557,7 @@ struct RegularButtonStyle: View {
         .frame(maxWidth: .infinity, maxHeight: useMaxHeight ? .infinity : nil)
         .background(disabled ? .gray.opacity(0.4) : foregroundStyle.opacity(0.2))
         .background(.ultraThinMaterial)
-        .cornerRadius(14)
+        .cornerRadius(12)
         .foregroundStyle(disabled ? .gray : foregroundStyle)
         .buttonStyle(.plain)
         .opacity(disabled ? 0.8 : 1)
@@ -478,14 +577,14 @@ struct ListButtonStyle: ButtonStyle {
                     .padding(12)
                     .frame(maxWidth: .infinity)
                     .background(material == nil ? AnyView(color.opacity(0.2)) : AnyView(MaterialView(material!)))
-                    .cornerRadius(10)
+                    .cornerRadius(12)
                     .foregroundStyle(color)
             } else {
                 configuration.label
                     .padding(12)
                     .frame(maxWidth: .infinity)
                     .background(material == nil ? AnyView(color.opacity(0.2)) : AnyView(MaterialView(material!)))
-                    .cornerRadius(10)
+                    .cornerRadius(12)
                     .foregroundStyle(color)
             }
         }
