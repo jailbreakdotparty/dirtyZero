@@ -9,7 +9,7 @@ All file modifications are done in memory. If something goes wrong or you want t
 # Support Table
 | iOS Version | Support Status |
 | -------- | ------- |
-| iOS 16.0 - iOS 16.7.10  | Supported |
+| iOS 16.0 - iOS 16.7.12  | Supported |
 | iOS 17.0 - iOS 17.7.5 | Supported |
 | iOS 17.7.6+ | Not Supported |
 | iOS 18.0 - iOS 18.3.2 | Supported |
