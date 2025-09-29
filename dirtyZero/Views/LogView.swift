@@ -8,6 +8,7 @@ struct LogView: View {
             ScrollViewReader { proxy in
                 ScrollView(showsIndicators: false) {
                     Text(log)
+                        .padding(.top)
                         .font(.system(size: 10, weight: .regular, design: .monospaced))
                         .multilineTextAlignment(.leading)
                     Spacer()

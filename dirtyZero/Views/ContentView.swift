@@ -42,14 +42,13 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
     }
 }
 
-var springBoard: [ZeroTweak] = [
+var homeScreen: [ZeroTweak] = [
     ZeroTweak(icon: "dock.rectangle", name: "Disable Dock Background", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"]),
     ZeroTweak(icon: "folder", name: "Disable Folder Backgrounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/folderDark.materialrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/folderLight.materialrecipe"]),
-    ZeroTweak(icon: "list.bullet.rectangle", name: "Disable Alert & Touch Backgrounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platformContentDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platformContentLight.materialrecipe"]),
-    ZeroTweak(icon: "magnifyingglass", name: "Disable Spotlight Background", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundDarkZoomed.descendantrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundZoomed.descendantrecipe"]),
     ZeroTweak(icon: "square.text.square", name: "Disable Widget Config BG", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/stackConfigurationBackground.materialrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/stackConfigurationForeground.materialrecipe"]),
     ZeroTweak(icon: "square.dashed", name: "Disable App Library BG", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/coplanarLeadingTrailingBackgroundBlur.materialrecipe"]),
-    ZeroTweak(icon: "magnifyingglass", name: "Disable App Library Search BG", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/homeScreenOverlay.materialrecipe"]),
+    ZeroTweak(icon: "magnifyingglass", name: "Disable Library Search BG", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/homeScreenOverlay.materialrecipe"]),
+    ZeroTweak(icon: "rectangle.and.text.magnifyingglass", name: "Disable Spotlight Background", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundDarkZoomed.descendantrecipe", "/System/Library/PrivateFrameworks/SpringBoardHome.framework/knowledgeBackgroundZoomed.descendantrecipe"]),
 ]
 
 var lockScreen: [ZeroTweak] = [
@@ -59,23 +58,23 @@ var lockScreen: [ZeroTweak] = [
     ZeroTweak(icon: "bolt", name: "Disable Large Battery Icon", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoverSheet.framework/Assets.car"])
 ]
 
-var systemWideCustomization: [ZeroTweak] = [
-    ZeroTweak(icon: "bell.slash", name: "Disable Notification & Widget BGs", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeLight.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeDark.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/plattersDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platters.materialrecipe", "/System/Library/PrivateFrameworks/UserNotificationsUIKit.framework/stackDimmingLight.visualstyleset", "/System/Library/PrivateFrameworks/UserNotificationsUIKit.framework/stackDimmingDark.visualstyleset"]),
-    ZeroTweak(icon: "bell", name: "Blue Notification BGs", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: [
+var alertsOverlays: [ZeroTweak] = [
+    ZeroTweak(icon: "platter.filled.top.iphone", name: "Disable Notification & Widget BGs", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeLight.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platterStrokeDark.visualstyleset", "/System/Library/PrivateFrameworks/CoreMaterial.framework/plattersDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platters.materialrecipe", "/System/Library/PrivateFrameworks/UserNotificationsUIKit.framework/stackDimmingLight.visualstyleset", "/System/Library/PrivateFrameworks/UserNotificationsUIKit.framework/stackDimmingDark.visualstyleset"]),
+    ZeroTweak(icon: "paintpalette.fill", name: "Recolor Notifcation Shadows", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: [
         "/System/Library/PrivateFrameworks/PlatterKit.framework/platterVibrantShadowLight.visualstyleset", "/System/Library/PrivateFrameworks/PlatterKit.framework/platterVibrantShadowDark.visualstyleset"]),
+    ZeroTweak(icon: "list.bullet.rectangle", name: "Disable Touch & Alert Backgrounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platformContentDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platformContentLight.materialrecipe"]),
     ZeroTweak(icon: "line.3.horizontal", name: "Disable Home Bar", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/MaterialKit.framework/Assets.car"]),
+    ZeroTweak(icon: "text.rectangle.page", name: "Disable Glassy Overlays", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/platformChromeDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/platformChromeLight.materialrecipe"]),
+    ZeroTweak(icon: "exclamationmark.triangle.fill", name: "Disable ALL Banners", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoard.framework/BannersAuthorizedBundleIDs.plist"]),
+]
+
+var fontsIcons: [ZeroTweak] = [
     ZeroTweak(icon: "character.cursor.ibeam", name: "Enable Helvetica Font", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Fonts/Core/SFUI.ttf"]),
     ZeroTweak(icon: "circle.slash", name: "Disable Emojis", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Fonts/CoreAddition/AppleColorEmoji-160px.ttc"]),
     ZeroTweak(icon: "sun.max", name: "Disable Slider Icons ", minSupportedVersion: 16.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/index.xml", "/System/Library/PrivateFrameworks/MediaControls.framework/Volume.ca/index.xml"]),
     ZeroTweak(icon: "sun.max", name: "Disable Slider Icons", minSupportedVersion: 18.0, maxSupportedVersion: 18.9, paths: ["/System/Library/ControlCenter/Bundles/DisplayModule.bundle/Brightness.ca/index.xml", "/System/Library/PrivateFrameworks/MediaControls.framework/VolumeSemibold.ca/index.xml"]),
-]
-
-var soundEffects: [ZeroTweak] = [
-    ZeroTweak(icon: "dot.radiowaves.left.and.right", name: "Disable AirDrop Ping", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/Modern/airdrop_invite.cat"]),
-    ZeroTweak(icon: "bolt", name: "Disable Charge Sound", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/connect_power.caf"]),
-    ZeroTweak(icon: "battery.25", name: "Disable Low Battery Sound", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/low_power.caf"]),
-    ZeroTweak(icon: "creditcard", name: "Disable Payment Sounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/payment_success.caf", "/System/Library/Audio/UISounds/payment_failure.caf"]),
-    ZeroTweak(icon: "phone", name: "Disable Dialing Sounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/nano/dtmf-0.caf", "/System/Library/Audio/UISounds/nano/dtmf-1.caf", "/System/Library/Audio/UISounds/nano/dtmf-2.caf", "/System/Library/Audio/UISounds/nano/dtmf-3.caf", "/System/Library/Audio/UISounds/nano/dtmf-4.caf", "/System/Library/Audio/UISounds/nano/dtmf-5.caf", "/System/Library/Audio/UISounds/nano/dtmf-6.caf", "/System/Library/Audio/UISounds/nano/dtmf-7.caf", "/System/Library/Audio/UISounds/nano/dtmf-8.caf", "/System/Library/Audio/UISounds/nano/dtmf-9.caf", "/System/Library/Audio/UISounds/nano/dtmf-pound.caf", "/System/Library/Audio/UISounds/nano/dtmf-star.caf"])
+    ZeroTweak(icon: "bell.slash", name: "Disable Ring Animation", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoard.framework/Ringer-Leading-D73.ca/main.caml"]),
+    ZeroTweak(icon: "link", name: "Disable Tethering Graphic", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/SpringBoard.framework/Tethering-D73.ca/main.caml"]),
 ]
 
 var controlCenter: [ZeroTweak] = [
@@ -86,6 +85,14 @@ var controlCenter: [ZeroTweak] = [
     ZeroTweak(icon: "rectangle.on.rectangle", name: "Disable Screen Mirroring Module", minSupportedVersion: 16.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/AirPlayMirroringModule.bundle/Info.plist"]),
     ZeroTweak(icon: "lock.rotation", name: "Disable Orientation Lock Module", minSupportedVersion: 16.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/OrientationLockModule.bundle/Info.plist"]),
     ZeroTweak(icon: "moon", name: "Disable Focus Module", minSupportedVersion: 16.0, maxSupportedVersion: 17.9, paths: ["/System/Library/ControlCenter/Bundles/FocusUIModule.bundle/Info.plist"])
+]
+
+var soundEffects: [ZeroTweak] = [
+    ZeroTweak(icon: "dot.radiowaves.left.and.right", name: "Disable AirDrop Ping", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/Modern/airdrop_invite.cat"]),
+    ZeroTweak(icon: "bolt", name: "Disable Charge Sound", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/connect_power.caf"]),
+    ZeroTweak(icon: "battery.25", name: "Disable Low Battery Sound", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/low_power.caf"]),
+    ZeroTweak(icon: "creditcard", name: "Disable Payment Sounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/payment_success.caf", "/System/Library/Audio/UISounds/payment_failure.caf"]),
+    ZeroTweak(icon: "phone", name: "Disable Dialing Sounds", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/Audio/UISounds/nano/dtmf-0.caf", "/System/Library/Audio/UISounds/nano/dtmf-1.caf", "/System/Library/Audio/UISounds/nano/dtmf-2.caf", "/System/Library/Audio/UISounds/nano/dtmf-3.caf", "/System/Library/Audio/UISounds/nano/dtmf-4.caf", "/System/Library/Audio/UISounds/nano/dtmf-5.caf", "/System/Library/Audio/UISounds/nano/dtmf-6.caf", "/System/Library/Audio/UISounds/nano/dtmf-7.caf", "/System/Library/Audio/UISounds/nano/dtmf-8.caf", "/System/Library/Audio/UISounds/nano/dtmf-9.caf", "/System/Library/Audio/UISounds/nano/dtmf-pound.caf", "/System/Library/Audio/UISounds/nano/dtmf-star.caf"])
 ]
 
 struct ContentView: View {
@@ -99,11 +106,13 @@ struct ContentView: View {
     @State private var showSettingsPopover: Bool = false
     @State private var tweakApplicationStatus: String = "Ready to Apply"
     
+    @FocusState private var isCustomPathFieldFocused: Bool
+    
     @AppStorage("showLogs") private var showLogs: Bool = true
     @AppStorage("showDebugSettings") private var showDebugSettings: Bool = false
     
     private var tweaks: [ZeroTweak] {
-        springBoard + lockScreen + systemWideCustomization + soundEffects + controlCenter
+        homeScreen + lockScreen + alertsOverlays + fontsIcons + controlCenter + soundEffects
     }
     
     private var enabledTweaks: [ZeroTweak] {
@@ -161,26 +170,55 @@ struct ContentView: View {
                                         }
                                         VStack {
                                             if showLogs {
-                                                LogView()
-                                                    .frame(maxWidth: .infinity)
-                                                    .frame(height: 250)
-                                                    .onAppear(perform: {
-                                                        if !hasShownWelcome {
-                                                            print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
-                                                            hasShownWelcome = true
-                                                        }
-                                                    })
-                                                    .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                                                    .padding()
-                                                    .background(Color(.tertiarySystemBackground))
-                                                    .cornerRadius(14)
+                                                ZStack(alignment: .top) {
+                                                    LogView()
+                                                        .frame(maxWidth: .infinity)
+                                                    VStack {
+                                                        Rectangle()
+                                                            .fill(
+                                                                LinearGradient(
+                                                                    gradient: Gradient(colors: [
+                                                                        Color(.tertiarySystemBackground).opacity(0.9),
+                                                                        Color.clear
+                                                                    ]),
+                                                                    startPoint: .top,
+                                                                    endPoint: .bottom
+                                                                )
+                                                            )
+                                                            .frame(height: 20)
+                                                        Spacer()
+                                                        Rectangle()
+                                                            .fill(
+                                                                LinearGradient(
+                                                                    gradient: Gradient(colors: [
+                                                                        Color.clear,
+                                                                        Color(.tertiarySystemBackground).opacity(0.9),
+                                                                    ]),
+                                                                    startPoint: .top,
+                                                                    endPoint: .bottom
+                                                                )
+                                                            )
+                                                            .frame(height: 20)
+                                                    }
+                                                    .frame(alignment: .top)
+                                                }
+                                                .frame(height: 250)
+                                                .onAppear(perform: {
+                                                    if !hasShownWelcome {
+                                                        print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
+                                                        hasShownWelcome = true
+                                                    }
+                                                })
+                                                .padding(.horizontal)
+                                                .background(Color(.tertiarySystemBackground))
+                                                .cornerRadius(14)
                                             }
                                         }
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(14)
                                     .background(Color(.secondarySystemBackground))
-                                    .cornerRadius(12)
+                                    .cornerRadius(14)
                                     HStack {
                                         HStack {
                                             Image(systemName: "iphone")
@@ -204,18 +242,14 @@ struct ContentView: View {
                                         .frame(maxWidth: .infinity, alignment: .center)
                                         .padding(10)
                                         .background(Color(.secondarySystemBackground))
-                                        .cornerRadius(12)
+                                        .cornerRadius(14)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                    if !weOnADebugBuild {
-                                        HStack {
-                                            VStack(alignment: .leading) {
-                                                Text("Made with love by the [jailbreak.party](https://jailbreak.party/) team.\n[Join the jailbreak.party Discord!](https://jailbreak.party/discord)")
-                                            }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .font(.footnote)
-                                        }
+                                    VStack(alignment: .leading) {
+                                        Text("Made with love by the [jailbreak.party](https://jailbreak.party/) team.\n[Join the jailbreak.party Discord!](https://jailbreak.party/discord)")
                                     }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .font(.footnote)
                                 }
                                 .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                             }
@@ -228,36 +262,49 @@ struct ContentView: View {
                                         HStack {
                                             TextField("Custom Path", text: $customZeroPath, axis: .vertical)
                                                 .padding(13)
-                                                .frame(width: 250)
+                                                .frame(maxWidth: .infinity)
                                                 .background(.accent.opacity(0.2))
                                                 .cornerRadius(12)
                                                 .foregroundStyle(.accent)
-                                            RegularButtonStyle(text: "", icon: "arrow.up.doc", useMaxHeight: false, disabled: false, foregroundStyle: .accent, action: {
-                                                if customZeroPath.isEmpty {
-                                                    Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
-                                                } else {
-                                                    try? zeroPoC(path: customZeroPath)
-                                                    Alertinator.shared.alert(title: "Attempted to Zero", body: "Attempted to zero out \(customZeroPath)")
-                                                }
-                                            })
-                                            RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .accent, action: {
-                                                if let clipboardText = UIPasteboard.general.string {
-                                                    customZeroPath = clipboardText
-                                                } else {
-                                                    print("[!] epic pasteboard fail :fire:")
-                                                }
-                                            })
+                                                .focused($isCustomPathFieldFocused)
+                                            if isCustomPathFieldFocused {
+                                                RegularButtonStyle(text: "", icon: "xmark", useMaxHeight: false, disabled: false, foregroundStyle: .red, action: {
+                                                    isCustomPathFieldFocused = false
+                                                }).frame(width: 50)
+                                            } else {
+                                                RegularButtonStyle(text: "", icon: "checkmark", useMaxHeight: false, disabled: false, foregroundStyle: .green, action: {
+                                                    if customZeroPath.isEmpty {
+                                                        Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
+                                                    } else {
+                                                        try? zeroPoC(path: customZeroPath)
+                                                        Alertinator.shared.alert(title: "Attempted to Zero", body: "Attempted to zero out \(customZeroPath)")
+                                                    }
+                                                }).frame(width: 50)
+                                                RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .accent, action: {
+                                                    if let clipboardText = UIPasteboard.general.string {
+                                                        customZeroPath = clipboardText
+                                                    } else {
+                                                        print("[!] epic pasteboard fail :fire:")
+                                                    }
+                                                }).frame(width: 50)
+                                            }
                                         }
-                                        RegularButtonStyle(text: "Print enabledTweakIds", icon: "list.bullet", useMaxHeight: false, disabled: false, foregroundStyle: .yellow, action: {
-                                            print(enabledTweakIds)
+                                        RegularButtonStyle(text: "Print Debug Info", icon: "ant.fill", useMaxHeight: false, disabled: false, foregroundStyle: .accent, action: {
+                                            print("[*] enabledTweakIds: \(enabledTweakIds)\n[*] isSupported: \(isSupported)\n[*] weOnADebugBuild: \(weOnADebugBuild)")
                                         })
                                     }
                                     .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                                 }
                             }
-                            TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: springBoard, enabledTweakIds: $enabledTweakIds)
+                            TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: homeScreen, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
-                            TweakSectionList(sectionLabel: "Global Customization", sectionIcon: "gearshape", tweaks: systemWideCustomization, enabledTweakIds: $enabledTweakIds)
+                            TweakSectionList(sectionLabel: "Alerts & Overlays", sectionIcon: "exclamationmark.triangle", tweaks: alertsOverlays, enabledTweakIds: $enabledTweakIds)
+                            VStack(alignment: .leading) {
+                                Text("**WARNING:** If you do choose to disable all banners, this may break key system interactions.")
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(.footnote).opacity(0.6)
+                            TweakSectionList(sectionLabel: "Fonts & Icons", sectionIcon: "paintbrush", tweaks: fontsIcons, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
                         } else {
@@ -334,7 +381,7 @@ struct ContentView: View {
                             .disabled(!isSupported)
                         }
                         .padding(.horizontal, 25)
-                        .padding(.top, 50)
+                        .padding(.top, 70)
                         .background(
                             LinearGradient(
                                 gradient: Gradient(colors: [
@@ -406,6 +453,7 @@ struct ContentView: View {
                 tweakApplicationStatus = "Applying Tweaks..."
             }
             print("[*] Successfully applied all tweaks!")
+            Alertinator.shared.alert(title: "Tweaks Applied Successfully!", body: "\(currentTweak)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed.")
             tweakApplicationStatus = "Applied Tweaks"
         } catch {
             tweakApplicationStatus = "Failed to Apply"
@@ -540,6 +588,7 @@ struct RegularButtonStyle: View {
     
     var body: some View {
         Button(action: {
+            Haptic.shared.play(.soft)
             if !disabled {
                 action()
             }
@@ -558,7 +607,7 @@ struct RegularButtonStyle: View {
         .frame(maxWidth: .infinity, maxHeight: useMaxHeight ? .infinity : nil)
         .background(disabled ? .gray.opacity(0.4) : foregroundStyle.opacity(0.2))
         .background(.ultraThinMaterial)
-        .cornerRadius(12)
+        .cornerRadius(14)
         .foregroundStyle(disabled ? .gray : foregroundStyle)
         .buttonStyle(.plain)
         .opacity(disabled ? 0.8 : 1)
@@ -575,17 +624,17 @@ struct ListButtonStyle: ButtonStyle {
         ZStack {
             if fullWidth {
                 configuration.label
-                    .padding(12)
+                    .padding(14)
                     .frame(maxWidth: .infinity)
                     .background(material == nil ? AnyView(color.opacity(0.2)) : AnyView(MaterialView(material!)))
-                    .cornerRadius(12)
+                    .cornerRadius(14)
                     .foregroundStyle(color)
             } else {
                 configuration.label
-                    .padding(12)
+                    .padding(14)
                     .frame(maxWidth: .infinity)
                     .background(material == nil ? AnyView(color.opacity(0.2)) : AnyView(MaterialView(material!)))
-                    .cornerRadius(12)
+                    .cornerRadius(14)
                     .foregroundStyle(color)
             }
         }
