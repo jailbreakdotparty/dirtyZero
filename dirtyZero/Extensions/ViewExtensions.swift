@@ -26,6 +26,59 @@ struct MaterialView: UIViewRepresentable {
     }
 }
 
+struct CustomTweakList: View {
+    let tweaks: [CustomZeroTweak]
+    @Binding var enabledCustomTweakIds: [String]
+    
+    private func isCustomTweakEnabled(_ tweak: CustomZeroTweak) -> Bool {
+        enabledCustomTweakIds.contains(tweak.id)
+    }
+    
+    private func toggleCustomTweak(_ tweak: CustomZeroTweak) {
+        if isCustomTweakEnabled(tweak) {
+            enabledCustomTweakIds.removeAll { $0 == tweak.id }
+        } else {
+            enabledCustomTweakIds.append(tweak.id)
+        }
+    }
+    
+    var body: some View {
+        Section(header: HeaderStyle(label: "Custom Tweaks", icon: "paintpallete")) {
+            VStack {
+                ForEach(tweaks) { tweak in
+                    Button(action: {
+                        Haptic.shared.play(.soft)
+                        toggleCustomTweak(tweak)
+                    }) {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(tweak.name)
+                                    .lineLimit(1)
+                                    .scaledToFit()
+                                    .foregroundStyle(.orange)
+                                Text(tweak.paths.joined(separator: ", "))
+                                    .multilineTextAlignment(.leading)
+                                    .foregroundStyle(.orange)
+                            }
+                            Spacer()
+                            if isCustomTweakEnabled(tweak) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.orange)
+                                    .imageScale(.medium)
+                            } else {
+                                Image(systemName: "circle")
+                                    .foregroundStyle(.orange)
+                                    .imageScale(.medium)
+                            }
+                        }
+                    }
+                    .buttonStyle(ListButtonStyle(color: isCustomTweakEnabled(tweak) ? .orange : .orange.opacity(0.8), fullWidth: false))
+                }
+            }
+        }
+    }
+}
+
 // i love the thing i did here. skadz does not. -lunginspector
 struct TweakSectionList: View {
     let sectionLabel: String

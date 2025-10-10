@@ -51,6 +51,7 @@ struct ContentView: View {
     @State private var addedCustomPaths: [String] = []
     @State private var isSupported: Bool = true
     @State private var showSettingsPopover: Bool = false
+    @State private var showCustomTweaksPopover: Bool = false
     @State private var tweakApplicationStatus: String = "Ready to Apply"
     @State private var tweakApplicationMessage: String = "All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes."
     
@@ -278,6 +279,13 @@ struct ContentView: View {
                                 Image(systemName: "gearshape")
                             }
                         })
+                        ToolbarItem(placement: .topBarTrailing, content: {
+                            Button(action: {
+                                showCustomTweaksPopover = true
+                            }) {
+                                Image(systemName: "paintbrush")
+                            }
+                        })
                     }
                     // this will make people who cannot read cry.
                     .onAppear {
@@ -288,6 +296,9 @@ struct ContentView: View {
                     }
                     .popover(isPresented: $showSettingsPopover, content: {
                         SettingsView(showDebugSettings: $showDebugSettings, showLogs: $showLogs, showRiskyTweaks: $showRiskyTweaks, hasShownWelcome: $hasShownWelcome)
+                    })
+                    .popover(isPresented: $showCustomTweaksPopover, content: {
+                        CustomTweaksView()
                     })
                 }
                 .listStyle(.plain)
