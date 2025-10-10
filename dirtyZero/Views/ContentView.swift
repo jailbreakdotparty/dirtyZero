@@ -52,6 +52,7 @@ struct ContentView: View {
     @State private var isSupported: Bool = true
     @State private var showSettingsPopover: Bool = false
     @State private var tweakApplicationStatus: String = "Ready to Apply"
+    @State private var tweakApplicationMessage: String = "All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes."
     
     @FocusState private var isCustomPathFieldFocused: Bool
     
@@ -83,12 +84,9 @@ struct ContentView: View {
         ZStack(alignment: .bottom) {
             NavigationStack {
                 List {
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading) {
                         if isSupported || weOnADebugBuild {
-                            Section(header: HStack {
-                                Image(systemName: "info.circle")
-                                Text("Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))")
-                            }.opacity(0.6).fontWeight(.semibold)) {
+                            Section(header: HeaderStyle(label: "Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))", icon: "info.circle")) {
                                 VStack {
                                     VStack {
                                         VStack(alignment: .leading) {
@@ -121,32 +119,13 @@ struct ContentView: View {
                                                 ZStack(alignment: .top) {
                                                     LogView()
                                                         .frame(maxWidth: .infinity)
+                                                        .padding(.horizontal)
                                                     VStack {
-                                                        Rectangle()
-                                                            .fill(
-                                                                LinearGradient(
-                                                                    gradient: Gradient(colors: [
-                                                                        Color(.tertiarySystemBackground).opacity(0.9),
-                                                                        Color.clear
-                                                                    ]),
-                                                                    startPoint: .top,
-                                                                    endPoint: .bottom
-                                                                )
-                                                            )
-                                                            .frame(height: 20)
+                                                        VariableBlurView(maxBlurRadius: 1, direction: .blurredTopClearBottom)
+                                                            .frame(maxHeight: 20)
                                                         Spacer()
-                                                        Rectangle()
-                                                            .fill(
-                                                                LinearGradient(
-                                                                    gradient: Gradient(colors: [
-                                                                        Color.clear,
-                                                                        Color(.tertiarySystemBackground).opacity(0.9),
-                                                                    ]),
-                                                                    startPoint: .top,
-                                                                    endPoint: .bottom
-                                                                )
-                                                            )
-                                                            .frame(height: 20)
+                                                        VariableBlurView(maxBlurRadius: 1, direction: .blurredBottomClearTop)
+                                                            .frame(maxHeight: 20)
                                                     }
                                                     .frame(alignment: .top)
                                                 }
@@ -157,9 +136,14 @@ struct ContentView: View {
                                                         hasShownWelcome = true
                                                     }
                                                 })
-                                                .padding(.horizontal)
                                                 .background(Color(.tertiarySystemBackground))
-                                                .cornerRadius(14)
+                                                .cornerRadius(12)
+                                            } else {
+                                                Text(tweakApplicationMessage)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                                    .font(.body)
+                                                    .multilineTextAlignment(.leading)
+                                                    .opacity(0.8)
                                             }
                                         }
                                     }
@@ -193,38 +177,44 @@ struct ContentView: View {
                                         .cornerRadius(14)
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
-                                    VStack(alignment: .leading) {
-                                        Text("Made with love by the [jailbreak.party](https://jailbreak.party/) team.\n[Join the jailbreak.party Discord!](https://jailbreak.party/discord)")
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .font(.footnote)
+                                    Text("Made with love by the [jailbreak.party](https://jailbreak.party/) team.\n[Join the jailbreak.party Discord!](https://jailbreak.party/discord)")
+                                        .font(.system(.footnote, weight: .regular))
+                                        .opacity(0.8)
+                                        .padding(.leading, 6)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                             }
                         }
                     }
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading) {
                         if isSupported || weOnADebugBuild {
                             if weOnADebugBuild || showDebugSettings {
-                                Section(header: HStack {
-                                    Image(systemName: "ant")
-                                    Text("Debugging")
-                                }.opacity(0.6).fontWeight(.semibold)) {
+                                Section(header: HeaderStyle(label: "Debugging", icon: "ant")) {
                                     VStack {
                                         HStack {
-                                            TextField("Custom Path", text: $customZeroPath, axis: .vertical)
-                                                .padding(13)
-                                                .frame(maxWidth: .infinity)
-                                                .background(.accent.opacity(0.2))
-                                                .cornerRadius(12)
-                                                .foregroundStyle(.accent)
-                                                .focused($isCustomPathFieldFocused)
+                                            HStack(spacing: 10) {
+                                                if customZeroPath.isEmpty {
+                                                    Image(systemName: "apple.terminal")
+                                                        .opacity(0.25)
+                                                } else {
+                                                    Image(systemName: "apple.terminal")
+                                                        .foregroundStyle(.accent)
+                                                }
+                                                TextField("Custom Path", text: $customZeroPath, axis: .vertical)
+                                                    .foregroundStyle(.accent)
+                                            }
+                                            .padding(13)
+                                            .frame(maxWidth: .infinity)
+                                            .background(.accent.opacity(0.2))
+                                            .cornerRadius(12)
+                                            .focused($isCustomPathFieldFocused)
                                             if isCustomPathFieldFocused {
-                                                RegularButtonStyle(text: "", icon: "xmark", useMaxHeight: false, disabled: false, foregroundStyle: .red, action: {
+                                                RegularButtonStyle(text: "", icon: "xmark", isPNGIcon: false, disabled: false, foregroundStyle: .red, action: {
                                                     isCustomPathFieldFocused = false
                                                 }).frame(width: 50)
                                             } else {
-                                                RegularButtonStyle(text: "", icon: "checkmark", useMaxHeight: false, disabled: false, foregroundStyle: .green, action: {
+                                                RegularButtonStyle(text: "", icon: "checkmark", isPNGIcon: false, disabled: false, foregroundStyle: .green, action: {
                                                     if customZeroPath.isEmpty {
                                                         Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
                                                     } else {
@@ -232,7 +222,7 @@ struct ContentView: View {
                                                         Alertinator.shared.alert(title: "Attempted to Zero", body: "Attempted to zero out \(customZeroPath)")
                                                     }
                                                 }).frame(width: 50)
-                                                RegularButtonStyle(text: "", icon: "doc.on.clipboard", useMaxHeight: false, disabled: false, foregroundStyle: .accent, action: {
+                                                RegularButtonStyle(text: "", icon: "doc.on.clipboard", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
                                                     if let clipboardText = UIPasteboard.general.string {
                                                         customZeroPath = clipboardText
                                                     } else {
@@ -241,7 +231,7 @@ struct ContentView: View {
                                                 }).frame(width: 50)
                                             }
                                         }
-                                        RegularButtonStyle(text: "Print Debug Info", icon: "ant.fill", useMaxHeight: false, disabled: false, foregroundStyle: .accent, action: {
+                                        RegularButtonStyle(text: "Print Debug Info", icon: "ant.fill", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
                                             print("[*] enabledTweakIds: \(enabledTweakIds)\n[*] isSupported: \(isSupported)\n[*] weOnADebugBuild: \(weOnADebugBuild)")
                                         })
                                     }
@@ -273,7 +263,7 @@ struct ContentView: View {
                                     .font(.system(size: 16))
                                     .foregroundStyle(.secondary)
                                 
-                                RegularButtonStyle(text: "Exit App", icon: "xmark", useMaxHeight: false, disabled: false, foregroundStyle: .red, action: {
+                                RegularButtonStyle(text: "Exit App", icon: "xmark", isPNGIcon: false, disabled: false, foregroundStyle: .red, action: {
                                     exitinator()
                                 })
                             }
@@ -304,28 +294,30 @@ struct ContentView: View {
                 .safeAreaInset(edge: .bottom) {
                     VStack {
                         if enabledTweaks.isEmpty {
-                            RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .gray, action: {
+                            RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .gray, action: {
                                 Alertinator.shared.alert(title: "No Tweaks Enabled!", body: "Please select some tweaks first.")
                             })
                         } else {
-                            RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .green, action: {
+                            RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .green, action: {
                                 applyTweaks(tweaks: enabledTweaks)
                             })
                         }
                         
                         HStack {
-                            RegularButtonStyle(text: "Revert", icon: "xmark", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .red, action: {
+                            RegularButtonStyle(text: "Revert", icon: "xmark", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .red, action: {
                                 Alertinator.shared.alert(title: "Device Will Reboot", body: "Your device will have to reboot in order to revert all tweaks. Tap OK to continue.", action: {
                                     try? zeroPoC(path: "/usr/lib/dyld")
                                 })
                             })
                             
-                            RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", useMaxHeight: false, disabled: !isSupported, foregroundStyle: .orange, action: {
-                                let respringBundleID = "com.respring.app"
-                                if isDatAppInstalled(respringBundleID) {
-                                    LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
-                                } else {
-                                    Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again.")
+                            RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .orange, action: {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    let respringBundleID = "com.respring.app"
+                                    if isDatAppInstalled(respringBundleID) {
+                                        LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
+                                    } else {
+                                        Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again.")
+                                    }
                                 }
                             })
                         }
@@ -352,16 +344,23 @@ struct ContentView: View {
                         .disabled(!isSupported)
                     }
                     .padding(.horizontal, 25)
-                    .padding(.top, 70)
+                    .padding(.top, 50)
                     .background(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.clear,
-                                Color(.systemBackground).opacity(0.85)
-                            ]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+                        ZStack {
+                            Rectangle()
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color.clear,
+                                            Color(.systemBackground).opacity(0.7)
+                                        ]),
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                            VariableBlurView(maxBlurRadius: 5, direction: .blurredBottomClearTop)
+                        }
+                        .ignoresSafeArea()
                     )
                 }
             }
@@ -391,8 +390,10 @@ struct ContentView: View {
             print("[*] Successfully applied all tweaks!")
             Alertinator.shared.alert(title: "Tweaks Applied Successfully!", body: "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed.")
             tweakApplicationStatus = "Applied Tweaks"
+            tweakApplicationMessage = "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed."
         } catch {
             tweakApplicationStatus = "Failed to Apply"
+            tweakApplicationMessage = "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error)."
             print("[!] \(error)")
             Alertinator.shared.alert(title: "Failed to Apply", body: "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error).")
             return

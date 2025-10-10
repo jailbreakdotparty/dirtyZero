@@ -52,24 +52,22 @@ struct TweakSectionList: View {
     }
     
     var body: some View {
-        Section(header: HStack {
-            Image(systemName: sectionIcon)
-            Text(sectionLabel)
-        }.opacity(0.6).fontWeight(.semibold)) {
+        Section(header: HeaderStyle(label: sectionLabel, icon: sectionIcon)) {
             if isRiskyTweak {
                 HStack(spacing: 10) {
                     Image(systemName: "exclamationmark.triangle")
                         .font(.title)
                         .frame(width: 35, height: 35)
                     VStack(alignment: .leading) {
-                        Text("These tweaks could break system functionality.")
+                        Text("Warning!")
                             .fontWeight(.semibold)
-                        Text("You may have to force reboot your device.")
+                        Text("These tweaks could break system functionality. You may have to force reboot your device.")
                             .multilineTextAlignment(.leading)
-                            .font(.callout)
+                            .font(.subheadline)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                .foregroundStyle(.white)
                 .padding(10)
                 .background(.red)
                 .cornerRadius(14)
@@ -115,7 +113,7 @@ struct TweakSectionList: View {
 struct RegularButtonStyle: View {
     let text: String
     let icon: String
-    let useMaxHeight: Bool
+    let isPNGIcon: Bool
     let disabled: Bool
     let foregroundStyle: Color
     let action: () -> Void
@@ -128,8 +126,15 @@ struct RegularButtonStyle: View {
             }
         }) {
             HStack {
-                Image(systemName: icon)
-                    .frame(minWidth: 22, minHeight: 22)
+                if isPNGIcon {
+                    Image(icon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: 22, maxHeight: 22)
+                } else {
+                    Image(systemName: icon)
+                        .frame(minWidth: 22, minHeight: 22)
+                }
                 if text.isEmpty {
                     
                 } else {
@@ -138,7 +143,7 @@ struct RegularButtonStyle: View {
             }
         }
         .padding(.vertical, 13)
-        .frame(maxWidth: .infinity, maxHeight: useMaxHeight ? .infinity : nil)
+        .frame(maxWidth: .infinity)
         .background(disabled ? .gray.opacity(0.4) : foregroundStyle.opacity(0.2))
         .background(.ultraThinMaterial)
         .cornerRadius(14)
@@ -185,3 +190,19 @@ struct ListButtonStyle: ButtonStyle {
     }
 }
 
+struct HeaderStyle: View {
+    let label: String
+    let icon: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .frame(minWidth: 22, minHeight: 22)
+            Text(label)
+        }
+        .font(.system(.callout, weight: .semibold))
+        .padding(.top)
+        .opacity(0.6)
+        .padding(.leading, 6)
+    }
+}

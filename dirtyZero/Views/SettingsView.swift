@@ -37,16 +37,66 @@ struct SettingsView: View {
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        HStack {
-                            RegularButtonStyle(text: "Discord", icon: "message", useMaxHeight: false, disabled: false, foregroundStyle: .blue, action: {
-                                openURL(URL(string: "https://jailbreak.party/discord")!)
+                        VStack {
+                            RegularButtonStyle(text: "Website", icon: "globe", isPNGIcon: false, disabled: false, foregroundStyle: .blue, action: {
+                                openURL(URL(string: "https://jailbreak.party")!)
                             })
-                            RegularButtonStyle(text: "GitHub", icon: "apple.terminal", useMaxHeight: false, disabled: false, foregroundStyle: .green, action: {
-                                openURL(URL(string: "https://github.com/jailbreakdotparty/dirtyZero")!)
-                            })
+                            HStack {
+                                RegularButtonStyle(text: "Discord", icon: "discord", isPNGIcon: true, disabled: false, foregroundStyle: .discord, action: {
+                                    openURL(URL(string: "https://jailbreak.party/discord")!)
+                                })
+                                RegularButtonStyle(text: "GitHub", icon: "github", isPNGIcon: true, disabled: false, foregroundStyle: .gitHub, action: {
+                                    openURL(URL(string: "https://github.com/jailbreakdotparty/dirtyZero")!)
+                                })
+                            }
                         }
                     }
                     .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+                }
+                Section(header: HStack {
+                    Image(systemName: "star")
+                    Text("Credits")
+                }) {
+                    Button(action: {
+                        openURL(URL(string: "https://github.com/skadz108")!)
+                    }) {
+                        HStack(spacing: 12) {
+                            Image("skadz108")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 40, height: 40)
+                                .cornerRadius(8)
+                            VStack(alignment: .leading) {
+                                Text("skadz108")
+                                    .fontWeight(.medium)
+                                Text("Original creator, backend developer.")
+                                    .font(.subheadline)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 10, trailing: 16))
+                    Button(action: {
+                        openURL(URL(string: "https://github.com/lunginspector")!)
+                    }) {
+                        HStack(spacing: 12) {
+                            Image("lunginspector")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 40, height: 40)
+                                .cornerRadius(8)
+                            VStack(alignment: .leading) {
+                                Text("lunginspector")
+                                    .fontWeight(.medium)
+                                Text("User interface, tweak creator.")
+                                    .font(.subheadline)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 16, trailing: 16))
                 }
                 Section(header: HStack {
                     Image(systemName: "gearshape")
