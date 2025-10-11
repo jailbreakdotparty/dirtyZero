@@ -319,10 +319,10 @@ struct ContentView: View {
                             isSupported = false
                         }
                     }
-                    .popover(isPresented: $showSettingsPopover, content: {
+                    .sheet(isPresented: $showSettingsPopover, content: {
                         SettingsView()
                     })
-                    .popover(isPresented: $showCustomTweaksPopover, content: {
+                    .sheet(isPresented: $showCustomTweaksPopover, content: {
                         CustomTweaksView()
                     })
                 }
@@ -394,7 +394,7 @@ struct ContentView: View {
                                         endPoint: .bottom
                                     )
                                 )
-                            VariableBlurView(maxBlurRadius: 5, direction: .blurredBottomClearTop)
+                            VariableBlurView(maxBlurRadius: 8, direction: .blurredBottomClearTop)
                         }
                         .ignoresSafeArea()
                     )

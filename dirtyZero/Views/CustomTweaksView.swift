@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct CustomZeroTweak: Identifiable, Codable {
     var id: String { name }
@@ -25,9 +26,6 @@ struct CustomTweaksView: View {
     @AppStorage("customTweaks") private var customTweaks: [CustomZeroTweak] = []
     @AppStorage("customEnabledTweaks") private var enabledCustomTweakIds: [String] = []
     
-    @FocusState private var isCustomPathFieldFocused: Bool
-    @FocusState private var isCustomNameFieldFocused: Bool
-    
     private var enabledCustomTweaks: [CustomZeroTweak] {
         customTweaks.filter { tweak in enabledCustomTweakIds.contains(tweak.id) }
     }
@@ -46,97 +44,136 @@ struct CustomTweaksView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                Section(header: HeaderStyle(label: "Custom Paths", icon: "terminal")) {
-                    VStack(alignment: .leading) {
-                        HStack {
-                            HStack(spacing: 10) {
-                                if customTweakPath.isEmpty {
-                                    Image(systemName: "terminal")
-                                        .opacity(0.25)
-                                } else {
-                                    Image(systemName: "terminal")
-                                        .foregroundStyle(.accent)
+            ScrollView {
+                VStack(alignment: .leading) {
+                    Section(header: HeaderStyle(label: "Create Tweak", icon: "wrench.and.screwdriver")) {
+                        VStack(alignment: .leading) {
+                            HStack {
+                                HStack(spacing: 10) {
+                                    if customTweakName.isEmpty {
+                                        Image(systemName: "character.cursor.ibeam")
+                                            .frame(width: 24, alignment: .center)
+                                            .opacity(0.25)
+                                    } else {
+                                        Image(systemName: "character.cursor.ibeam")
+                                            .frame(width: 24, alignment: .center)
+                                            .foregroundStyle(.orange)
+                                    }
+                                    TextField("Tweak Name", text: $customTweakName)
+                                        .foregroundStyle(.orange)
                                 }
-                                TextField("Custom Path", text: $customTweakPath, axis: .vertical)
-                                    .foregroundStyle(.accent)
+                                .padding(13)
+                                .frame(maxWidth: .infinity)
+                                .background(.orange.opacity(0.2))
+                                .cornerRadius(12)
                             }
+                            HStack {
+                                HStack {
+                                    HStack(spacing: 10) {
+                                        if customTweakPath.isEmpty {
+                                            Image(systemName: "folder")
+                                                .frame(width: 24, alignment: .center)
+                                                .opacity(0.25)
+                                        } else {
+                                            Image(systemName: "folder")
+                                                .frame(width: 24, alignment: .center)
+                                                .foregroundStyle(.orange)
+                                        }
+                                        TextField("Custom Path", text: $customTweakPath)
+                                            .foregroundStyle(.orange)
+                                    }
+                                    .padding(13)
+                                    .frame(maxWidth: .infinity)
+                                    .background(.orange.opacity(0.2))
+                                    .cornerRadius(12)
+                                    RegularButtonStyle(text: "", icon: "doc.on.clipboard", isPNGIcon: false, disabled: false, foregroundStyle: .orange, action: {
+                                        if let clipboardText = UIPasteboard.general.string {
+                                            customTweakPath = clipboardText
+                                        } else {
+                                            Alertinator.shared.alert(title: "No Clipboard Contents Found!", body: "Please copy a vaild path.")
+                                        }
+                                    }).frame(width: 50)
+                                    RegularButtonStyle(text: "", icon: "plus", isPNGIcon: false, disabled: false, foregroundStyle: .orange, action: {
+                                        customTweakPaths.append(customTweakPath)
+                                        customTweakPath = ""
+                                    }).frame(width: 50)
+                                }
+                            }
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        HStack {
+                                            Image(systemName: "wrench.and.screwdriver")
+                                                .frame(width: 24, alignment: .center)
+                                            Text(customTweakName.isEmpty ? "No Name" : customTweakName)
+                                        }
+                                        Text(customTweakPaths.isEmpty ? "No Paths" : customTweakPaths.joined(separator: ", "))
+                                            .multilineTextAlignment(.leading)
+                                    }
+                                    Spacer()
+                                    RegularButtonStyle(text: "", icon: "xmark", isPNGIcon: false, disabled: false, foregroundStyle: .red, action: {
+                                        customTweakName = ""
+                                        customTweakPath = ""
+                                        customTweakPaths = []
+                                    }).frame(width: 50)
+                                }
+                            }
+                            .foregroundStyle(.orange)
                             .padding(13)
-                            .frame(maxWidth: .infinity)
-                            .background(.accent.opacity(0.2))
-                            .cornerRadius(12)
-                            .focused($isCustomPathFieldFocused)
-                            if isCustomPathFieldFocused {
-                                RegularButtonStyle(text: "", icon: "xmark", isPNGIcon: false, disabled: false, foregroundStyle: .red, action: {
-                                    isCustomPathFieldFocused = false
-                                }).frame(width: 50)
-                            }
-                        }
-                        HStack {
-                            HStack(spacing: 10) {
-                                if customTweakName.isEmpty {
-                                    Image(systemName: "terminal")
-                                        .opacity(0.25)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(.orange.opacity(0.2))
+                            .cornerRadius(14)
+                            RegularButtonStyle(text: "Add Tweak", icon: "plus", isPNGIcon: false, disabled: false, foregroundStyle: .green, action: {
+                                if customTweakName.isEmpty || customTweakPaths.isEmpty {
+                                    Alertinator.shared.alert(title: "Invaild Tweak Details!", body: "Please fill out all the fields properly.")
                                 } else {
-                                    Image(systemName: "terminal")
-                                        .foregroundStyle(.accent)
-                                }
-                                TextField("Tweak Name", text: $customTweakName, axis: .vertical)
-                                    .foregroundStyle(.accent)
-                            }
-                            .padding(13)
-                            .frame(maxWidth: .infinity)
-                            .background(.accent.opacity(0.2))
-                            .cornerRadius(12)
-                            .focused($isCustomNameFieldFocused)
-                            if isCustomNameFieldFocused {
-                                RegularButtonStyle(text: "", icon: "xmark", isPNGIcon: false, disabled: false, foregroundStyle: .red, action: {
-                                    isCustomNameFieldFocused = false
-                                }).frame(width: 50)
-                            }
-                        }
-                        HStack {
-                            RegularButtonStyle(text: "", icon: "checkmark", isPNGIcon: false, disabled: false, foregroundStyle: .green, action: {
-                                if customTweakPath.isEmpty {
-                                    Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
-                                } else {
-                                    try? zeroPoC(path: customTweakPath)
-                                    Alertinator.shared.alert(title: "Attempted to Zero", body: "Attempted to zero out \(customTweakPath)")
+                                    let newTweak = CustomZeroTweak(name: customTweakName, paths: customTweakPaths)
+                                    customTweaks.append(newTweak)
+                                    customTweakName = ""
+                                    customTweakPath = ""
+                                    customTweakPaths = []
                                 }
                             })
-                            RegularButtonStyle(text: "", icon: "doc.on.clipboard", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
-                                if let clipboardText = UIPasteboard.general.string {
-                                    customTweakPath = clipboardText
-                                } else {
-                                    print("[!] epic pasteboard fail :fire:")
-                                }
-                            })
-                            // This button just adds the path to the entire tweak.
-                            RegularButtonStyle(text: "", icon: "plus", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
-                                customTweakPaths.append(customTweakPath)
-                                customTweakPath = ""
-                            })
                         }
-                        Text(customTweakPaths.rawValue)
-                        RegularButtonStyle(text: "Add Tweak", icon: "plus", isPNGIcon: false, disabled: false, foregroundStyle: .green, action: {
-                            if customTweakName.isEmpty || customTweakPaths.isEmpty {
-                                Alertinator.shared.alert(title: "You stupid neckhurt!", body: "Please fill out all the fields properly.")
-                            } else {
-                                let newTweak = CustomZeroTweak(name: customTweakName, paths: customTweakPaths)
-                                customTweaks.append(newTweak)
-                            }
-                        })
                     }
+                    .padding(.horizontal, 20)
+                    CustomTweakList(tweaks: $customTweaks, enabledCustomTweakIds: $enabledCustomTweakIds)
                 }
-                
-                CustomTweakList(tweaks: customTweaks, enabledCustomTweakIds: $enabledCustomTweakIds)
-                
-                RegularButtonStyle(text: "Apply Tweaks", icon: "plus", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
-                    applyCustomTweaks(tweaks: enabledCustomTweaks)
-                })
             }
             .listStyle(.plain)
             .navigationTitle("Custom Tweaks")
+            .safeAreaInset(edge: .bottom) {
+                VStack {
+                    if enabledCustomTweaks.isEmpty {
+                        RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", isPNGIcon: false, disabled: false, foregroundStyle: .gray, action: {
+                            Alertinator.shared.alert(title: "No Tweaks Enabled!", body: "Please select some tweaks first.")
+                        })
+                    } else {
+                        RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", isPNGIcon: false, disabled: false, foregroundStyle: .green, action: {
+                            applyCustomTweaks(tweaks: enabledCustomTweaks)
+                        })
+                    }
+                }
+                .padding(.horizontal, 25)
+                .padding(.top, 50)
+                .background(
+                    ZStack {
+                        Rectangle()
+                            .foregroundStyle(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        Color.clear,
+                                        Color(.systemBackground).opacity(0.7)
+                                    ]),
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                        VariableBlurView(maxBlurRadius: 8, direction: .blurredBottomClearTop)
+                    }
+                    .ignoresSafeArea()
+                )
+            }
         }
     }
     

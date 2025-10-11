@@ -27,7 +27,7 @@ struct MaterialView: UIViewRepresentable {
 }
 
 struct CustomTweakList: View {
-    let tweaks: [CustomZeroTweak]
+    @Binding var tweaks: [CustomZeroTweak]
     @Binding var enabledCustomTweakIds: [String]
     
     private func isCustomTweakEnabled(_ tweak: CustomZeroTweak) -> Bool {
@@ -42,8 +42,13 @@ struct CustomTweakList: View {
         }
     }
     
+    private func deleteTweak(_ tweak: CustomZeroTweak) {
+        tweaks.removeAll { $0.id == tweak.id }
+        enabledCustomTweakIds.removeAll { $0 == tweak.id }
+    }
+    
     var body: some View {
-        Section(header: HeaderStyle(label: "Custom Tweaks", icon: "paintpallete")) {
+        Section(header: HeaderStyle(label: "Custom Tweaks", icon: "paintpalette").padding(.horizontal, 20)) {
             VStack {
                 ForEach(tweaks) { tweak in
                     Button(action: {
@@ -52,13 +57,14 @@ struct CustomTweakList: View {
                     }) {
                         HStack {
                             VStack(alignment: .leading) {
-                                Text(tweak.name)
-                                    .lineLimit(1)
-                                    .scaledToFit()
-                                    .foregroundStyle(.orange)
-                                Text(tweak.paths.joined(separator: ", "))
-                                    .multilineTextAlignment(.leading)
-                                    .foregroundStyle(.orange)
+                                HStack {
+                                    Image(systemName: "wrench.and.screwdriver")
+                                        .frame(width: 24, alignment: .center)
+                                    Text(tweak.name)
+                                        .lineLimit(1)
+                                        .scaledToFit()
+                                        .foregroundStyle(.orange)
+                                }
                             }
                             Spacer()
                             if isCustomTweakEnabled(tweak) {
@@ -72,8 +78,23 @@ struct CustomTweakList: View {
                             }
                         }
                     }
+                    .contextMenu {
+                        Button(action: {
+                            Alertinator.shared.alert(title: "Paths for \(tweak.name)", body: tweak.paths.joined(separator: ", "))
+                        }) {
+                            Image(systemName: "folder")
+                            Text("Show Paths")
+                        }
+                        Button(role: .destructive, action: {
+                            deleteTweak(tweak)
+                        }) {
+                            Image(systemName: "xmark")
+                            Text("Delete Tweak")
+                        }
+                    }
                     .buttonStyle(ListButtonStyle(color: isCustomTweakEnabled(tweak) ? .orange : .orange.opacity(0.8), fullWidth: false))
                 }
+                .padding(.horizontal, 20)
             }
         }
     }
@@ -186,7 +207,7 @@ struct RegularButtonStyle: View {
                         .frame(maxWidth: 22, maxHeight: 22)
                 } else {
                     Image(systemName: icon)
-                        .frame(minWidth: 22, minHeight: 22)
+                        .frame(width: 22, height: 22, alignment: .center)
                 }
                 if text.isEmpty {
                     
@@ -198,7 +219,6 @@ struct RegularButtonStyle: View {
         .padding(.vertical, 13)
         .frame(maxWidth: .infinity)
         .background(disabled ? .gray.opacity(0.4) : foregroundStyle.opacity(0.2))
-        .background(.ultraThinMaterial)
         .cornerRadius(14)
         .foregroundStyle(disabled ? .gray : foregroundStyle)
         .buttonStyle(.plain)
@@ -248,9 +268,9 @@ struct HeaderStyle: View {
     let icon: String
     
     var body: some View {
-        HStack {
+        HStack(spacing: 6) {
             Image(systemName: icon)
-                .frame(minWidth: 22, minHeight: 22)
+                .frame(width: 24, alignment: .center)
             Text(label)
         }
         .font(.system(.callout, weight: .semibold))
