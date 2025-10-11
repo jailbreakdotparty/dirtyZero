@@ -47,15 +47,15 @@ struct CustomTweaksView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section(header: HeaderStyle(label: "Custom Paths", icon: "apple.terminal")) {
+                Section(header: HeaderStyle(label: "Custom Paths", icon: "terminal")) {
                     VStack(alignment: .leading) {
                         HStack {
                             HStack(spacing: 10) {
                                 if customTweakPath.isEmpty {
-                                    Image(systemName: "apple.terminal")
+                                    Image(systemName: "terminal")
                                         .opacity(0.25)
                                 } else {
-                                    Image(systemName: "apple.terminal")
+                                    Image(systemName: "terminal")
                                         .foregroundStyle(.accent)
                                 }
                                 TextField("Custom Path", text: $customTweakPath, axis: .vertical)
@@ -75,10 +75,10 @@ struct CustomTweaksView: View {
                         HStack {
                             HStack(spacing: 10) {
                                 if customTweakName.isEmpty {
-                                    Image(systemName: "apple.terminal")
+                                    Image(systemName: "terminal")
                                         .opacity(0.25)
                                 } else {
-                                    Image(systemName: "apple.terminal")
+                                    Image(systemName: "terminal")
                                         .foregroundStyle(.accent)
                                 }
                                 TextField("Tweak Name", text: $customTweakName, axis: .vertical)

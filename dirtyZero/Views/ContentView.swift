@@ -42,6 +42,31 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
     }
 }
 
+// i really really hate this
+// however i'm tired and i just want it to work
+// lung you're never touching this app again (joke)
+// here lies the few remaining fucks i had to give
+// - Skadz, 10/10/25 9:27 PM
+var applyingString: String = "idk boss"
+var appliedString: String = "idk either boss"
+var failedString: String = "shit me i did a fuck"
+
+enum TweakApplyingStatuses: String, CaseIterable {
+    case ready = "Ready to Apply"
+    case applying = "Applying Tweaks..."
+    case applied = "Applied Tweaks"
+    case failed = "Failed to Apply"
+    
+    var description: String {
+        switch self {
+        case .ready: return "All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes."
+        case .applying: return applyingString
+        case .applied: return appliedString
+        case .failed: return failedString
+        }
+    }
+}
+
 struct ContentView: View {
     let device = Device.current
     @AppStorage("enabledTweaks") private var enabledTweakIds: [String] = []
@@ -52,8 +77,8 @@ struct ContentView: View {
     @State private var isSupported: Bool = true
     @State private var showSettingsPopover: Bool = false
     @State private var showCustomTweaksPopover: Bool = false
-    @State private var tweakApplicationStatus: String = "Ready to Apply"
-    @State private var tweakApplicationMessage: String = "All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes."
+    @State private var tweakApplicationStatus: TweakApplyingStatuses = TweakApplyingStatuses.ready
+    @State private var tweakApplicationMessage: String = TweakApplyingStatuses.ready.rawValue
     
     @FocusState private var isCustomPathFieldFocused: Bool
     
@@ -95,19 +120,19 @@ struct ContentView: View {
                                                 VStack(alignment: .leading) {
                                                     HStack {
                                                         HStack {
-                                                            if tweakApplicationStatus == "Applying Tweaks..." {
+                                                            if tweakApplicationStatus == .applying {
                                                                 ProgressView()
-                                                            } else if tweakApplicationStatus == "Failed to Apply" {
+                                                            } else if tweakApplicationStatus == .failed {
                                                                 Image(systemName: "xmark.circle.fill")
                                                                     .foregroundStyle(.red)
-                                                            } else if tweakApplicationStatus == "Ready to Apply" {
+                                                            } else if tweakApplicationStatus == .ready {
                                                                 Image(systemName: "checkmark.circle.fill")
                                                                     .opacity(0.6)
                                                             } else {
                                                                 Image(systemName: "checkmark.circle.fill")
                                                                     .foregroundStyle(.green)
                                                             }
-                                                            Text(tweakApplicationStatus)
+                                                            Text(tweakApplicationStatus.rawValue)
                                                         }
                                                     }
                                                 }
@@ -140,7 +165,7 @@ struct ContentView: View {
                                                 .background(Color(.tertiarySystemBackground))
                                                 .cornerRadius(12)
                                             } else {
-                                                Text(tweakApplicationMessage)
+                                                Text(tweakApplicationStatus.description)
                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                     .font(.body)
                                                     .multilineTextAlignment(.leading)
@@ -196,10 +221,10 @@ struct ContentView: View {
                                         HStack {
                                             HStack(spacing: 10) {
                                                 if customZeroPath.isEmpty {
-                                                    Image(systemName: "apple.terminal")
+                                                    Image(systemName: "terminal")
                                                         .opacity(0.25)
                                                 } else {
-                                                    Image(systemName: "apple.terminal")
+                                                    Image(systemName: "terminal")
                                                         .foregroundStyle(.accent)
                                                 }
                                                 TextField("Custom Path", text: $customZeroPath, axis: .vertical)
@@ -295,7 +320,7 @@ struct ContentView: View {
                         }
                     }
                     .popover(isPresented: $showSettingsPopover, content: {
-                        SettingsView(showDebugSettings: $showDebugSettings, showLogs: $showLogs, showRiskyTweaks: $showRiskyTweaks, hasShownWelcome: $hasShownWelcome)
+                        SettingsView()
                     })
                     .popover(isPresented: $showCustomTweaksPopover, content: {
                         CustomTweaksView()
@@ -343,7 +368,7 @@ struct ContentView: View {
                                 }
                             }
                         } label: {
-                            Label("Custom Path", systemImage: "apple.terminal")
+                            Label("Custom Path", systemImage: "terminal")
                         }
                         .disabled(!isSupported)
                         
@@ -390,23 +415,24 @@ struct ContentView: View {
         
         do {
             for tweak in enabledTweaks {
-                print("[\(currentTweak)/\(totalTweaks)] Applying \(tweak.name)...")
+                applyingString = "[\(currentTweak)/\(totalTweaks)] Applying \(tweak.name)..."
+                print(applyingString)
                 for path in tweak.paths {
                     try zeroPoC(path: path)
                 }
                 print("[*] Applied tweak \(currentTweak)/\(totalTweaks)!")
                 currentTweak += 1
-                tweakApplicationStatus = "Applying Tweaks..."
+                tweakApplicationStatus = .applying
             }
             print("[*] Successfully applied all tweaks!")
             Alertinator.shared.alert(title: "Tweaks Applied Successfully!", body: "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed.")
-            tweakApplicationStatus = "Applied Tweaks"
-            tweakApplicationMessage = "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed."
+            tweakApplicationStatus = .applied
+            appliedString = "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed."
         } catch {
-            tweakApplicationStatus = "Failed to Apply"
-            tweakApplicationMessage = "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error)."
+            tweakApplicationStatus = .failed
+            failedString = "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error)."
             print("[!] \(error)")
-            Alertinator.shared.alert(title: "Failed to Apply", body: "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error).")
+            Alertinator.shared.alert(title: "Failed to Apply", body: failedString)
             return
         }
     }
