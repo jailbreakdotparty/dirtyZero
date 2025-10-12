@@ -33,24 +33,24 @@ struct CustomTweaksView: View {
                             .padding(13)
                             .background(Color(.quaternarySystemFill))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
-                        HStack {
-                            TextField("/path/to/zero", text: $path2Add)
-                                .multilineTextAlignment(.leading)
-                                .padding(13)
-                                .background(Color(.quaternarySystemFill))
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                            RegularButtonStyle(text: "", icon: "doc.on.doc", isPNGIcon: false, disabled: false, foregroundStyle: .purple, action: {
-                                if let clipboardText = UIPasteboard.general.string {
-                                    path2Add = clipboardText
-                                } else {
-                                    Alertinator.shared.alert(title: "Warning!", body: "No clipboard contents found!")
-                                }
-                            }).frame(width: 50)
-                            RegularButtonStyle(text: "", icon: "plus.circle.fill", isPNGIcon: false, disabled: path2Add.isEmpty, foregroundStyle: .purple, action: addPath).frame(width: 50)
-                        }
                     }
                     Section(header: HeaderStyle(label: "Target Paths", icon: "pencil")) {
                         VStack(spacing: 14) {
+                            HStack {
+                                TextField("/path/to/zero", text: $path2Add)
+                                    .multilineTextAlignment(.leading)
+                                    .padding(13)
+                                    .background(Color(.quaternarySystemFill))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                RegularButtonStyle(text: "", icon: "doc.on.doc", isPNGIcon: false, disabled: false, foregroundStyle: .purple, action: {
+                                    if let clipboardText = UIPasteboard.general.string {
+                                        path2Add = clipboardText
+                                    } else {
+                                        Alertinator.shared.alert(title: "Warning!", body: "No clipboard contents found!")
+                                    }
+                                }).frame(width: 50)
+                                RegularButtonStyle(text: "", icon: "plus.circle.fill", isPNGIcon: false, disabled: path2Add.isEmpty, foregroundStyle: .purple, action: addPath).frame(width: 50)
+                            }
                             ForEach(targetPaths) { item in
                                 HStack {
                                     Text(item.path)
@@ -116,10 +116,6 @@ struct CustomTweaksView: View {
     }
     
     private func addPath() {
-        guard !blockedPaths.contains(path2Add) else {
-            Alertinator.shared.alert(title: "Absoutely fucking not, wsf!", body: "This path can bypass laws in select countries.")
-            return
-        }
         withAnimation {
             targetPaths.append(PathItem(path: path2Add))
             path2Add = ""
