@@ -26,80 +26,6 @@ struct MaterialView: UIViewRepresentable {
     }
 }
 
-struct CustomTweakList: View {
-    @Binding var tweaks: [CustomZeroTweak]
-    @Binding var enabledCustomTweakIds: [String]
-    
-    private func isCustomTweakEnabled(_ tweak: CustomZeroTweak) -> Bool {
-        enabledCustomTweakIds.contains(tweak.id)
-    }
-    
-    private func toggleCustomTweak(_ tweak: CustomZeroTweak) {
-        if isCustomTweakEnabled(tweak) {
-            enabledCustomTweakIds.removeAll { $0 == tweak.id }
-        } else {
-            enabledCustomTweakIds.append(tweak.id)
-        }
-    }
-    
-    private func deleteTweak(_ tweak: CustomZeroTweak) {
-        tweaks.removeAll { $0.id == tweak.id }
-        enabledCustomTweakIds.removeAll { $0 == tweak.id }
-    }
-    
-    var body: some View {
-        Section(header: HeaderStyle(label: "Custom Tweaks", icon: "paintpalette").padding(.horizontal, 20)) {
-            VStack {
-                ForEach(tweaks) { tweak in
-                    Button(action: {
-                        Haptic.shared.play(.soft)
-                        toggleCustomTweak(tweak)
-                    }) {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Image(systemName: "wrench.and.screwdriver")
-                                        .frame(width: 24, alignment: .center)
-                                    Text(tweak.name)
-                                        .lineLimit(1)
-                                        .scaledToFit()
-                                        .foregroundStyle(.orange)
-                                }
-                            }
-                            Spacer()
-                            if isCustomTweakEnabled(tweak) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.orange)
-                                    .imageScale(.medium)
-                            } else {
-                                Image(systemName: "circle")
-                                    .foregroundStyle(.orange)
-                                    .imageScale(.medium)
-                            }
-                        }
-                    }
-                    .contextMenu {
-                        Button(action: {
-                            Alertinator.shared.alert(title: "Paths for \(tweak.name)", body: tweak.paths.joined(separator: ", "))
-                        }) {
-                            Image(systemName: "folder")
-                            Text("Show Paths")
-                        }
-                        Button(role: .destructive, action: {
-                            deleteTweak(tweak)
-                        }) {
-                            Image(systemName: "xmark")
-                            Text("Delete Tweak")
-                        }
-                    }
-                    .buttonStyle(ListButtonStyle(color: isCustomTweakEnabled(tweak) ? .orange : .orange.opacity(0.8), fullWidth: false))
-                }
-                .padding(.horizontal, 20)
-            }
-        }
-    }
-}
-
 // i love the thing i did here. skadz does not. -lunginspector
 struct TweakSectionList: View {
     let sectionLabel: String
@@ -176,6 +102,69 @@ struct TweakSectionList: View {
                             }
                         }
                         .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? isRiskyTweak ? .red : .accent : isRiskyTweak ? .red.opacity(0.7) : .accent.opacity(0.7), fullWidth: false))
+                    }
+                }
+            }
+        }
+    }
+}
+
+// the same idea but for the Custom Tweaks category only
+struct CustomTweakSectionList: View {
+    let sectionLabel = "Custom Tweaks"
+    let sectionIcon = "paintpalette"
+    let tweaks: [ZeroTweak]
+    @Binding var enabledTweakIds: [String]
+    
+    private func isTweakEnabled(_ tweak: ZeroTweak) -> Bool {
+        enabledTweakIds.contains(tweak.id)
+    }
+    
+    private func toggleTweak(_ tweak: ZeroTweak) {
+        if isTweakEnabled(tweak) {
+            enabledTweakIds.removeAll { $0 == tweak.id }
+        } else {
+            enabledTweakIds.append(tweak.id)
+        }
+    }
+    
+    @AppStorage("customTweaks") private var customTweaks: [ZeroTweak] = []
+    
+    var body: some View {
+        Section(header: HeaderStyle(label: sectionLabel, icon: sectionIcon)) {
+            VStack {
+                ForEach(tweaks) { tweak in
+                    Button(action: {
+                        Haptic.shared.play(.soft)
+                        toggleTweak(tweak)
+                    }) {
+                        HStack {
+                            Image(systemName: tweak.icon)
+                                .frame(width: 24, alignment: .center)
+                                .foregroundStyle(.accent)
+                            Text(tweak.name)
+                                .lineLimit(1)
+                                .scaledToFit()
+                                .foregroundStyle(.accent)
+                            Spacer()
+                            if isTweakEnabled(tweak) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.accent)
+                                    .imageScale(.medium)
+                            } else {
+                                Image(systemName: "circle")
+                                    .foregroundStyle(.accent)
+                                    .imageScale(.medium)
+                            }
+                        }
+                    }
+                    .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? .accent : .accent.opacity(0.7), fullWidth: false))
+                    .contextMenu {
+                        Button(action: {
+                            customTweaks.removeAll { $0.id == tweak.id }
+                        }, label: {
+                            Label("Delete Tweak", systemImage: "xmark")
+                        })
                     }
                 }
             }

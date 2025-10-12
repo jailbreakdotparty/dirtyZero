@@ -86,8 +86,10 @@ struct ContentView: View {
     @AppStorage("showDebugSettings") private var showDebugSettings: Bool = false
     @AppStorage("showRiskyTweaks") private var showRiskyTweaks: Bool = false
     
+    @AppStorage("customTweaks") private var customTweaks: [ZeroTweak] = []
+    
     private var tweaks: [ZeroTweak] {
-        homeScreen + lockScreen + alertsOverlays + fontsIcons + controlCenter + soundEffects + riskyTweaks
+        homeScreen + lockScreen + alertsOverlays + fontsIcons + controlCenter + soundEffects + riskyTweaks + customTweaks
     }
     
     private var enabledTweaks: [ZeroTweak] {
@@ -259,6 +261,7 @@ struct ContentView: View {
                                         }
                                         RegularButtonStyle(text: "Print Debug Info", icon: "ant.fill", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
                                             print("[*] enabledTweakIds: \(enabledTweakIds)\n[*] isSupported: \(isSupported)\n[*] weOnADebugBuild: \(weOnADebugBuild)")
+                                            print(customTweaks)
                                         })
                                     }
                                     .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
@@ -270,6 +273,9 @@ struct ContentView: View {
                             TweakSectionList(sectionLabel: "Fonts & Icons", sectionIcon: "paintbrush", tweaks: fontsIcons, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, enabledTweakIds: $enabledTweakIds)
                             TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
+                            if !customTweaks.isEmpty {
+                                CustomTweakSectionList(tweaks: customTweaks, enabledTweakIds: $enabledTweakIds)
+                            }
                             if weOnADebugBuild || showRiskyTweaks {
                                 TweakSectionList(sectionLabel: "Risky Tweaks", sectionIcon: "exclamationmark.triangle", tweaks: riskyTweaks, enabledTweakIds: $enabledTweakIds)
                             }
@@ -308,7 +314,7 @@ struct ContentView: View {
                             Button(action: {
                                 showCustomTweaksPopover = true
                             }) {
-                                Image(systemName: "paintbrush")
+                                Image(systemName: "plus")
                             }
                         })
                     }
