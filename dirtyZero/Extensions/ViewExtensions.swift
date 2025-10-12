@@ -141,30 +141,35 @@ struct CustomTweakSectionList: View {
                         HStack {
                             Image(systemName: tweak.icon)
                                 .frame(width: 24, alignment: .center)
-                                .foregroundStyle(.accent)
+                                .foregroundStyle(.purple)
                             Text(tweak.name)
                                 .lineLimit(1)
                                 .scaledToFit()
-                                .foregroundStyle(.accent)
+                                .foregroundStyle(.purple)
                             Spacer()
                             if isTweakEnabled(tweak) {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(.purple)
                                     .imageScale(.medium)
                             } else {
                                 Image(systemName: "circle")
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(.purple)
                                     .imageScale(.medium)
                             }
                         }
                     }
-                    .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? .accent : .accent.opacity(0.7), fullWidth: false))
+                    .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? .purple : .purple.opacity(0.7), fullWidth: false))
                     .contextMenu {
                         Button(action: {
+                            Alertinator.shared.alert(title: tweak.name, body: tweak.paths.joined(separator: ", "))
+                        }) {
+                            Label("Target Paths", systemImage: "folder")
+                        }
+                        Button(role: .destructive, action: {
                             customTweaks.removeAll { $0.id == tweak.id }
-                        }, label: {
+                        }) {
                             Label("Delete Tweak", systemImage: "xmark")
-                        })
+                        }
                     }
                 }
             }
@@ -205,7 +210,7 @@ struct RegularButtonStyle: View {
                 }
             }
         }
-        .padding(.vertical, 13)
+        .padding(13)
         .frame(maxWidth: .infinity)
         .background(disabled ? .gray.opacity(0.4) : foregroundStyle.opacity(0.2))
         .cornerRadius(14)
@@ -225,14 +230,14 @@ struct ListButtonStyle: ButtonStyle {
         ZStack {
             if fullWidth {
                 configuration.label
-                    .padding(13)
+                    .padding(12)
                     .frame(maxWidth: .infinity)
                     .background(material == nil ? AnyView(color.opacity(0.2)) : AnyView(MaterialView(material!)))
                     .cornerRadius(14)
                     .foregroundStyle(color)
             } else {
                 configuration.label
-                    .padding(13)
+                    .padding(12)
                     .frame(maxWidth: .infinity)
                     .background(material == nil ? AnyView(color.opacity(0.2)) : AnyView(MaterialView(material!)))
                     .cornerRadius(14)
