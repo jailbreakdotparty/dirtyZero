@@ -102,6 +102,7 @@ struct TweakSectionList: View {
                             }
                         }
                         .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? isRiskyTweak ? .red : .accent : isRiskyTweak ? .red.opacity(0.7) : .accent.opacity(0.7), fullWidth: false))
+                        .animation(.default, value: isTweakEnabled(tweak))
                     }
                 }
             }
@@ -159,6 +160,7 @@ struct CustomTweakSectionList: View {
                         }
                     }
                     .buttonStyle(ListButtonStyle(color: isTweakEnabled(tweak) ? .purple : .purple.opacity(0.7), fullWidth: false))
+                    .animation(.default, value: isTweakEnabled(tweak))
                     .contextMenu {
                         Button(action: {
                             Alertinator.shared.alert(title: tweak.name, body: tweak.paths.joined(separator: ", "))
@@ -177,7 +179,7 @@ struct CustomTweakSectionList: View {
     }
 }
 
-// buttons :fire:
+// Don't use this in any List { } views, because it will not work as intended. Use SettingsButtonStyle instead.
 struct RegularButtonStyle: View {
     let text: String
     let icon: String
@@ -187,40 +189,55 @@ struct RegularButtonStyle: View {
     let action: () -> Void
     
     var body: some View {
-        Button(action: {
-            Haptic.shared.play(.soft)
-            if !disabled {
+        VStack {
+            Button(action: {
+                Haptic.shared.play(.soft)
                 action()
-            }
-        }) {
-            HStack {
-                if isPNGIcon {
-                    Image(icon)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: 22, maxHeight: 22)
-                } else {
-                    Image(systemName: icon)
-                        .frame(width: 22, height: 22, alignment: .center)
+            }) {
+                HStack {
+                    if isPNGIcon {
+                        Image(icon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxWidth: 22, maxHeight: 22)
+                    } else {
+                        Image(systemName: icon)
+                            .frame(width: 22, height: 22, alignment: .center)
+                    }
+                    if text.isEmpty {
+                        
+                    } else {
+                        Text(text)
+                    }
                 }
-                if text.isEmpty {
-                    
-                } else {
-                    Text(text)
-                }
+                .padding(13)
+                .frame(maxWidth: .infinity)
+                .background(disabled ? .gray.opacity(0.4) : foregroundStyle.opacity(0.2))
+                .cornerRadius(14)
+                .foregroundStyle(disabled ? .gray : foregroundStyle)
+                .opacity(disabled ? 0.8 : 1)
             }
         }
-        .padding(13)
-        .frame(maxWidth: .infinity)
-        .background(disabled ? .gray.opacity(0.4) : foregroundStyle.opacity(0.2))
-        .cornerRadius(14)
-        .foregroundStyle(disabled ? .gray : foregroundStyle)
-        .buttonStyle(.plain)
-        .opacity(disabled ? 0.8 : 1)
     }
 }
 
-// why doesn't this also have a fun comment too. anyways, skadz wrote this one. it's... alright.
+struct SettingsButtonStyle: ButtonStyle {
+    var color: Color
+    var isDisabled: Bool = false
+    
+    func makeBody(configuration: Configuration) -> some View {
+        ZStack {
+            configuration.label
+                .padding(13)
+                .frame(maxWidth: .infinity)
+                .background(isDisabled ? .gray.opacity(0.4) : color.opacity(0.2))
+                .cornerRadius(14)
+                .foregroundStyle(isDisabled ? .gray : color)
+                .opacity(isDisabled ? 0.8 : 1)
+        }
+    }
+}
+
 struct ListButtonStyle: ButtonStyle {
     var color: Color
     var material: UIBlurEffect.Style?
