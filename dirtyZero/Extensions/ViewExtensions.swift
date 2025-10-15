@@ -217,6 +217,7 @@ struct RegularButtonStyle: View {
                 .foregroundStyle(disabled ? .gray : foregroundStyle)
                 .opacity(disabled ? 0.8 : 1)
             }
+            .disabled(disabled)
         }
     }
 }

@@ -244,10 +244,12 @@ struct ContentView: View {
                                             }).frame(width: 50)
                                         }
                                     }
-                                    RegularButtonStyle(text: "Print Debug Info", icon: "ant.fill", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
-                                        print("[*] enabledTweakIds: \(enabledTweakIds)\n[*] isSupported: \(isSupported)\n[*] weOnADebugBuild: \(weOnADebugBuild)")
-                                        print(customTweaks)
-                                    })
+                                    if showLogs {
+                                        RegularButtonStyle(text: "Print Debug Info", icon: "ant.fill", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
+                                            print("[*] enabledTweakIds: \(enabledTweakIds)\n[*] isSupported: \(isSupported)\n[*] weOnADebugBuild: \(weOnADebugBuild)")
+                                            print(customTweaks)
+                                        })
+                                    }
                                 }
                                 .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
                             }
