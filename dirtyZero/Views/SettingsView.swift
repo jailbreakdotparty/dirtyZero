@@ -12,6 +12,7 @@ struct SettingsView: View {
     @AppStorage("showLogs") var showLogs: Bool = true
     @AppStorage("showDebugSettings") var showDebugSettings: Bool = false
     @AppStorage("showRiskyTweaks") var showRiskyTweaks: Bool = false
+    @AppStorage("autoRespringOnApply") var autoRespringOnApply: Bool = false
     @Environment(\.openURL) var openURL
     
     var body: some View {
@@ -98,6 +99,7 @@ struct SettingsView: View {
                         Toggle("Show Debug Settings", isOn: $showDebugSettings)
                     }
                     Toggle("Show Logs", isOn: $showLogs)
+                    Toggle("Auto Respring on Apply", isOn: $autoRespringOnApply)
                 }
             }
             .navigationTitle("Settings")
