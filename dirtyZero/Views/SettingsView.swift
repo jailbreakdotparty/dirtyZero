@@ -101,19 +101,14 @@ struct SettingsView: View {
                     }
                     Toggle("Show Logs", isOn: $showLogs)
                     Toggle("Auto Respring on Apply", isOn: $autoRespringOnApply)
-                    
                 }
-                
                 Section(header: HStack {
                     Image(systemName: "gearshape")
                     Text("RespringApp Bundle ID")
                 }) {
-                    
                     TextField("RespringApp Bundle ID:", text: $respringBundle)
-                    
+                    }
                 }
-                
-            }
             .navigationTitle("Settings")
         }
     }
