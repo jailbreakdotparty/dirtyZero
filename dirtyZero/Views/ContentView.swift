@@ -85,6 +85,8 @@ struct ContentView: View {
     @AppStorage("showLogs") private var showLogs: Bool = true
     @AppStorage("showDebugSettings") private var showDebugSettings: Bool = false
     @AppStorage("showRiskyTweaks") private var showRiskyTweaks: Bool = false
+    @AppStorage("autoRespringOnApply") private var autoRespringOnApply: Bool = false
+    @AppStorage("respringBundle") private var respringBundle: String = "com.respring.app"
     
     @AppStorage("customTweaks") private var customTweaks: [ZeroTweak] = []
     
@@ -341,7 +343,7 @@ struct ContentView: View {
                         
                         RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .orange, action: {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                let respringBundleID = "com.respring.app"
+                                let respringBundleID = respringBundle
                                 if isDatAppInstalled(respringBundleID) {
                                     LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
                                 } else {
@@ -404,9 +406,11 @@ struct ContentView: View {
         
         let totalTweaks = enabledTweaks.count
         var currentTweak = 1
+        var currentTweakName = "unknown"
         
         do {
             for tweak in enabledTweaks {
+                currentTweakName = tweak.name
                 applyingString = "[\(currentTweak)/\(totalTweaks)] Applying \(tweak.name)..."
                 print(applyingString)
                 for path in tweak.paths {
@@ -417,12 +421,16 @@ struct ContentView: View {
                 tweakApplicationStatus = .applying
             }
             print("[*] Successfully applied all tweaks!")
-            Alertinator.shared.alert(title: "Tweaks Applied Successfully!", body: "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed.")
-            tweakApplicationStatus = .applied
-            appliedString = "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed."
+            if autoRespringOnApply {
+                LSApplicationWorkspace.default().openApplication(withBundleID: respringBundle)
+            } else {
+                Alertinator.shared.alert(title: "Tweaks Applied Successfully!", body: "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed.")
+                tweakApplicationStatus = .applied
+                appliedString = "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed."
+            }
         } catch {
             tweakApplicationStatus = .failed
-            failedString = "There was an error while applying tweak \(currentTweak)/\(totalTweaks): \(error)."
+            failedString = "There was an error while applying \(currentTweakName): \(error)."
             print("[!] \(error)")
             Alertinator.shared.alert(title: "Failed to Apply", body: failedString)
             return

@@ -12,6 +12,8 @@ struct SettingsView: View {
     @AppStorage("showLogs") var showLogs: Bool = true
     @AppStorage("showDebugSettings") var showDebugSettings: Bool = false
     @AppStorage("showRiskyTweaks") var showRiskyTweaks: Bool = false
+    @AppStorage("autoRespringOnApply") var autoRespringOnApply: Bool = false
+    @AppStorage("respringBundle") var respringBundle: String = "com.respring.app"
     @Environment(\.openURL) var openURL
     
     var body: some View {
@@ -98,8 +100,15 @@ struct SettingsView: View {
                         Toggle("Show Debug Settings", isOn: $showDebugSettings)
                     }
                     Toggle("Show Logs", isOn: $showLogs)
+                    Toggle("Auto Respring on Apply", isOn: $autoRespringOnApply)
                 }
-            }
+                Section(header: HStack {
+                    Image(systemName: "gearshape")
+                    Text("RespringApp Bundle ID")
+                }) {
+                    TextField("RespringApp Bundle ID:", text: $respringBundle)
+                    }
+                }
             .navigationTitle("Settings")
         }
     }
