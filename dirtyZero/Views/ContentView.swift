@@ -86,6 +86,7 @@ struct ContentView: View {
     @AppStorage("showDebugSettings") private var showDebugSettings: Bool = false
     @AppStorage("showRiskyTweaks") private var showRiskyTweaks: Bool = false
     @AppStorage("autoRespringOnApply") private var autoRespringOnApply: Bool = false
+    @AppStorage("respringBundle") private var respringBundle: String = "com.respring.app"
     
     @AppStorage("customTweaks") private var customTweaks: [ZeroTweak] = []
     
@@ -342,7 +343,7 @@ struct ContentView: View {
                         
                         RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .orange, action: {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                let respringBundleID = "com.respring.app"
+                                let respringBundleID = respringBundle
                                 if isDatAppInstalled(respringBundleID) {
                                     LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
                                 } else {
@@ -421,7 +422,7 @@ struct ContentView: View {
             }
             print("[*] Successfully applied all tweaks!")
             if autoRespringOnApply {
-                LSApplicationWorkspace.default().openApplication(withBundleID: "com.respring.app")
+                LSApplicationWorkspace.default().openApplication(withBundleID: respringBundle)
             } else {
                 Alertinator.shared.alert(title: "Tweaks Applied Successfully!", body: "\(totalTweaks)/\(totalTweaks) tweaks applied! If you'd like to respring, ensure you have RespringApp installed.")
                 tweakApplicationStatus = .applied
