@@ -85,7 +85,7 @@ struct ContentView: View {
     @AppStorage("showLogs") private var showLogs: Bool = true
     @AppStorage("showDebugSettings") private var showDebugSettings: Bool = false
     @AppStorage("showRiskyTweaks") private var showRiskyTweaks: Bool = false
-    
+    @AppStorage("respringAppBID") private var respringAppBID: String = "com.respring.app"
     @AppStorage("customTweaks") private var customTweaks: [ZeroTweak] = []
     
     private var tweaks: [ZeroTweak] {
@@ -341,9 +341,8 @@ struct ContentView: View {
                         
                         RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .orange, action: {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                let respringBundleID = "com.respring.app"
-                                if isDatAppInstalled(respringBundleID) {
-                                    LSApplicationWorkspace.default().openApplication(withBundleID: respringBundleID)
+                                if isDatAppInstalled(respringAppBID) {
+                                    LSApplicationWorkspace.default().openApplication(withBundleID: respringAppBID)
                                 } else {
                                     Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again.")
                                 }
