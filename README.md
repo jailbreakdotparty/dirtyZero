@@ -16,25 +16,35 @@ All file modifications are done in memory. If something goes wrong or you want t
 | iOS 18.4+ | Not Supported |
 
 # Available Tweaks
+  - Custom Tweaks
+    - Create your own tweaks by pressing the + button at the top right
   - Home Screen
     - Disable Dock Background
     - Disable Folder Backgrounds
-    - Disable Alert & Touch Backgrounds
-    - Disable Spotlight Backgroud
     - Disable Widget Config BG
     - Disable App Library BG (iOS 18 only)
+    - Disable Library Search BG
+    - Disable Spotlight Background
+    - Disable Delete Icon
   - Lock Screen
     - Disable Passcode Background
     - Disable Lock Icon
     - Disable Quick Action Icons (iOS 16 & 17 only)
     - Disable Large Battery Icon (iOS 18 only)
-  - Global Customization
-    - Disable Notification Widget BGs
+  - Alerts & Overlays
+    - Disable Notification & Widget BGs
+    - Recolor Notification Shadows (Blue)
+    - Disable Touch & Alert Backgrounds
     - Disable Home Bar
-    - Enable Helvetica Font
+    - Disable Glassy Overlays
+    - Disable App Switcher BG
+  - Fonts & Icons
+    - Enable 𝖧𝖾𝗅𝗏𝖾𝗍𝗂𝖼𝖺 Font
+    - Disable Emojis
     - Disable Slider Icons
+    - Disable Ring Animations
+    - Disable Tethering Graphic
   - Control Center
-    - Disable CC Background
     - Disable CC Module Background (iOS 18 only)
     - Disable WiFi & Bluetooth Icons (iOS 16 & 17 only)
     - Disable DND Icon
@@ -46,10 +56,21 @@ All file modifications are done in memory. If something goes wrong or you want t
     - Disable Charge Sound
     - Disable Low Battery Sound
     - Disable Payment Sounds
+    - Disable Dialing Sounds
+ > [!NOTE]
+> Enable in settings <br>
+> May break your system. If they do, force reboot your device
+  - Risky Tweaks
+    - Disable CC Background
+    - Disable ALL Accent Colors
+    - Break System Font
+    - Disable ALL Banners
+    - Break SpringBoard Labels
+    - Break System Labels
 
 # How do I respring after applying the tweaks?
 ## Option 1: Use RespringApp
-1. Install [RespringApp](https://github.com/jailbreakdotparty/dirtyZero/releases/download/respringapp/respringapp.ipa) using your preferred method of sideloading. Make sure the bundle ID is exactly `com.respring.app`.
+1. Install [RespringApp](https://github.com/jailbreakdotparty/dirtyZero/releases/download/respringapp/respringapp.ipa) using your preferred method of sideloading. If you signed RespringApp with PPQ Protection or AltStore/SideStore, enable "Change Respring App Bundle ID" in settings and type in the bundle id of RespringApp. You can find the bundle id in AltStore's/SideStore's "View App IDs" menu or with tools like [Antrag](https://github.com/khcrysalis/Antrag).
 2. In dirtyZero, click the orange "Respring" button.
 3. Profit 🔥
 
