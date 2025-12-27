@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "dirtyZero.png",
+      "filename" : "dirtyZeroRegular-min.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "dirtyZero 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "dirtyZero 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

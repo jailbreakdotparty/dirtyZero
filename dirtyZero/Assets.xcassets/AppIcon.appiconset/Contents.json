@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "dirtyZero.png",
+      "filename" : "dirtyZeroRegular-min.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -24,6 +24,7 @@
           "value" : "tinted"
         }
       ],
+      "filename" : "dirtyZeroTinted-min.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
