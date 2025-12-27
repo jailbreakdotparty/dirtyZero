@@ -43,3 +43,13 @@ extension UIApplication {
         return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
     }
 }
+
+func doubleSystemVersion() -> Double {
+    let rawSystemVersion = UIDevice.current.systemVersion
+    let parsedSystemVersion = rawSystemVersion.split(separator: ".").prefix(2).joined(separator: ".")
+    return Double(parsedSystemVersion) ?? 0.0
+}
+
+func isdirtyZeroSupported() -> Bool {
+    return doubleSystemVersion() <= 18.3
+}

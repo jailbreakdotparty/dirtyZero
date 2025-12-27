@@ -1,13 +1,22 @@
 {
-  "originHash" : "14d1b5b18fa12c7169145b34bd4aa11cb476f68eeca07d997bd7a54833c68f47",
+  "originHash" : "e5f120e55d15949a42f700c3379393c52302803bcdaf2ea9ed657179a0276b17",
   "pins" : [
     {
       "identity" : "devicekit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/devicekit/DeviceKit",
       "state" : {
-        "revision" : "513b9d7e7a1bd46504a1009bbab943b75ce2f195",
-        "version" : "5.6.0"
+        "revision" : "581df61650bc457ec00373a592a84be3e7468eb1",
+        "version" : "5.7.0"
+      }
+    },
+    {
+      "identity" : "partyui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jailbreakdotparty/PartyUI",
+      "state" : {
+        "branch" : "main",
+        "revision" : "4a6e3ac6175e1af848261c2617e35827ae94527d"
       }
     }
   ],

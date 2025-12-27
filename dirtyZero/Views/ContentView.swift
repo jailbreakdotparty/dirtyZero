@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import PartyUI
 import DeviceKit
 import UIKit
 
-struct ZeroTweak: Identifiable, Codable {
+struct ZeroTweak: Identifiable, Codable, Equatable {
     var id: String { name }
     var icon: String
     var name: String
@@ -79,6 +80,7 @@ struct ContentView: View {
     @State private var showCustomTweaksPopover: Bool = false
     @State private var tweakApplicationStatus: TweakApplyingStatuses = TweakApplyingStatuses.ready
     @State private var tweakApplicationMessage: String = TweakApplyingStatuses.ready.rawValue
+    @State private var debugSettingsExpanded: Bool = false
     
     @FocusState private var isCustomPathFieldFocused: Bool
     
@@ -110,236 +112,153 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    if isSupported || weOnADebugBuild {
-                        Section(header: HeaderStyle(label: "Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))", icon: "info.circle")) {
+            List {
+                Section(header: HeaderLabel(text: "Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))", icon: "info.circle"), footer: Text("Made with love by the [jailbreak.party](https://jailbreak.party/) team.\n[Join the jailbreak.party Discord!](https://jailbreak.party/discord)").font(.footnote)) {
+                    VStack {
+                        VStack(alignment: .leading) {
+                            HStack {
+                                if tweakApplicationStatus == .applying {
+                                    ProgressView()
+                                } else if tweakApplicationStatus == .failed {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.red)
+                                } else if tweakApplicationStatus == .ready {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .opacity(0.6)
+                                } else {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.green)
+                                }
+                                Text(tweakApplicationStatus.rawValue)
+                            }
+                            if showLogs {
+                                TerminalContainer(content: VStack { LogView() })
+                            } else {
+                                Text(tweakApplicationStatus.description)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .font(.body)
+                                    .multilineTextAlignment(.leading)
+                                    .opacity(0.8)
+                            }
+                        }
+                        .padding()
+                        .modifier(DynamicGlassEffect(opacity: 1.0))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        HStack {
+                            HStack {
+                                Image(systemName: device.isPad ? "ipad" : "iphone.gen2")
+                                    .frame(width: 20, height: 20)
+                                Text("\(device.systemName!) \(device.systemVersion!)")
+                            }
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(10)
+                            .background(Color(.quaternarySystemFill))
+                            .cornerRadius(12)
+                            
+                            HStack {
+                                Image(systemName: "wrench.and.screwdriver")
+                                    .frame(width: 20, height: 20)
+                                if enabledTweaks.count == 1 {
+                                    Text("\(enabledTweaks.count) tweak")
+                                } else {
+                                    Text("\(enabledTweaks.count) tweaks")
+                                }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(10)
+                            .background(Color(.quaternarySystemFill))
+                            .cornerRadius(12)
+                        }
+                    }
+                }
+                .listRowSeparator(.hidden)
+                
+                if weOnADebugBuild || showDebugSettings {
+                    Section(header: HeaderDropdown(text: "Debugging", icon: "ant", isExpanded: $debugSettingsExpanded)) {
+                        if debugSettingsExpanded {
                             VStack {
-                                VStack {
-                                    VStack(alignment: .leading) {
-                                        HStack {
-                                            VStack(alignment: .leading) {
-                                                HStack {
-                                                    HStack {
-                                                        if tweakApplicationStatus == .applying {
-                                                            ProgressView()
-                                                        } else if tweakApplicationStatus == .failed {
-                                                            Image(systemName: "xmark.circle.fill")
-                                                                .foregroundStyle(.red)
-                                                        } else if tweakApplicationStatus == .ready {
-                                                            Image(systemName: "checkmark.circle.fill")
-                                                                .opacity(0.6)
-                                                        } else {
-                                                            Image(systemName: "checkmark.circle.fill")
-                                                                .foregroundStyle(.green)
-                                                        }
-                                                        Text(tweakApplicationStatus.rawValue)
-                                                    }
-                                                }
-                                            }
-                                            .fontWeight(.medium)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                        }
+                                HStack {
+                                    TextField("/path/to/zero", text: $customZeroPath)
+                                        .textFieldStyle(GlassyTextFieldStyle(opacity: 1.0))
+                                    Button(action: {
+                                        Haptic.shared.play(.soft)
+                                        customZeroPath = UIPasteboard.general.string ?? ""
+                                    }) {
+                                        Image(systemName: "doc.on.doc")
+                                            .frame(width: 18, height: 24)
                                     }
-                                    VStack {
-                                        if showLogs {
-                                            ZStack(alignment: .top) {
-                                                LogView()
-                                                    .frame(maxWidth: .infinity)
-                                                    .padding(.horizontal)
-                                                VStack {
-                                                    VariableBlurView(maxBlurRadius: 1, direction: .blurredTopClearBottom)
-                                                        .frame(maxHeight: 20)
-                                                    Spacer()
-                                                    VariableBlurView(maxBlurRadius: 1, direction: .blurredBottomClearTop)
-                                                        .frame(maxHeight: 20)
-                                                }
-                                                .frame(alignment: .top)
-                                            }
-                                            .frame(height: 250)
-                                            .onAppear(perform: {
-                                                if !hasShownWelcome {
-                                                    print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
-                                                    hasShownWelcome = true
+                                    .buttonStyle(GlassyButtonStyle(useFullWidth: false))
+                                    Button(action: {
+                                        Haptic.shared.play(.heavy)
+                                        if customZeroPath.isEmpty {
+                                            Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
+                                        } else {
+                                            try? zeroPoC(path: customZeroPath)
+                                            Alertinator.shared.alert(title: "Attempted to Zero", body: "Attempted to zero out \(customZeroPath).", actionLabel: "Respring", action: {
+                                                if isDatAppInstalled(respringAppBID) {
+                                                    LSApplicationWorkspace.default().openApplication(withBundleID: respringAppBID)
+                                                } else {
+                                                    Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again.")
                                                 }
                                             })
-                                            .background(Color(.tertiarySystemFill))
-                                            .cornerRadius(12)
-                                        } else {
-                                            Text(tweakApplicationStatus.description)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                                .font(.body)
-                                                .multilineTextAlignment(.leading)
-                                                .opacity(0.8)
                                         }
+                                    }) {
+                                        Image(systemName: "checkmark")
+                                            .frame(width: 18, height: 24)
                                     }
+                                    .buttonStyle(GlassyButtonStyle(useFullWidth: false))
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(14)
-                                .background(Color(.quaternarySystemFill))
-                                .cornerRadius(14)
-                                HStack {
-                                    HStack {
-                                        Image(systemName: "iphone.gen2")
-                                            .frame(width: 20, height: 20)
-                                        Text("\(device.systemName!) \(device.systemVersion!)")
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                                    .padding(10)
-                                    .background(Color(.quaternarySystemFill))
-                                    .cornerRadius(12)
-                                    
-                                    HStack {
-                                        Image(systemName: "wrench.and.screwdriver")
-                                            .frame(width: 20, height: 20)
-                                        if enabledTweaks.count == 1 {
-                                            Text("\(enabledTweaks.count) tweak")
-                                        } else {
-                                            Text("\(enabledTweaks.count) tweaks")
-                                        }
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                                    .padding(10)
-                                    .background(Color(.quaternarySystemFill))
-                                    .cornerRadius(14)
+                                Button(action: {
+                                    Haptic.shared.play(.soft)
+                                    print("===== dirtyZero Debug =====\n[*] isSupported: \(isSupported)\n[*] weOnADebugBuild: \(weOnADebugBuild)\n[*] enabledTweakIds: \(enabledTweakIds)\n[*] customTweaks: \(customTweaks)")
+                                }) {
+                                    ButtonLabel(text: "Show Debug Info", icon: "ant")
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                Text("Made with love by the [jailbreak.party](https://jailbreak.party/) team.\n[Join the jailbreak.party Discord!](https://jailbreak.party/discord)")
-                                    .font(.system(.footnote, weight: .regular))
-                                    .opacity(0.8)
-                                    .padding(.leading, 6)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
-                        }
-                        if weOnADebugBuild || showDebugSettings {
-                            Section(header: HeaderStyle(label: "Debugging", icon: "ant")) {
-                                VStack {
-                                    HStack {
-                                        TextField("/path/to/zero", text: $customZeroPath)
-                                            .padding(13)
-                                            .frame(maxWidth: .infinity)
-                                            .background(Color(.quaternarySystemFill))
-                                            .cornerRadius(12)
-                                            .focused($isCustomPathFieldFocused)
-                                        if isCustomPathFieldFocused {
-                                            RegularButtonStyle(text: "", icon: "xmark", isPNGIcon: false, disabled: false, foregroundStyle: .red, action: {
-                                                isCustomPathFieldFocused = false
-                                            }).frame(width: 50)
-                                        } else {
-                                            RegularButtonStyle(text: "", icon: "checkmark", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
-                                                if customZeroPath.isEmpty {
-                                                    Alertinator.shared.alert(title: "Invaild Path", body: "Please enter a vaild path.")
-                                                } else {
-                                                    try? zeroPoC(path: customZeroPath)
-                                                    Alertinator.shared.alert(title: "Attempted to Zero", body: "Attempted to zero out \(customZeroPath)")
-                                                }
-                                            }).frame(width: 50)
-                                            RegularButtonStyle(text: "", icon: "doc.on.clipboard", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
-                                                if let clipboardText = UIPasteboard.general.string {
-                                                    customZeroPath = clipboardText
-                                                } else {
-                                                    print("[!] epic pasteboard fail :fire:")
-                                                }
-                                            }).frame(width: 50)
-                                        }
-                                    }
-                                    if showLogs {
-                                        RegularButtonStyle(text: "Print Debug Info", icon: "ant.fill", isPNGIcon: false, disabled: false, foregroundStyle: .accent, action: {
-                                            print("[*] enabledTweakIds: \(enabledTweakIds)\n[*] isSupported: \(isSupported)\n[*] weOnADebugBuild: \(weOnADebugBuild)")
-                                            print(customTweaks)
-                                        })
-                                    }
-                                }
-                                .listRowInsets(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+                                .buttonStyle(GlassyButtonStyle())
                             }
                         }
-                        if !customTweaks.isEmpty {
-                            CustomTweakSectionList(tweaks: customTweaks, enabledTweakIds: $enabledTweakIds)
-                        }
-                        TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: homeScreen, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Alerts & Overlays", sectionIcon: "exclamationmark.triangle", tweaks: alertsOverlays, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Fonts & Icons", sectionIcon: "paintbrush", tweaks: fontsIcons, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, enabledTweakIds: $enabledTweakIds)
-                        TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
-                        if weOnADebugBuild || showRiskyTweaks {
-                            TweakSectionList(sectionLabel: "Risky Tweaks", sectionIcon: "exclamationmark.triangle", tweaks: riskyTweaks, enabledTweakIds: $enabledTweakIds)
-                        }
-                    } else {
-                        // this too will make people who can't read cry
-                        VStack {
-                            Image(systemName: "iphone.slash")
-                                .foregroundStyle(.secondary)
-                                .font(.system(size: 40).weight(.regular))
-                                .imageScale(.large)
-                            
-                            Text("**Unsupported Version**")
-                                .multilineTextAlignment(.center)
-                                .font(.title2)
-                            Text("Your current software version (\(device.systemVersion!)) is not and never will be supported by dirtyZero.\nYou also cannot downgrade to a supported version.")
-                                .multilineTextAlignment(.center)
-                                .font(.system(size: 16))
-                                .foregroundStyle(.secondary)
-                            
-                            RegularButtonStyle(text: "Exit App", icon: "xmark", isPNGIcon: false, disabled: false, foregroundStyle: .red, action: {
-                                exitinator()
-                            })
-                        }
                     }
+                    .listRowSeparator(.hidden)
+                    .animation(.default, value: debugSettingsExpanded)
                 }
-                .padding(.horizontal, 20)
-                .navigationTitle("dirtyZero")
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading, content: {
-                        Button(action: {
-                            showSettingsPopover = true
-                        }) {
-                            Image(systemName: "gearshape")
-                        }
-                    })
-                    ToolbarItem(placement: .topBarTrailing, content: {
-                        Button(action: {
-                            showCustomTweaksPopover = true
-                        }) {
-                            Image(systemName: "plus")
-                        }
-                    })
+                TweakSectionList(sectionLabel: "Custom Tweaks", sectionIcon: "wrench.and.screwdriver", tweaks: customTweaks, isCustomTweak: true, enabledTweakIds: $enabledTweakIds)
+                TweakSectionList(sectionLabel: "Home Screen", sectionIcon: "house", tweaks: homeScreen, enabledTweakIds: $enabledTweakIds)
+                TweakSectionList(sectionLabel: "Lock Screen", sectionIcon: "lock", tweaks: lockScreen, enabledTweakIds: $enabledTweakIds)
+                TweakSectionList(sectionLabel: "Alerts & Overlays", sectionIcon: "exclamationmark.triangle", tweaks: alertsOverlays, enabledTweakIds: $enabledTweakIds)
+                TweakSectionList(sectionLabel: "Fonts & Icons", sectionIcon: "paintbrush", tweaks: fontsIcons, enabledTweakIds: $enabledTweakIds)
+                TweakSectionList(sectionLabel: "Control Center", sectionIcon: "square.grid.2x2", tweaks: controlCenter, enabledTweakIds: $enabledTweakIds)
+                TweakSectionList(sectionLabel: "Sound Effects", sectionIcon: "speaker.wave.2", tweaks: soundEffects, enabledTweakIds: $enabledTweakIds)
+                if weOnADebugBuild || showRiskyTweaks {
+                    TweakSectionList(sectionLabel: "Risky Tweaks", sectionIcon: "exclamationmark.triangle", tweaks: riskyTweaks, isRiskyTweak: true, enabledTweakIds: $enabledTweakIds)
                 }
-                // this will make people who cannot read cry.
-                .onAppear {
-                    let doubleSystemVersion = Double(device.systemVersion!.split(separator: ".").prefix(2).joined(separator: "."))!
-                    if doubleSystemVersion >= 18.4 && !weOnADebugBuild {
-                        isSupported = false
-                    }
-                }
-                .sheet(isPresented: $showSettingsPopover, content: {
-                    SettingsView()
-                })
-                .sheet(isPresented: $showCustomTweaksPopover, content: {
-                    CustomTweaksView()
-                })
             }
+            .listStyle(.plain)
+            .navigationTitle("dirtyZero")
             .safeAreaInset(edge: .bottom) {
-                VStack {
-                    if enabledTweaks.isEmpty {
-                        RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .gray, action: {
-                            Alertinator.shared.alert(title: "No Tweaks Enabled!", body: "Please select some tweaks first.")
-                        })
-                    } else {
-                        RegularButtonStyle(text: "Apply Tweaks", icon: "checkmark", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .green, action: {
+                OverlayButtonContainer(content: VStack {
+                    Button(action: {
+                        Haptic.shared.play(.heavy)
+                        if enabledTweaks.isEmpty {
+                            Alertinator.shared.alert(title: "No tweaks were selected!", body: "Select some tweaks first, then try again.")
+                        } else {
                             applyTweaks(tweaks: enabledTweaks)
-                        })
+                        }
+                    }) {
+                        ButtonLabel(text: "Apply Tweaks", icon: "checkmark")
                     }
-                    
+                    .buttonStyle(GlassyButtonStyle(color: enabledTweaks.isEmpty ? .gray : .green, isMaterialButton: true))
                     HStack {
-                        RegularButtonStyle(text: "Revert", icon: "xmark", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .red, action: {
-                            Alertinator.shared.alert(title: "Device Will Reboot", body: "Your device will have to reboot in order to revert all tweaks. Tap OK to continue.", action: {
+                        Button(action: {
+                            Haptic.shared.play(.soft)
+                            Alertinator.shared.alert(title: "Warning!", body: "To revert all tweaks currently applied, we'll have to reboot your device.", actionLabel: "Reboot", action: {
                                 try? zeroPoC(path: "/usr/lib/dyld")
                             })
-                        })
-                        
-                        RegularButtonStyle(text: "Respring", icon: "arrow.counterclockwise", isPNGIcon: false, disabled: !isSupported, foregroundStyle: .orange, action: {
+                        }) {
+                            ButtonLabel(text: "Remove", icon: "xmark")
+                        }
+                        .buttonStyle(GlassyButtonStyle(color: .red, isMaterialButton: true))
+                        Button(action: {
+                            Haptic.shared.play(.heavy)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 if isDatAppInstalled(respringAppBID) {
                                     LSApplicationWorkspace.default().openApplication(withBundleID: respringAppBID)
@@ -347,53 +266,53 @@ struct ContentView: View {
                                     Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again.")
                                 }
                             }
-                        })
-                    }
-                }
-                .contextMenu {
-                    Button {
-                        Alertinator.shared.prompt(title: "Custom Path", placeholder: "Path") { path in
-                            if let _ = path, !path!.isEmpty {
-                                try? zeroPoC(path: path!)
-                            } else {
-                                Alertinator.shared.alert(title: "Invalid Path", body: "Enter a vaild path.")
-                            }
+                        }) {
+                            ButtonLabel(text: "Respring", icon: "goforward")
                         }
-                    } label: {
-                        Label("Custom Path", systemImage: "terminal")
+                        .buttonStyle(GlassyButtonStyle(color: .orange, isMaterialButton: true))
                     }
-                    .disabled(!isSupported)
-                    
-                    Button {
-                        try? zeroPoC(path: "/usr/lib/dyld")
-                    } label: {
-                        Label("Panic", systemImage: "ant")
-                    }
-                    .disabled(!isSupported)
+                })
+            }
+            .onAppear {
+                if weOnADebugBuild {
+                    print("[!] We're on a debug build!")
                 }
-                .padding(.horizontal, 25)
-                .padding(.top, 50)
-                .background(
-                    ZStack {
-                        Rectangle()
-                            .foregroundStyle(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color.clear,
-                                        Color(.systemBackground).opacity(0.7)
-                                    ]),
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            )
-                        VariableBlurView(maxBlurRadius: 8, direction: .blurredBottomClearTop)
+                if !hasShownWelcome {
+                    print("[*] Welcome to dirtyZero!\n[*] Running on \(device.systemName!) \(device.systemVersion!), \(device.description)\n[!] All tweaks are done in memory, so if something goes wrong, you can force reboot to revert changes.")
+                    hasShownWelcome = true
+                }
+                if !isdirtyZeroSupported() && !weOnADebugBuild {
+                    Alertinator.shared.alert(title: "Warning!", body: "This version of iOS does not and never will support dirtyZero.", showCancel: false, actionLabel: "Exit App", action: {
+                        exitinator()
+                    })
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        showSettingsPopover = true
+                    }) {
+                        Image(systemName: "gearshape")
                     }
-                        .ignoresSafeArea()
-                )
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        showCustomTweaksPopover = true
+                    }) {
+                        Image(systemName: "paintpalette")
+                    }
+                }
+            }
+            .sheet(isPresented: $showSettingsPopover) {
+                SettingsView()
+            }
+            .sheet(isPresented: $showCustomTweaksPopover) {
+                CustomTweaksView()
             }
         }
     }
     
+    // MARK: Functions
     func applyTweaks(tweaks: [ZeroTweak]) {
         var applyingString = "[*] Applying the selected tweaks: "
         let tweakNames = enabledTweaks.map { $0.name }.joined(separator: ", ")
