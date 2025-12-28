@@ -142,7 +142,7 @@ struct ContentView: View {
                             }
                         }
                         .padding()
-                        .modifier(DynamicGlassEffect(opacity: 1.0))
+                        .modifier(DynamicGlassEffect())
                         .frame(maxWidth: .infinity, alignment: .leading)
                         HStack {
                             HStack {
@@ -153,7 +153,7 @@ struct ContentView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(10)
                             .background(Color(.quaternarySystemFill))
-                            .cornerRadius(12)
+                            .cornerRadius(conditionalCornerRadius())
                             
                             HStack {
                                 Image(systemName: "wrench.and.screwdriver")
@@ -167,7 +167,7 @@ struct ContentView: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(10)
                             .background(Color(.quaternarySystemFill))
-                            .cornerRadius(12)
+                            .cornerRadius(conditionalCornerRadius())
                         }
                     }
                 }
@@ -179,7 +179,7 @@ struct ContentView: View {
                             VStack {
                                 HStack {
                                     TextField("/path/to/zero", text: $customZeroPath)
-                                        .textFieldStyle(GlassyTextFieldStyle(opacity: 1.0))
+                                        .textFieldStyle(GlassyTextFieldStyle( ))
                                     Button(action: {
                                         Haptic.shared.play(.soft)
                                         customZeroPath = UIPasteboard.general.string ?? ""
@@ -212,7 +212,7 @@ struct ContentView: View {
                                     Haptic.shared.play(.soft)
                                     print("===== dirtyZero Debug =====\n[*] isSupported: \(isSupported)\n[*] weOnADebugBuild: \(weOnADebugBuild)\n[*] enabledTweakIds: \(enabledTweakIds)\n[*] customTweaks: \(customTweaks)")
                                 }) {
-                                    ButtonLabel(text: "Show Debug Info", icon: "ant")
+                                    ButtonLabel(text: "Print Debug Info", icon: "ant")
                                 }
                                 .buttonStyle(GlassyButtonStyle())
                             }
@@ -246,7 +246,7 @@ struct ContentView: View {
                     }) {
                         ButtonLabel(text: "Apply Tweaks", icon: "checkmark")
                     }
-                    .buttonStyle(GlassyButtonStyle(color: enabledTweaks.isEmpty ? .gray : .green, isMaterialButton: true))
+                    .buttonStyle(GlassyButtonStyle(color: enabledTweaks.isEmpty ? .gray : .green, isMaterialButton: false))
                     HStack {
                         Button(action: {
                             Haptic.shared.play(.soft)
@@ -256,7 +256,7 @@ struct ContentView: View {
                         }) {
                             ButtonLabel(text: "Remove", icon: "xmark")
                         }
-                        .buttonStyle(GlassyButtonStyle(color: .red, isMaterialButton: true))
+                        .buttonStyle(GlassyButtonStyle(color: .red, isMaterialButton: false))
                         Button(action: {
                             Haptic.shared.play(.heavy)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -269,9 +269,9 @@ struct ContentView: View {
                         }) {
                             ButtonLabel(text: "Respring", icon: "goforward")
                         }
-                        .buttonStyle(GlassyButtonStyle(color: .orange, isMaterialButton: true))
+                        .buttonStyle(GlassyButtonStyle(color: .orange, isMaterialButton: false))
                     }
-                })
+                }, blurRadius: 10)
             }
             .onAppear {
                 if weOnADebugBuild {

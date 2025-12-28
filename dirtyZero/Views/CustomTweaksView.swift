@@ -30,10 +30,10 @@ struct CustomTweaksView: View {
                 Section(header: HeaderLabel(text: "Tweak Info", icon: "info.circle")) {
                     VStack(spacing: 10) {
                         TextField("Tweak Name", text: $tweakName)
-                            .textFieldStyle(GlassyTextFieldStyle(opacity: 1.0))
+                            .textFieldStyle(GlassyTextFieldStyle())
                         HStack {
                             TextField("/path/to/zero", text: $path2Add)
-                                .textFieldStyle(GlassyTextFieldStyle(opacity: 1.0))
+                                .textFieldStyle(GlassyTextFieldStyle())
                                 .autocorrectionDisabled()
                                 .textInputAutocapitalization(.never)
                             Button(action: {

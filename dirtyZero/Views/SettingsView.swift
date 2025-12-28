@@ -60,19 +60,16 @@ struct SettingsView: View {
                     }
                 }
                 Section(header: HeaderLabel(text: "Credits", icon: "person")) {
-                    LinkCreditCell(image: "skadz108", name: "skadz108", text: "Initial developer, backend, and exploit-related management.", link: "https://github.com/skadz108")
+                    LinkCreditCell(image: "skadz108", name: "Skadz", text: "Initial developer, backend, and exploit-related management.", link: "https://github.com/skadz108")
                     LinkCreditCell(image: "lunginspector", name: "lunginspector", text: "Frontend developer, tweak creator, and app UI.", link: "https://github.com/skadz108")
+                    LinkCreditCell(image: "ianbeer", name: "Ian Beer (Gooogle Project Zero)", text: "Discovering & publishing CVE-2025-24203.", link: "https://project-zero.issues.chromium.org/issues/391518636")
                 }
                 Section(header: HeaderLabel(text: "Settings", icon: "gearshape")) {
-                    if !weOnADebugBuild {
-                        Toggle("Show Risky Tweaks", isOn: $showRiskyTweaks)
-                        Toggle("Show Debug Settings", isOn: $showDebugSettings)
-                    }
+                    Toggle("Show Risky Tweaks", isOn: $showRiskyTweaks)
+                        .disabled(weOnADebugBuild)
+                    Toggle("Show Debug Settings", isOn: $showDebugSettings)
+                        .disabled(weOnADebugBuild)
                     Toggle("Show Logs", isOn: $showLogs)
-                    Toggle("Change Respring App Bundle ID", isOn: $changeRespringAppBundleID)
-                    if changeRespringAppBundleID {
-                        TextField("Respring App Bundle ID", text: $respringAppBID)
-                    }
                 }
                 Section(header: HeaderLabel(text: "Actions", icon: "hammer")) {
                     VStack(spacing: 10) {
@@ -85,11 +82,17 @@ struct SettingsView: View {
                         .buttonStyle(GlassyButtonStyle(color: .orange))
                         Button(action: {
                             Haptic.shared.play(.heavy)
-                            customTweaks.removeAll()
+                            Alertinator.shared.alert(title: "Are you sure you want to do this?", body: "This will permanently remove all custom tweaks that you have created.", actionLabel: "Continue", action: {
+                                customTweaks.removeAll()
+                            })
                         }) {
                             ButtonLabel(text: "Remove Custom Tweaks", icon: "paintpalette")
                         }
                         .buttonStyle(GlassyButtonStyle(color: .red))
+                    }
+                    Toggle("Change Respring App Bundle ID", isOn: $changeRespringAppBundleID)
+                    if changeRespringAppBundleID {
+                        TextField("Respring App Bundle ID", text: $respringAppBID)
                     }
                 }
             }

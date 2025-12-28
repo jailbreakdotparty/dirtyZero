@@ -93,7 +93,7 @@ struct TweakSectionList: View {
                                     .animation(.easeInOut(duration: 0.15), value: isTweakEnabled(tweak))
                             }
                             .foregroundStyle(color)
-                            .modifier(GlassyListRowBackground(color: color))
+                            .modifier(GlassyListRowBackground(color: isTweakEnabled(tweak) ? color.opacity(1.2) : color))
                             .contextMenu {
                                 Button(action: {
                                     Alertinator.shared.alert(title: tweak.name, body: tweak.paths.joined(separator: ", "))
@@ -103,6 +103,7 @@ struct TweakSectionList: View {
                                 if isCustomTweak {
                                     Button(role: .destructive, action: {
                                         customTweaks.removeAll { $0.id == tweak.id }
+                                        enabledTweakIds.removeAll { $0 == tweak.id }
                                     }) {
                                         Label("Delete Tweak", systemImage: "xmark")
                                     }
