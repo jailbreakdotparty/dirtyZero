@@ -235,7 +235,7 @@ struct ContentView: View {
             .listStyle(.plain)
             .navigationTitle("dirtyZero")
             .safeAreaInset(edge: .bottom) {
-                VStack {
+                OverlayButtonContainer(content: VStack {
                     Button(action: {
                         Haptic.shared.play(.heavy)
                         if enabledTweaks.isEmpty {
@@ -271,8 +271,7 @@ struct ContentView: View {
                         }
                         .buttonStyle(GlassyButtonStyle(color: .orange, isMaterialButton: true))
                     }
-                }
-                .modifier(OverlayBackground())
+                })
             }
             .onAppear {
                 if weOnADebugBuild {
