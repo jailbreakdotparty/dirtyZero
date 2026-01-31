@@ -8,6 +8,7 @@
 import SwiftUI
 import PartyUI
 import UIKit
+import DeviceKit
 
 // i fucking hate this. but it makes it work so please don't change this.
 // Skadz, 10/11/25 7:17 PM
@@ -24,6 +25,8 @@ struct CustomTweaksView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage("customTweaks") private var customTweaks: [ZeroTweak] = []
     
+    let device = Device.current
+    
     var body: some View {
         NavigationStack {
             List {
@@ -32,34 +35,28 @@ struct CustomTweaksView: View {
                         TextField("Tweak Name", text: $tweakName)
                             .textFieldStyle(GlassyTextFieldStyle())
                         HStack {
-                            TextField("/path/to/zero", text: $path2Add)
-                                .textFieldStyle(GlassyTextFieldStyle())
-                                .autocorrectionDisabled()
-                                .textInputAutocapitalization(.never)
-                            Button(action: {
-                                path2Add = UIPasteboard.general.string ?? ""
-                            }) {
-                                Image(systemName: "doc.on.doc")
-                                    .frame(width: 18, height: 24)
-                            }
-                            .buttonStyle(GlassyButtonStyle())
-                            .frame(width: 50)
-                            Button(action: {
-                                if path2Add.isEmpty {
-                                    Alertinator.shared.alert(title: "Invaild Path!", body: "Please enter a path and try again.")
-                                } else {
-                                    addPath()
+                            GlassyTextButtonField(titleKey: "/path/to/zero", text: $path2Add, useAutoCorrection: false, useAutoCaptialization: false, button: Group {
+                                Button(action: {
+                                    Haptic.shared.play(.soft)
+                                    path2Add = UIPasteboard.general.string ?? ""
+                                }) {
+                                    Image(systemName: "doc.on.doc")
+                                        .frame(width: 18, height: 24)
                                 }
+                            })
+                            Button(action: {
+                                Haptic.shared.play(.soft)
+                                addPath()
                             }) {
                                 Image(systemName: "plus")
-                                    .frame(width: 18, height: 24)
+                                    .frame(height: 24)
                             }
-                            .buttonStyle(GlassyButtonStyle())
-                            .frame(width: 50)
+                            .buttonStyle(GlassyButtonStyle(isDisabled: path2Add.isEmpty || tweakName.isEmpty, useFullWidth: false))
                         }
                     }
                 }
                 .listRowSeparator(.hidden)
+                .listRowInsets(.dropdownRowInsets)
                 
                 Section(header: HeaderLabel(text: "Added Paths", icon: "pencil")) {
                     ForEach(targetPaths) { item in
@@ -67,6 +64,7 @@ struct CustomTweaksView: View {
                             Text(item.path)
                             Spacer()
                             Button(action: {
+                                Haptic.shared.play(.soft)
                                 withAnimation {
                                     targetPaths.removeAll { $0.id == item.id }
                                 }
@@ -79,10 +77,11 @@ struct CustomTweaksView: View {
                     }
                 }
                 .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets(top: 6, leading: 18, bottom: 6, trailing: 18))
+                .listRowInsets(.dropdownRowInsets)
             }
             .listStyle(.plain)
             .navigationTitle("Create Tweak")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
@@ -93,8 +92,9 @@ struct CustomTweaksView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                OverlayButtonContainer(content: VStack {
+                VStack {
                     Button(action: {
+                        Haptic.shared.play(.soft)
                         if tweakName.isEmpty || targetPaths.isEmpty {
                             Alertinator.shared.alert(title: "No paths were added!", body: "Add some paths & set a tweak name, then try again.")
                         } else {
@@ -110,7 +110,8 @@ struct CustomTweaksView: View {
                         ButtonLabel(text: "Add Tweak", icon: "plus")
                     }
                     .buttonStyle(GlassyButtonStyle(color: tweakName.isEmpty || targetPaths.isEmpty ? .gray : .accentColor, isMaterialButton: true))
-                })
+                }
+                .modifier(OverlayBackground(stickBottomPadding: device.isPad ? true : false))
             }
         }
         .tint(.purple)

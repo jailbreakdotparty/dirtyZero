@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PartyUI
 
 var weOnADebugBuild: Bool = false
 var pipe = Pipe()
@@ -28,7 +29,7 @@ struct dirtyZeroApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
                 .onAppear(perform: {
                     if weOnADebugBuild { print("We're on a Debug build!") }
                 })
@@ -44,12 +45,26 @@ extension UIApplication {
     }
 }
 
-func doubleSystemVersion() -> Double {
-    let rawSystemVersion = UIDevice.current.systemVersion
-    let parsedSystemVersion = rawSystemVersion.split(separator: ".").prefix(2).joined(separator: ".")
-    return Double(parsedSystemVersion) ?? 0.0
+@MainActor func isdirtyZeroSupported() -> Bool {
+    return doubleSystemVersion() <= 18.3
 }
 
-func isdirtyZeroSupported() -> Bool {
-    return doubleSystemVersion() <= 18.3
+extension Array: @retroactive RawRepresentable where Element: Codable {
+    public init?(rawValue: String) {
+        guard let data = rawValue.data(using: .utf8),
+              let result = try? JSONDecoder().decode([Element].self, from: data)
+        else {
+            return nil
+        }
+        self = result
+    }
+    
+    public var rawValue: String {
+        guard let data = try? JSONEncoder().encode(self),
+              let result = String(data: data, encoding: .utf8)
+        else {
+            return "[]"
+        }
+        return result
+    }
 }

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		15B2C5432EFE00610003C12A /* PartyUI in Frameworks */ = {isa = PBXBuildFile; productRef = 15B2C5422EFE00610003C12A /* PartyUI */; };
+		157E1DFE2F2B138600E52180 /* PartyUI in Frameworks */ = {isa = PBXBuildFile; productRef = 157E1DFD2F2B138600E52180 /* PartyUI */; };
 		4305D0D62DCDDD7000399896 /* DeviceKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4305D0D52DCDDD7000399896 /* DeviceKit */; };
 		435DD12F2DDD7DF00058DFCA /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 435DD12E2DDD7DF00058DFCA /* MobileCoreServices.framework */; };
 /* End PBXBuildFile section */
@@ -30,7 +30,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15B2C5432EFE00610003C12A /* PartyUI in Frameworks */,
+				157E1DFE2F2B138600E52180 /* PartyUI in Frameworks */,
 				435DD12F2DDD7DF00058DFCA /* MobileCoreServices.framework in Frameworks */,
 				4305D0D62DCDDD7000399896 /* DeviceKit in Frameworks */,
 			);
@@ -85,7 +85,7 @@
 			name = dirtyZero;
 			packageProductDependencies = (
 				4305D0D52DCDDD7000399896 /* DeviceKit */,
-				15B2C5422EFE00610003C12A /* PartyUI */,
+				157E1DFD2F2B138600E52180 /* PartyUI */,
 			);
 			productName = dirtyZero;
 			productReference = 4397F9512DCDDA0100090799 /* dirtyZero.app */;
@@ -118,7 +118,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				4305D0D42DCDDD7000399896 /* XCRemoteSwiftPackageReference "DeviceKit" */,
-				15B2C5412EFE00610003C12A /* XCRemoteSwiftPackageReference "PartyUI" */,
+				157E1DFC2F2B138600E52180 /* XCLocalSwiftPackageReference "../../Packages/PartyUI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4397F9522DCDDA0100090799 /* Products */;
@@ -279,7 +279,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = TA2N4LNLT8;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = dirtyZero;
@@ -288,6 +288,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -313,7 +314,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = TA2N4LNLT8;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = dirtyZero;
@@ -322,6 +323,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -360,15 +362,14 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		15B2C5412EFE00610003C12A /* XCRemoteSwiftPackageReference "PartyUI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/jailbreakdotparty/PartyUI";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		157E1DFC2F2B138600E52180 /* XCLocalSwiftPackageReference "../../Packages/PartyUI" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../Packages/PartyUI;
 		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
 		4305D0D42DCDDD7000399896 /* XCRemoteSwiftPackageReference "DeviceKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/devicekit/DeviceKit";
@@ -380,9 +381,8 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		15B2C5422EFE00610003C12A /* PartyUI */ = {
+		157E1DFD2F2B138600E52180 /* PartyUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 15B2C5412EFE00610003C12A /* XCRemoteSwiftPackageReference "PartyUI" */;
 			productName = PartyUI;
 		};
 		4305D0D52DCDDD7000399896 /* DeviceKit */ = {

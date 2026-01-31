@@ -25,15 +25,7 @@ struct SettingsView: View {
             List {
                 Section(header: HeaderLabel(text: "About", icon: "info.circle")) {
                     VStack(spacing: 10) {
-                        HStack(spacing: 12) {
-                            ImageRenderingView(imageName: "dirtyZero", cornerRadius: 12, width: 60, height: 60)
-                            VStack(alignment: .leading) {
-                                Text("dirtyZero")
-                                    .font(.system(.title3, weight: .semibold))
-                                Text("Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))")
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        AppInfoCell(imageName: "dirtyZero", title: "dirtyZero", subtitle: "Version \(UIApplication.appVersion!) (\(weOnADebugBuild ? "Debug" : "Release"))")
                         Button(action: {
                             Haptic.shared.play(.soft)
                             openURL(URL(string: "https://jailbreak.party")!)
@@ -97,6 +89,7 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
