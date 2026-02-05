@@ -15,39 +15,46 @@ All file modifications are done in memory. If something goes wrong or you want t
 | iOS 18.0 - iOS 18.3.2 | Supported |
 | iOS 18.4+ | Not Supported |
 
+# Actions (in settings)
+- Reset Selected Tweaks
+- Remove Custom Tweaks
+- Change Respring App Bundle ID
+  - [How to look up the bundle id](https://github.com/jailbreakdotparty/dirtyZero?tab=readme-ov-file#option-1-use-respringapp)
+
 # Available Tweaks
   - Custom Tweaks
     - Create your own tweaks by pressing the + button at the top right
   - Home Screen
-    - Disable Dock Background
-    - Disable Folder Backgrounds
-    - Disable Widget Config BG
-    - Disable App Library BG (iOS 18 only)
-    - Disable Library Search BG
-    - Disable Spotlight Background
-    - Disable Delete Icon
+    - Hide Dock Background
+    - Clear Folder Backgrounds
+    - Clear Widget Config BG
+    - Clear App Library BG (iOS 18 only)
+    - Clear Library Search BG
+    - Clear Spotlight Background
+    - Hide Delete Icon
   - Lock Screen
-    - Disable Passcode Background
-    - Disable Lock Icon
-    - Disable Quick Action Icons (iOS 16 & 17 only)
+    - Clear Passcode Background
+    - Hide Lock Icon
+    - Hide Quick Action Icons (iOS 16 & 17 only)
     - Disable Large Battery Icon (iOS 18 only)
   - Alerts & Overlays
-    - Disable Notification & Widget BGs
-    - Recolor Notification Shadows (Blue)
-    - Disable Touch & Alert Backgrounds
-    - Disable Home Bar
-    - Disable Glassy Overlays
-    - Disable App Switcher BG
+    - Clear Notification & Widget BGs
+    - Blue Notification Shadows
+    - Clear Touch & Alert Backgrounds
+    - Hide Home Bar
+    - Remove Glassy Overlays
+    - Clear App Switcher BG
   - Fonts & Icons
     - Enable 𝖧𝖾𝗅𝗏𝖾𝗍𝗂𝖼𝖺 Font
     - Disable Emojis
-    - Disable Slider Icons
-    - Disable Ring Animations
-    - Disable Tethering Graphic
+    - Hide Ring Animations
+    - Hide Tethering Graphic
   - Control Center
-    - Disable CC Module Background (iOS 18 only)
-    - Disable WiFi & Bluetooth Icons (iOS 16 & 17 only)
-    - Disable DND Icon
+    - Clear CC Module Background (iOS 18 only)
+    - Disable Slider Icons
+    - Hide WiFi & Bluetooth Icons (iOS 16 & 17 only)
+    - Hide Player Buttons
+    - Hide DND Icon
     - Disable Screen Mirroring Module (iOS 16 & 17 only)
     - Disable Orientation Lock Module (iOS 16 & 17 only)
     - Disable Focus Module (iOS 16 & 17 only)
