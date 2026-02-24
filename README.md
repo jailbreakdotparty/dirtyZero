@@ -84,7 +84,7 @@ If you sideloaded RespringApp using SideStore or have otherwise changed the bund
 
 You can also open RespringApp from the Home Screen to cause a respring.
 
-*This method brought to you by [`@nyaathea`](https://x.com/nyaathea).*
+*This method brought to you by [@nyaathea](https://x.com/nyaathea).*
 
 **Method 2: Display & Text Size**
 1. Before applying the tweaks, go into Settings > Display & Brightness > Display Zoom
