@@ -1,7 +1,9 @@
+![dirtyZero icon](https://github.com/jailbreakdotparty/dirtyZero/blob/main/previewIcon.png)
+
 # dirtyZero
 **A simple customization toolbox that utilizes [CVE-2025-24203](https://project-zero.issues.chromium.org/issues/391518636). Supports iOS 16.0 - iOS 18.3.2.**
 
-[Download](https://github.com/jailbreakdotparty/dirtyZero/releases/latest) • [jbdotparty Discord](https://jailbreak.party/discord) • [jbdotparty Website](https://jailbreak.party)
+[Latest Release](https://github.com/jailbreakdotparty/dirtyZero/releases/latest) • [Support Server](https://jailbreak.party/discord) • [Website](https://jailbreak.party)
 
 >[!NOTE]
 >All file modifications are done in memory. If something goes wrong or you want to revert the tweaks, just force reboot your device. This toolbox, or any toolbox that uses this exploit, **cannot** write to files. It can only *temporaily* disable them.
@@ -16,7 +18,7 @@
 | iOS 18.4+ | Not Supported |
 
 ## The tweaks aren't showing up. How do I apply them?
-You'll have to respring your device for changes to take effect. Click [here](https://github.com/jailbreakdotparty/dirtyZero?tab=readme-ov-file#option-1-use-respringapp) to learn how.
+You'll have to respring your device for changes to take effect. Click [here](https://github.com/jailbreakdotparty/dirtyZero?tab=readme-ov-file#method-1-respringapp) to learn how.
 
 ## Device Tweaks
   - Home Screen
@@ -72,14 +74,19 @@ You'll have to respring your device for changes to take effect. Click [here](htt
     - Create your own tweaks by specifying paths that you'd like to zero out. You can remove the ones you've created by holding down on the custom tweak. Go to settings and click "Remove Custom Tweaks" to get rid of them all at once.
 
 ## How do I respring after applying the tweaks?
-## Option 1: Use RespringApp
-1. Install [RespringApp](https://github.com/jailbreakdotparty/dirtyZero/releases/download/respringapp/respringapp.ipa) using your preferred method of sideloading. If you signed RespringApp with PPQ Protection or AltStore/SideStore, enable "Change Respring App Bundle ID" in settings and type in the bundle id of RespringApp. You can find the bundle id in AltStore's/SideStore's "View App IDs" menu or with tools like [Antrag](https://github.com/khcrysalis/Antrag).
+
+**Method 1: RespringApp**
+1. Install [RespringApp](https://github.com/jailbreakdotparty/dirtyZero/releases/download/respringapp/respringapp.ipa) using your preferred method of sideloading.
 2. In dirtyZero, click the orange "Respring" button.
 3. Profit 🔥
 
-*This method brought to you by [`@nyaathea`](https://x.com/nyaathea). Due to the nature of the method, it is not possible to integrate this directly into the dirtyZero app, hence the seperate IPA. Note that you can also simply click the RespringApp application itself to respring.* If the respring button inside of dirtyZero does not work, get the exact Bundle ID of the RespringApp (you probably had PPQ enabled when sideloading), open dirtyZero's settings, and click "Change Respring App BID."
+If you sideloaded RespringApp using SideStore or have otherwise changed the bundle ID of RespringApp, you will need to manually set the app's bundle ID in dirtyZero's settings for the built-in Respring button to work.
 
-**Option 2: Display & Text Size**
+You can also open RespringApp from the Home Screen to cause a respring.
+
+*This method brought to you by [`@nyaathea`](https://x.com/nyaathea).*
+
+**Method 2: Display & Text Size**
 1. Before applying the tweaks, go into Settings > Display & Brightness > Display Zoom
 2. Pick the option that's opposite of the one you're currently using.
 3. After, apply the tweaks.
@@ -88,6 +95,6 @@ You'll have to respring your device for changes to take effect. Click [here](htt
 
 
 # Credits
-- [Skadz](https://github.com/skadz108) for making this app.
-- [lunginspector](https://github.com/lunginspector) for the UI and numerous tweaks.
-- Ian Beer of Google Project Zero for discovering and publishing the exploit.
+- [Skadz](https://github.com/skadz108) - app developer and backend.
+- [lunginspector](https://github.com/lunginspector) - main UI, tweaks, and project maintainer.
+- Ian Beer of Google Project Zero - discovering and publishing CVE-2025-24203.
