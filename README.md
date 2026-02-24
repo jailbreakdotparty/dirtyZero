@@ -18,7 +18,7 @@
 | iOS 18.4+ | Not Supported |
 
 ## The tweaks aren't showing up. How do I apply them?
-You'll have to respring your device for changes to take effect. Click [here](https://github.com/jailbreakdotparty/dirtyZero?tab=readme-ov-file#method-1-respringapp) to learn how.
+You'll have to respring your device for changes to take effect. Click [here](https://github.com/jailbreakdotparty/dirtyZero?tab=readme-ov-file#how-do-i-respring-after-applying-the-tweaks) to learn how.
 
 ## Device Tweaks
   - Home Screen
