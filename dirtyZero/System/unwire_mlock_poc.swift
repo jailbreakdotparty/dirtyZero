@@ -64,5 +64,5 @@ func zeroPoC(path: String, offset: Int? = nil) throws {
     }
     print("[*] deleted map entries before unwiring")
     
-    print("[*] Zeroed file successfully!")
+    print("[*] zeroed file successfully!")
 }

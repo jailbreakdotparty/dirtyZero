@@ -77,6 +77,13 @@ struct TweakInfoView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding()
                             .background(Color(.secondarySystemBackground), in: .rect(cornerRadius: cornerRad.component))
+                            .contextMenu {
+                                Button(action: {
+                                    UIPasteboard.general.string = path
+                                }) {
+                                    Label("Copy Path", systemImage: "doc.on.doc")
+                                }
+                            }
                     }
                     .listRowSeparator(.hidden)
                     .listRowInsets(.sectionInsets)

@@ -1,0 +1,35 @@
+//
+//  rc.h
+//  lara
+//
+//  Created by ruter on 21.04.26.
+//
+
+#ifndef rc_h
+#define rc_h
+
+#import "RemoteCall.h"
+
+typedef void (^rc_euenabler_callback_t)(double progress);
+
+void status_bar_time_format(RemoteCall *proc, const char *dateFormat);
+int hide_icon_labels(RemoteCall *proc);
+int enable_jit(RemoteCall *proc, const char *bundleID);
+int set_dock_icon_count(RemoteCall *proc, int count);
+int five_icon_dock(RemoteCall *proc);
+int enable_upside_down(RemoteCall *proc);
+int enable_floating_dock(RemoteCall *proc);
+int enable_grid_app_switcher(RemoteCall *proc);
+int enable_debug_overlay(RemoteCall *proc);
+uint64_t enable_freaky_dog_overlay(RemoteCall *proc);
+int move_freaky_dog_overlay(RemoteCall *proc, uint64_t imageView, int x, int y, int width, int height);
+int disable_freaky_dog_overlay(RemoteCall *proc);
+int get_performance_hud(RemoteCall *proc);
+int set_performance_hud(RemoteCall *proc, int selection);
+void wake_up_daemon(RemoteCall *sb, NSString *daemon, NSString *frameworkContainingXPCSerice);
+int euenabler_overwrite_eligibility(RemoteCall *proc);
+void euenabler_override_country_code(RemoteCall *proc, rc_euenabler_callback_t callback);
+bool patch_homescreen_grid(RemoteCall *proc, int cols, int rows);
+void youtube_tweak(RemoteCall *proc);
+
+#endif /* rc_h */

@@ -16,7 +16,6 @@ var sema = DispatchSemaphore(value: 0)
 @main
 struct dirtyZeroApp: App {
     @StateObject private var mgr = dirtyZeroManager.shared
-    
     @AppStorage("enableDebugSettings") var enableDebugSettings: Bool = false
     @AppStorage("storedChosenExploit") var storedChosenExploit: ExploitOptions = defaultExploit()
     
@@ -49,8 +48,9 @@ struct dirtyZeroApp: App {
                 }
                 .onAppear {
                     if mgr.isDirtyZeroSupported {
-                        mgr.hasOffsets = haskernproc()
+                        mgr.hasOffsets = checkForOffsets()
                         mgr.chosenExploit = storedChosenExploit
+                        
                         if mgr.chosenExploit == .DarkSword && mgr.hasOffsets {
                             init_offsets()
                             offsets_init()
@@ -111,19 +111,5 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
             return "[]"
         }
         return result
-    }
-}
-
-@MainActor func defaultExploit() -> ExploitOptions {
-    let version = doubleSystemVersion()
-    
-    if version <= 18.3 {
-        return .l0ckwire
-    } else if version >= 18.4 && version <= 18.7  {
-        return .DarkSword
-    } else if version >= 19.0 && version < 26.1 {
-        return .DarkSword
-    } else {
-        return .none
     }
 }

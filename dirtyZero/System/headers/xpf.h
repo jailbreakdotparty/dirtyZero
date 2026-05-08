@@ -1,10 +1,10 @@
 #include <stdint.h>
 
-#include <../choma/Fat.h>
-#include <../choma/Util.h>
-#include <../choma/PatchFinder.h>
-#include <../choma/PatchFinder_arm64.h>
-#include <../choma/arm64.h>
+#include <choma/Fat.h>
+#include <choma/Util.h>
+#include <choma/PatchFinder.h>
+#include <choma/PatchFinder_arm64.h>
+#include <choma/arm64.h>
 #include <xpc/xpc.h>
 
 typedef struct s_XPFItem {
@@ -35,6 +35,17 @@ void xpf_set_error(const char *error, ...);
 const char *xpf_get_error(void);
 void xpf_print_all_items(void);
 void xpf_stop(void);
+
+static inline uint64_t xpf_gett1szboot(void) {
+    uint64_t pointer_mask = xpf_item_resolve("kernelConstant.pointer_mask");
+    uint64_t T1SZ_BOOT = 0;
+    for (uint64_t i = 64; i > 0; i--) {
+        if (pointer_mask & (1ULL << (i - 1))) {
+            T1SZ_BOOT++;
+        }
+    }
+    return T1SZ_BOOT;
+}
 
 typedef struct s_XPF {
 	int kernelFd;

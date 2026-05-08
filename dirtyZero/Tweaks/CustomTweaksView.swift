@@ -13,15 +13,12 @@ import DeviceKit
 struct CustomTweaksView: View {
     @EnvironmentObject var mgr: dirtyZeroManager
     @Environment(\.dismiss) var dismiss
-    
     @AppStorage("tweakArray") var tweakArray: [ZeroSection] = TweakArray.tweaks
     @AppStorage("enableDebugSettings") var enableDebugSettings: Bool = false
     
     @State private var tweakName: String = ""
     @State private var path2Add: String = ""
     @State private var targetPaths: [String] = []
-    
-    @State private var showIconPicker: Bool = false
     
     var body: some View {
         NavigationStack {

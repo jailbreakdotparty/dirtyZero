@@ -16,23 +16,18 @@ enum SectionType {
 
 struct ContentView: View {
     @EnvironmentObject var mgr: dirtyZeroManager
-    
     @AppStorage("tweakArray") var tweakArray: [ZeroSection] = TweakArray.tweaks
-    
     @AppStorage("enableDebugSettings") var enableDebugSettings: Bool = false
     @AppStorage("enableRiskyTweaks") var enableRiskyTweaks: Bool = false
     
-    @State private var customZeroPath: String = ""
-    
     @State private var showSettingsView: Bool = false
     @State private var showCustomTweaksView: Bool = false
-    
+    @State private var customZeroPath: String = ""
     @State private var selectedTweak: ZeroTweak?
     
-    let version = doubleSystemVersion()
+    @State private var hasOffsets: Bool = false
     
-    @State private var showresetalert: Bool = false
-    @State private var downloadingkernelcache = false
+    let version = doubleSystemVersion()
     
     var body: some View {
         Group {
@@ -135,10 +130,13 @@ struct ContentView: View {
                     CompactAlert(title: "Offsets are missing!", icon: "exclamationmark.triangle.fill", text: "Offsets are required to use DarkSword. Go download them in settings.")
                 }
             }
+            /*
             if doubleSystemVersion() >= 26.0 && mgr.hasOffsets {
                 CompactAlert(title: "Notice!", icon: "info.circle", text: "You are running iOS 26, so most tweaks may not work properly. Many tweaks seen here will not make it to a final release due to the fact that many graphical elements are no longer removable with just a path change.")
             }
+             */
         }
+        .listRowInsets(.sectionInsets)
     }
     
     // MARK: Applying Section
@@ -173,9 +171,9 @@ struct ContentView: View {
                     .modifier(TextFieldBackground())
                 Button(action: {
                     do {
-                        try zeroPoC(path: customZeroPath)
+                        try mgr.zeroPage(path: customZeroPath)
                     } catch {
-                        print("[!] failed to zero custom path at \(customZeroPath): \(error)")
+                        Alertinator.shared.alert(title: "Failed to zero file!", body: "\(error)")
                     }
                 }) {
                     Image(systemName: "checkmark")
@@ -187,7 +185,7 @@ struct ContentView: View {
             Button(action: {
                 tweakArray = TweakArray.tweaks
             }) {
-                HeaderLabel(text: "Obliterate AppStorage", icon: "flame")
+                HeaderLabel(text: "Reset TweakArray", icon: "trash")
             }
             .buttonStyle(TranslucentButtonStyle(color: .red))
         }
@@ -205,40 +203,38 @@ struct ContentView: View {
                     if section.isExpanded {
                         let sectionColor = sectionType == .custom ? .purple : sectionType == .risky ? .red : Color.accentColor
                         
-                        withAnimation {
-                            ForEach($section.tweaks) { $tweak in
-                                if (version >= tweak.minSupportedVersion && version <= tweak.maxSupportedVersion) || enableDebugSettings {
-                                    Button(action: {
-                                        tweak.isOn.toggle()
-                                    }) {
-                                        HStack(spacing: 10) {
-                                            Image(systemName: tweak.icon)
-                                                .frame(width: 22, height: 20)
-                                            Text(tweak.name)
-                                                .frame(maxWidth: .infinity, alignment: .leading)
-                                            Image(systemName: tweak.isOn ? "checkmark.circle.fill" : "circle")
-                                        }
-                                        .frame(maxWidth: .infinity, alignment: .leading)
+                        ForEach($section.tweaks) { $tweak in
+                            if (version >= tweak.minSupportedVersion && version <= tweak.maxSupportedVersion) || enableDebugSettings {
+                                Button(action: {
+                                    tweak.isOn.toggle()
+                                }) {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: tweak.icon)
+                                            .frame(width: 22, height: 20)
+                                        Text(tweak.name)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        Image(systemName: tweak.isOn ? "checkmark.circle.fill" : "circle")
                                     }
-                                    .buttonStyle(TranslucentButtonStyle(color: sectionColor))
-                                    .listRowSeparator(.hidden)
-                                    .listRowInsets(.sectionInsets)
-                                    .swipeActions {
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .buttonStyle(TranslucentButtonStyle(color: sectionColor))
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(.sectionInsets)
+                                .swipeActions {
+                                    Button(action: {
+                                        selectedTweak = tweak
+                                    }) {
+                                        Image(systemName: "info.circle")
+                                    }
+                                    if sectionType == .custom {
                                         Button(action: {
-                                            selectedTweak = tweak
+                                            let customTweaksIndex = tweakArray.firstIndex(where: { $0.name == "Custom Tweaks" }) ?? 0
+                                            
+                                            tweakArray[customTweaksIndex].tweaks.removeAll { $0.name == tweak.name }
                                         }) {
-                                            Image(systemName: "info.circle")
+                                            Image(systemName: "trash")
                                         }
-                                        if sectionType == .custom {
-                                            Button(action: {
-                                                let customTweaksIndex = tweakArray.firstIndex(where: { $0.name == "Custom Tweaks" }) ?? 0
-                                                
-                                                tweakArray[customTweaksIndex].tweaks.removeAll { $0.name == tweak.name }
-                                            }) {
-                                                Image(systemName: "trash")
-                                            }
-                                            .tint(.red)
-                                        }
+                                        .tint(.red)
                                     }
                                 }
                             }
@@ -277,6 +273,7 @@ struct ContentView: View {
                     ButtonLabel(text: "Apply Tweaks", icon: "checkmark")
                 }
                 .buttonStyle(FancyButtonStyle(color: .green))
+                .disabled(tweakArray.flatMap { $0.tweaks }.filter { $0.isOn }.isEmpty)
                 HStack {
                     Button(action: {
                         mgr.revertTweaks()

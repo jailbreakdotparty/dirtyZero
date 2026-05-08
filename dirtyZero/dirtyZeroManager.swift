@@ -160,7 +160,7 @@ final class dirtyZeroManager: ObservableObject {
                     self.applyColor = Color(.label)
                 } else {
                     self.vfsfailed = true
-                    print("[!] vfs init failed.")
+                    print("[!] vfs init failed")
                 }
                 self.vfsrunning = false
                 self.vfsprogress = 1.0
@@ -169,18 +169,16 @@ final class dirtyZeroManager: ObservableObject {
         }
     }
     
-    func vfszeropage(at path: String) -> Bool {
+    func vfszeropage(at path: String) throws {
         let result = path.withCString { cpath in
             vfs_zeropage(cpath, 0)
         }
         
         if result != 0 {
-            print("(vfs) zeropage failed")
-            return false
+            throw "failed to zero page"
         }
         
-        print("(vfs) zeroed first page of \(path)")
-        return true
+        print("[*] zeroed file successfully!")
     }
     
     private static let vfslogcallback: @convention(c) (UnsafePointer<CChar>?) -> Void = { msg in
@@ -192,6 +190,19 @@ final class dirtyZeroManager: ObservableObject {
     }
     
     // MARK: App Backend
+    func zeroPage(path: String) throws {
+        do {
+            if chosenExploit == .l0ckwire {
+                try zeroPoC(path: path)
+            } else {
+                try vfszeropage(at: path)
+            }
+        } catch {
+            print("[!] failed to zero path! \(error)")
+            throw error
+        }
+    }
+    
     @MainActor func applyTweaks(tweakData: [ZeroSection]) {
         var failedTweaks: [String] = []
         let tweaks = tweakData.flatMap { $0.tweaks }.filter { $0.isOn }
@@ -202,17 +213,17 @@ final class dirtyZeroManager: ObservableObject {
             applyCurrentTweakName = tweak.name
             print("[*] (\(applyCurrentTweak)/\(enabledTweaks)) zeroing paths for the tweak \(tweak.name): \(tweak.paths)")
             
-            for path in tweak.paths {
-                if chosenExploit == .l0ckwire {
-                    do {
+            do {
+                for path in tweak.paths {
+                    if chosenExploit == .l0ckwire {
                         try zeroPoC(path: path)
-                    } catch {
-                        print("[!] failed to apply tweak \(tweak.name): \(error)")
-                        failedTweaks.append(tweak.name)
+                    } else {
+                        try vfszeropage(at: path)
                     }
-                } else {
-                    vfszeropage(at: path)
                 }
+            } catch {
+                print("[!] failed to apply tweak \(tweak.name): \(error)")
+                failedTweaks.append(tweak.name)
             }
         }
         
@@ -226,43 +237,7 @@ final class dirtyZeroManager: ObservableObject {
             })
         }
     }
-    /*
-    @MainActor func applyTweaks(tweakData: [ZeroSection]) {
-        applyCurrentTweak = 0
-        
-        do {
-            let tweaks = tweakData.flatMap { $0.tweaks }
-            
-            for tweak in tweaks {
-                if tweak.isOn {
-                    applyCurrentTweak += 1
-                    applyCurrentTweakName = tweak.name
-                    
-                    print("[*] (\(applyCurrentTweak)/\(enabledTweaks)) zeroing paths for the tweak \(tweak.name): \(tweak.paths)")
-                    
-                    for path in tweak.paths {
-                        if chosenExploit == .l0ckwire {
-                            try zeroPoC(path: path)
-                        } else {
-                            vfszeropage(at: path)
-                        }
-                    }
-                }
-            }
-            
-            Alertinator.shared.alert(title: "All tweaks applied successfully!", body: "Respring your device to see changes take effect.", actionLabel: "Respring", action: {
-                self.respringDevice()
-            })
-        } catch {
-            print("[!] (\(applyCurrentTweak)/\(enabledTweaks)) failed to apply the tweak \(applyCurrentTweakName): \(error)")
-            Alertinator.shared.alert(title: "(\(applyCurrentTweak)/\(enabledTweaks)) Failed to apply the tweak \(applyCurrentTweakName)!", body: "\(error)")
-            
-            applyShortStatus = "Failed to apply!"
-            applyIcon = "xmark.circle.fill"
-            applyColor = .red
-        }
-    }
-    */
+    
     @MainActor func revertTweaks() {
         Alertinator.shared.alert(title: "Are you sure you'd like to revert your tweaks?", body: "Your device will reboot to revert all of your tweaks", action: {
             do {
@@ -323,4 +298,25 @@ final class dirtyZeroManager: ObservableObject {
         
         return result == 9
     }
+}
+
+@MainActor func defaultExploit() -> ExploitOptions {
+    let version = doubleSystemVersion()
+    
+    if version <= 18.3 {
+        return .l0ckwire
+    } else if version >= 18.4 && version <= 18.7  {
+        return .DarkSword
+    } else if version >= 19.0 && version < 26.1 {
+        return .DarkSword
+    } else {
+        return .none
+    }
+}
+
+func checkForOffsets() -> Bool {
+    let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+    let destinationURL = documentsURL!.appendingPathComponent("kernelcache")
+    
+    return FileManager.default.fileExists(atPath: destinationURL.path)
 }

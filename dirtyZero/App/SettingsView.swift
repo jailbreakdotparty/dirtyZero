@@ -11,10 +11,8 @@ import DeviceKit
 
 struct SettingsView: View {
     @EnvironmentObject var mgr: dirtyZeroManager
-    
     @Environment(\.dismiss) var dismiss
     @Environment(\.openURL) var openURL
-    
     @AppStorage("tweakArray") var tweakArray: [ZeroSection] = TweakArray.tweaks
     
     @AppStorage("useRespringApp") var useRespringApp: Bool = false
@@ -96,17 +94,19 @@ struct SettingsView: View {
                                     }
                                 }
                             }) {
-                                Text("Download Kernelcache")
+                                ButtonLabel(text: "Download Kernelcache", icon: "arrow.down")
                             }
+                            .buttonStyle(TranslucentButtonStyle())
                             .disabled(isDownloadingKcache)
+                        } else {
+                            Button(role: .destructive, action: {
+                                clearkerncachedata()
+                                mgr.hasOffsets = false
+                            }) {
+                                ButtonLabel(text: "Delete Kernelcache", icon: "trash")
+                            }
+                            .buttonStyle(TranslucentButtonStyle(color: .red))
                         }
-                        Button(role: .destructive, action: {
-                            clearkerncachedata()
-                            mgr.hasOffsets = haskernproc()
-                        }) {
-                            Text("Delete Kernelcache Data")
-                        }
-                        
                     }
                 }
                 Section(header: HeaderLabel(text: "Applying", icon: "checkmark.seal")) {
