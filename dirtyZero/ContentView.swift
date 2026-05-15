@@ -26,6 +26,7 @@ struct ContentView: View {
     @State private var selectedTweak: ZeroTweak?
     
     @State private var hasOffsets: Bool = false
+    @State private var fetchingKcache = false
     
     let version = doubleSystemVersion()
     
@@ -123,18 +124,13 @@ struct ContentView: View {
     
     private var AlertsSection: some View {
         Group {
-            if !mgr.hasOffsets {
+            if !mgr.hasOffsets && mgr.chosenExploit == .DarkSword {
                 Button(action: {
                     showSettingsView.toggle()
                 }) {
-                    CompactAlert(title: "Offsets are missing!", icon: "exclamationmark.triangle.fill", text: "Offsets are required to use DarkSword. Go download them in settings.")
+                    CompactAlert(title: "Offsets are missing!", icon: "exclamationmark.triangle.fill", text: "Offsets are required to use DarkSword. Click \"Run Exploit\", then click \"Fetch Kernelcache\".")
                 }
             }
-            /*
-            if doubleSystemVersion() >= 26.0 && mgr.hasOffsets {
-                CompactAlert(title: "Notice!", icon: "info.circle", text: "You are running iOS 26, so most tweaks may not work properly. Many tweaks seen here will not make it to a final release due to the fact that many graphical elements are no longer removable with just a path change.")
-            }
-             */
         }
         .listRowInsets(.sectionInsets)
     }
@@ -199,7 +195,7 @@ struct ContentView: View {
             let sectionType: SectionType = section.name == "Custom Tweaks" ? .custom : section.name == "Risky Tweaks" ? .risky : .normal
             
             if sectionType == .risky && enableRiskyTweaks || sectionType != .risky && !section.tweaks.isEmpty {
-                Section(header: HeaderDropdown(text: section.name, icon: section.icon, isExpanded: $section.isExpanded, useItemCount: true, itemCount: section.tweaks.count)) {
+                Section(header: HeaderDropdown(text: section.name, icon: section.icon, isExpanded: $section.isExpanded, useItemCount: true, itemCount: section.tweaks.filter { version >= $0.minSupportedVersion && version <= $0.maxSupportedVersion || enableDebugSettings }.count)) {
                     if section.isExpanded {
                         let sectionColor = sectionType == .custom ? .purple : sectionType == .risky ? .red : Color.accentColor
                         
@@ -249,22 +245,88 @@ struct ContentView: View {
     private var ApplyingButtons: some View {
         VStack {
             if mgr.chosenExploit == .DarkSword && !mgr.vfsready {
-                Button(action: {
-                    offsets_init()
-                    mgr.run()
-                }) {
-                    if mgr.dsfailed || mgr.vfsfailed {
-                        ButtonLabel(text: "Exploit Failed!", icon: "xmark")
-                    } else if mgr.dsrunning || mgr.vfsrunning {
-                        ButtonLabel(text: "Running Exploit...", icon: "showMeProgressPlease")
-                    } else {
-                        ButtonLabel(text: "Run DarkSword", icon: "ant")
+                if !mgr.hasOffsets {
+                    // run offsets
+                    Button(action: {
+                        offsets_init()
+                        mgr.run()
+                    }) {
+                        if mgr.dsfailed || mgr.vfsfailed {
+                            ButtonLabel(text: "Exploit Failed!", icon: "xmark")
+                        } else if mgr.dsrunning || mgr.vfsrunning {
+                            ButtonLabel(text: "Running Exploit...", icon: "showMeProgressPlease")
+                        } else {
+                            ButtonLabel(text: "Run DarkSword", icon: "ant")
+                        }
                     }
-                }
-                .buttonStyle(FancyButtonStyle(color: mgr.dsfailed || mgr.vfsfailed ? .red : .purple))
-                .disabled(!mgr.hasOffsets || mgr.dsrunning || mgr.vfsrunning)
-                .onChange(of: mgr.dsready) { _ in
-                    mgr.vfsinit()
+                    .buttonStyle(FancyButtonStyle(color: mgr.dsfailed || mgr.vfsfailed ? .red : .purple))
+                    .disabled(mgr.dsrunning || mgr.dsready)
+                    
+                    // fetch kernelcache
+                    Button(action: {
+                        guard !fetchingKcache else { return }
+                        fetchingKcache = true
+
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            let fetched = fetchkcache()
+
+                            if fetched {
+                                DispatchQueue.main.async {
+                                    mgr.hasOffsets = true
+                                    fetchingKcache = false
+                                    Alertinator.shared.alert(title: "Successfully feteched kernelcache!", body: "Now, restart the app to finish setup and use dirtyZero.", showCancel: false, actionLabel: "Exit", action: { exitinator() })
+                                }
+                                return
+                            }
+
+                            let dlkc = dlkcache()
+
+                            DispatchQueue.main.async {
+                                mgr.hasOffsets = dlkc
+                                if dlkc {
+                                    Alertinator.shared.alert(title: "Successfully downloaded kernelcache!", body: "Now, restart the app to finish setup and use dirtyZero.", showCancel: false, actionLabel: "Exit", action: { exitinator() })
+                                }
+                                fetchingKcache = false
+                            }
+                        }
+                    }) {
+                        if fetchingKcache {
+                            ButtonLabel(text: "Fetching Kernelcache...", icon: "showMeProgressPlease")
+                        } else {
+                            ButtonLabel(text: "Fetch Kernelcache", icon: "externaldrive")
+                        }
+                    }
+                    .buttonStyle(FancyButtonStyle(color: mgr.dsfailed || mgr.vfsfailed ? .red : Color.accentColor))
+                    .disabled(mgr.dsrunning || mgr.vfsrunning)
+                } else {
+                    Button(action: {
+                        offsets_init()
+                        mgr.run()
+                    }) {
+                        if mgr.dsfailed || mgr.vfsfailed {
+                            ButtonLabel(text: "Exploit Failed!", icon: "xmark")
+                        } else if mgr.dsrunning || mgr.vfsrunning {
+                            ButtonLabel(text: "Running Exploit...", icon: "showMeProgressPlease")
+                        } else {
+                            ButtonLabel(text: "Run DarkSword", icon: "ant")
+                        }
+                    }
+                    .buttonStyle(FancyButtonStyle(color: mgr.dsfailed || mgr.vfsfailed ? .red : .purple))
+                    .disabled(mgr.dsrunning || mgr.vfsrunning || mgr.dsready)
+                    
+                    Button(action: {
+                        mgr.vfsinit()
+                    }) {
+                        if mgr.vfsfailed {
+                            ButtonLabel(text: "Initalize Failed!", icon: "xmark")
+                        } else if mgr.vfsrunning {
+                            ButtonLabel(text: "Initalizing VFS...", icon: "showMeProgressPlease")
+                        } else {
+                            ButtonLabel(text: "Initalize VFS", icon: "cpu")
+                        }
+                    }
+                    .buttonStyle(FancyButtonStyle())
+                    .disabled(!mgr.dsready || mgr.vfsrunning)
                 }
             } else {
                 Button(action: {

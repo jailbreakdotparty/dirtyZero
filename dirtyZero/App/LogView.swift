@@ -17,6 +17,7 @@ struct LogView: View {
                     Text(log)
                         .font(.system(size: 10, weight: .regular, design: .monospaced))
                         .multilineTextAlignment(.leading)
+                        .padding(.top)
                     Spacer()
                         .id(0)
                 }

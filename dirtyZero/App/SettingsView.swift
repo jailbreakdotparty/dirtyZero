@@ -21,7 +21,7 @@ struct SettingsView: View {
     @AppStorage("enableDebugSettings") var enableDebugSettings: Bool = false
     @AppStorage("enableRiskyTweaks") var enableRiskyTweaks: Bool = false
     
-    @State private var isDownloadingKcache = false
+    @State private var fetchingKcache = false
     
     var body: some View {
         NavigationStack {
@@ -84,20 +84,40 @@ struct SettingsView: View {
                     if mgr.chosenExploit == .DarkSword {
                         if !mgr.hasOffsets {
                             Button(action: {
-                                guard !isDownloadingKcache else { return }
-                                isDownloadingKcache = true
+                                guard !fetchingKcache else { return }
+                                fetchingKcache = true
+
                                 DispatchQueue.global(qos: .userInitiated).async {
-                                    let ok = dlkerncache()
+                                    let fetched = fetchkcache()
+
+                                    if fetched {
+                                        DispatchQueue.main.async {
+                                            mgr.hasOffsets = true
+                                            fetchingKcache = false
+                                            Alertinator.shared.alert(title: "Successfully feteched kernelcache!", body: "Now, restart the app to finish setup and use dirtyZero.", showCancel: false, actionLabel: "Exit", action: { exitinator() })
+                                        }
+                                        return
+                                    }
+
+                                    let dlkc = dlkcache()
+
                                     DispatchQueue.main.async {
-                                        mgr.hasOffsets = ok
-                                        isDownloadingKcache = false
+                                        mgr.hasOffsets = dlkc
+                                        if dlkc {
+                                            Alertinator.shared.alert(title: "Successfully downloaded kernelcache!", body: "Now, restart the app to finish setup and use dirtyZero.", showCancel: false, actionLabel: "Exit", action: { exitinator() })
+                                        }
+                                        fetchingKcache = false
                                     }
                                 }
                             }) {
-                                ButtonLabel(text: "Download Kernelcache", icon: "arrow.down")
+                                if fetchingKcache {
+                                    ButtonLabel(text: "Fetching Kernelcache...", icon: "showMeProgressPlease")
+                                } else {
+                                    ButtonLabel(text: "Fetch Kernelcache", icon: "externaldrive")
+                                }
                             }
                             .buttonStyle(TranslucentButtonStyle())
-                            .disabled(isDownloadingKcache)
+                            .disabled(fetchingKcache)
                         } else {
                             Button(role: .destructive, action: {
                                 clearkerncachedata()

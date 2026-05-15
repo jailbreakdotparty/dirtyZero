@@ -48,7 +48,7 @@ struct dirtyZeroApp: App {
                 }
                 .onAppear {
                     if mgr.isDirtyZeroSupported {
-                        mgr.hasOffsets = checkForOffsets()
+                        mgr.hasOffsets = emergencyfixfunctiontobereplacedlateronquestionmark()
                         mgr.chosenExploit = storedChosenExploit
                         
                         if mgr.chosenExploit == .DarkSword && mgr.hasOffsets {

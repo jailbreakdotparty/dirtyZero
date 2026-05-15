@@ -120,8 +120,8 @@ final class dirtyZeroManager: ObservableObject {
                     self.dsfailed = false
                     self.kernbase = ds_get_kernel_base()
                     self.kernslide = ds_get_kernel_slide()
-                    print(String(format: "kernel_base:  0x%llx", self.kernbase))
-                    print(String(format: "kernel_slide: 0x%llx\n", self.kernslide))
+                    print(String(format: "kernel_base: 0x%llx", self.kernbase))
+                    print(String(format: "kernel_slide: 0x%llx", self.kernslide))
                     print("[*] exploit success!")
                 } else {
                     self.dsfailed = true
