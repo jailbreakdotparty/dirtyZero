@@ -58,17 +58,17 @@ struct dirtyZeroApp: App {
                         } else {
                             mgr.hasOffsets = emergencyfixfunctiontobereplacedlateronquestionmark()
     
+                            init_offsets()
+                            offsets_init()
+                            
                             if mgr.hasOffsets {
-                                init_offsets()
-                                offsets_init()
-                                
                                 mgr.applyShortStatus = "Waiting for DarkSword..."
                                 mgr.applyIcon = "xmark.circle.fill"
                                 mgr.applyColor = .secondary
                             } else {
                                 mgr.applyShortStatus = "No offsets found!"
                                 mgr.applyIcon = "exclamationmark.triangle.fill"
-                                mgr.applyColor = .yellow
+                                mgr.applyColor = Color.yellow
                             }
                         }
                         print("[*] Welcome to dirtyZero! Running on \(device.systemName ?? "nil") \(device.systemVersion ?? "0.0"), \(device.description).")

@@ -98,7 +98,7 @@ struct CustomTweaksView: View {
                 }
                 .buttonStyle(TranslucentButtonStyle(color: .purple))
                 .disabled(targetPaths.isEmpty || tweakName.isEmpty)
-                .modifier(OverlayBackground())
+                .modifier(OverlayBackground(stickBottomPadding: UIDevice.current.userInterfaceIdiom == .pad ? true : false))
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

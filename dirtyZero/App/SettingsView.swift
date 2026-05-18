@@ -130,6 +130,10 @@ struct SettingsView: View {
                             }
                         }
                     }
+                    
+                    if mgr.chosenExploit == .DarkSword {
+                        NavigationLink("Modify Offsets", destination: OffsetManagementView())
+                    }
                 }
                 Section(header: HeaderLabel(text: "Applying", icon: "checkmark.seal")) {
                     Toggle(isOn: $useRespringApp) {

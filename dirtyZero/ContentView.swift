@@ -97,6 +97,8 @@ struct ContentView: View {
                 }) {
                     List {
                         ListedTweaksSection
+                            .disabled(mgr.chosenExploit == .DarkSword && !mgr.vfsready)
+                            .listRowSeparator(.hidden)
                     }
                     .listStyle(.plain)
                     .toolbar(.hidden, for: .navigationBar)
