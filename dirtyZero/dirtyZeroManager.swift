@@ -15,55 +15,28 @@ enum ExploitOptions: String, CaseIterable {
 @MainActor
 final class dirtyZeroManager: ObservableObject {
     static let shared = dirtyZeroManager()
+    @AppStorage("useRespringApp") var useRespringApp: Bool = false
+    @AppStorage("respringAppBID") var respringAppBID: String = "com.jbdotparty.respringr"
+    @AppStorage("storedChosenExploit") var storedChosenExploit: ExploitOptions = .l0ckwire
     
-    // tweak counts
-    @Published var enabledTweaks: Int = 0
-    
-    // status information
-    @Published var applyShortStatus: String = "Ready to Apply!"
-    @Published var applyIcon: String = "checkmark.circle.fill"
+    // applying info
+    @Published var applyShortStatus: String = "Waiting..."
+    @Published var applyIcon: String = "showMeProgressPlease"
     @Published var applyColor: Color = Color(.label)
     
+    // tweak info
+    @Published var enabledTweaks: Int = 0
     @Published var applyCurrentTweak: Int = 0
     @Published var applyCurrentTweakName: String = ""
     
     // tell app to do stuff
     @Published var showRespringView: Bool = false
     
-    // imported AppStorage properties, only requried for reading.
-    @AppStorage("useRespringApp") var useRespringApp: Bool = false
-    @AppStorage("respringAppBID") var respringAppBID: String = "com.jbdotparty.respringr"
-    
-    // exploit-related properties
+    // frontend exploit-related properties
     @Published var chosenExploit: ExploitOptions = defaultExploit()
-    @Published var isDirtyZeroReady: Bool = false
-    @Published var isDirtyZeroSupported: Bool = {
-        let vrs = ProcessInfo.processInfo.operatingSystemVersion
-        
-        if vrs.majorVersion < 16 {
-            return false
-        } else if vrs.majorVersion >= 16 && vrs.majorVersion <= 18 {
-            if vrs.majorVersion == 18 && vrs.minorVersion == 7 && vrs.patchVersion > 1 {
-                return false
-            }
-            return true
-        } else if vrs.majorVersion == 26 {
-            if vrs.minorVersion > 0 {
-                return false
-            }
-            return true
-        } else {
-            return false
-        }
-    }()
-    @Published var supportsl0ckwire: Bool = {
-        let version = doubleSystemVersion()
-        if version <= 18.3 {
-            return true
-        } else {
-            return false
-        }
-    }()
+    @Published var isReady: Bool = false
+    @Published var isSupported: Bool = false
+    @Published var supportsl0ckwire: Bool = false
     
     // darksword
     @Published var hasOffsets: Bool = false
@@ -86,7 +59,7 @@ final class dirtyZeroManager: ObservableObject {
     
     init() {}
     
-    // MARK: DarkSword Exploit Handlers
+    // MARK: handlers for darksword
     func run(completion: ((Bool) -> Void)? = nil) {
         guard !dsrunning else { return }
         dsrunning = true
@@ -133,7 +106,7 @@ final class dirtyZeroManager: ObservableObject {
         }
     }
     
-    // VFS
+    // MARK: VFS
     func vfsinit(completion: ((Bool) -> Void)? = nil) {
         vfs_setlogcallback(dirtyZeroManager.vfslogcallback)
         vfs_setprogresscallback { progress in
@@ -154,7 +127,7 @@ final class dirtyZeroManager: ObservableObject {
                 if self.vfsready {
                     self.vfsfailed = false
                     print("[*] vfs ready!")
-                    self.isDirtyZeroReady = true
+                    self.isReady = true
                     self.applyShortStatus = "Ready to Apply!"
                     self.applyIcon = "checkmark.circle.fill"
                     self.applyColor = Color(.label)
@@ -189,20 +162,7 @@ final class dirtyZeroManager: ObservableObject {
         }
     }
     
-    // MARK: App Backend
-    func zeroPage(path: String) throws {
-        do {
-            if chosenExploit == .l0ckwire {
-                try zeroPoC(path: path)
-            } else {
-                try vfszeropage(at: path)
-            }
-        } catch {
-            print("[!] failed to zero path! \(error)")
-            throw error
-        }
-    }
-    
+    // MARK: tweak applying
     @MainActor func applyTweaks(tweakData: [ZeroSection]) {
         var failedTweaks: [String] = []
         let tweaks = tweakData.flatMap { $0.tweaks }.filter { $0.isOn }
@@ -242,7 +202,10 @@ final class dirtyZeroManager: ObservableObject {
         Alertinator.shared.alert(title: "Are you sure you'd like to revert your tweaks?", body: "Your device will reboot to revert all of your tweaks", action: {
             do {
                 if self.chosenExploit == .DarkSword {
-                    
+                    print("[*] panicking deivce...")
+                    let kernbase = ds_get_kernel_base()
+                    print("[*] writing to read-only memory at kernel base (ssv is gonna love this one!)")
+                    ds_kwrite64(kernbase, 0xDEADBEEF)
                 } else {
                     try zeroPoC(path: "/usr/lib/dyld")
                 }
@@ -265,6 +228,61 @@ final class dirtyZeroManager: ObservableObject {
             } else {
                 Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again.")
             }
+        }
+    }
+    
+    func zeroPage(path: String) throws {
+        do {
+            if chosenExploit == .l0ckwire {
+                try zeroPoC(path: path)
+            } else {
+                try vfszeropage(at: path)
+            }
+        } catch {
+            print("[!] failed to zero path! \(error)")
+            throw error
+        }
+    }
+    
+    // MARK: other handlers
+    func setAppCapabilities() {
+        let vrs = ProcessInfo.processInfo.operatingSystemVersion
+        
+        if vrs.majorVersion < 16 {
+            isSupported = false
+        } else if vrs.majorVersion == 16 {
+            isSupported = true
+            chosenExploit = .l0ckwire
+            supportsl0ckwire = true
+        } else if vrs.majorVersion == 17 {
+            isSupported = true
+            if vrs.minorVersion == 7 && vrs.patchVersion > 5 {
+                chosenExploit = .DarkSword
+            } else {
+                chosenExploit = .l0ckwire
+                supportsl0ckwire = true
+            }
+        } else if vrs.majorVersion == 18 {
+            if vrs.minorVersion == 7 && vrs.patchVersion > 1 {
+                isSupported = false
+            } else if vrs.minorVersion <= 3 {
+                isSupported = true
+                chosenExploit = .l0ckwire
+                supportsl0ckwire = true
+            } else {
+                isSupported = true
+                chosenExploit = .DarkSword
+            }
+        } else if vrs.majorVersion == 26 && vrs.minorVersion == 0 {
+            isSupported = true
+            chosenExploit = .DarkSword
+        } else {
+            isSupported = false
+        }
+        
+        // this overrides the check that just happened, while allowing all the other bools to be set.
+        if storedChosenExploit != chosenExploit {
+            chosenExploit = storedChosenExploit
         }
     }
     
@@ -300,18 +318,31 @@ final class dirtyZeroManager: ObservableObject {
     }
 }
 
-@MainActor func defaultExploit() -> ExploitOptions {
-    let version = doubleSystemVersion()
+func defaultExploit() -> ExploitOptions {
+    let vrs = ProcessInfo.processInfo.operatingSystemVersion
     
-    if version <= 18.3 {
-        return .l0ckwire
-    } else if version >= 18.4 && version <= 18.7  {
-        return .DarkSword
-    } else if version >= 19.0 && version < 26.1 {
-        return .DarkSword
-    } else {
+    if vrs.majorVersion < 16 {
         return .none
+    } else if vrs.majorVersion == 16 {
+        return .l0ckwire
+    } else if vrs.majorVersion == 17 {
+        if vrs.minorVersion == 7 && vrs.patchVersion > 5 {
+            return .DarkSword
+        } else {
+            return .l0ckwire
+        }
+    } else if vrs.majorVersion == 18 {
+        if vrs.minorVersion == 7 && vrs.patchVersion > 1 {
+            return .none
+        } else if vrs.minorVersion <= 3 {
+            return .l0ckwire
+        } else {
+            return .DarkSword
+        }
+    } else if vrs.majorVersion == 26 && vrs.minorVersion == 0 {
+        return .DarkSword
     }
+    return .none
 }
 
 func checkForOffsets() -> Bool {

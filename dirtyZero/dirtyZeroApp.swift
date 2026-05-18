@@ -47,48 +47,74 @@ struct dirtyZeroApp: App {
                     }
                 }
                 .onAppear {
-                    if mgr.isDirtyZeroSupported {
-                        mgr.hasOffsets = emergencyfixfunctiontobereplacedlateronquestionmark()
-                        mgr.chosenExploit = storedChosenExploit
-                        
-                        if mgr.chosenExploit == .DarkSword && mgr.hasOffsets {
-                            init_offsets()
-                            offsets_init()
-                        } else if mgr.chosenExploit == .l0ckwire {
-                            mgr.isDirtyZeroReady = true
+                    mgr.setAppCapabilities()
+                    
+                    if mgr.isSupported {
+                        if mgr.chosenExploit == .l0ckwire {
+                            mgr.isReady = true
+                            mgr.applyShortStatus = "Ready to Apply!"
+                            mgr.applyIcon = "checkmark.circle.fill"
+                            mgr.applyColor = Color(.label)
+                        } else {
+                            mgr.hasOffsets = emergencyfixfunctiontobereplacedlateronquestionmark()
+    
+                            if mgr.hasOffsets {
+                                init_offsets()
+                                offsets_init()
+                                
+                                mgr.applyShortStatus = "Waiting for DarkSword..."
+                                mgr.applyIcon = "xmark.circle.fill"
+                                mgr.applyColor = .secondary
+                            } else {
+                                mgr.applyShortStatus = "No offsets found!"
+                                mgr.applyIcon = "exclamationmark.triangle.fill"
+                                mgr.applyColor = .yellow
+                            }
                         }
                         print("[*] Welcome to dirtyZero! Running on \(device.systemName ?? "nil") \(device.systemVersion ?? "0.0"), \(device.description).")
                         print("[*] All tweaks are done in memory, so if something goes wrong, simply reboot your device.")
                     } else {
-                        Alertinator.shared.alert(title: "This device combination is not supported.", body: "This device combination is not supported and never will be. dirtyZero only supports iOS 16.0 - iOS 18.7.1, and iOS 26.0 - iOS 26.0.1.", showCancel: false, action: { exitinator() })
+                        mgr.applyShortStatus = "Unsupported device!"
+                        mgr.applyIcon = "xmark.circle.filll"
+                        mgr.applyColor = .red
+                        
+                        Alertinator.shared.alert(title: "This device combination is not supported.", body: "This device combination is not supported and never will be. dirtyZero only supports iOS 16.0 - iOS 18.7.1, and iOS 26.0 - iOS 26.0.1.", action: { exitinator() })
                     }
                 }
                 .onChange(of: mgr.chosenExploit) { exploit in
-                    if exploit == .DarkSword && mgr.hasOffsets {
-                        init_offsets()
-                        offsets_init()
-                        
-                        if !mgr.dsready || !mgr.vfsready {
-                            mgr.isDirtyZeroReady = false
-                            mgr.applyShortStatus = "Waiting for DarkSword..."
-                            mgr.applyIcon = "xmark.circle.fill"
-                            mgr.applyColor = .secondary
-                        }
-                    } else if exploit == .l0ckwire {
+                    storedChosenExploit = exploit
+                    
+                    if exploit == .l0ckwire {
                         mgr.applyShortStatus = "Ready to Apply!"
                         mgr.applyIcon = "checkmark.circle.fill"
                         mgr.applyColor = Color(.label)
+                    } else {
+                        mgr.hasOffsets = emergencyfixfunctiontobereplacedlateronquestionmark()
+                        
+                        if mgr.hasOffsets {
+                            init_offsets()
+                            offsets_init()
+                            
+                            if !mgr.dsready || !mgr.vfsready {
+                                mgr.isReady = false
+                                mgr.applyShortStatus = "Waiting for DarkSword..."
+                                mgr.applyIcon = "xmark.circle.fill"
+                                mgr.applyColor = .secondary
+                            } else if mgr.dsready && mgr.vfsready {
+                                mgr.applyShortStatus = "Ready to Apply!"
+                                mgr.applyIcon = "checkmark.circle.fill"
+                                mgr.applyColor = Color(.label)
+                            }
+                        } else if !mgr.hasOffsets {
+                            mgr.isReady = false
+                            mgr.applyShortStatus = "No offsets found!"
+                            mgr.applyIcon = "exclaimationmark.triangle.fill"
+                            mgr.applyColor = .yellow
+                        }
                     }
-                }
-                .onChange(of: mgr.chosenExploit) { newValue in
-                    storedChosenExploit = newValue
                 }
         }
     }
-}
-
-@MainActor func isdirtyZeroSupported() -> Bool {
-    return doubleSystemVersion() <= 26.0
 }
 
 extension String: @retroactive Error {}

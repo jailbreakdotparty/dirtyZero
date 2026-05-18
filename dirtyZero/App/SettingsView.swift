@@ -38,14 +38,14 @@ struct SettingsView: View {
                             }
                             .buttonStyle(TranslucentButtonStyle(color: .discord))
                             Button(action: {
-                                openURL(URL(string: "https://jailbreak.party/discord")!)
+                                openURL(URL(string: "https://github.com/jailbreakdotparty/dirtyZero")!)
                             }) {
                                 ButtonLabel(text: "GitHub", icon: "github", useImage: true)
                             }
                             .buttonStyle(TranslucentButtonStyle(color: .gitHub))
                         }
                         Button(action: {
-                            openURL(URL(string: "https://jailbreak.party/discord")!)
+                            openURL(URL(string: "https://jailbreak.party")!)
                         }) {
                             ButtonLabel(text: "Website", icon: "globe")
                         }
@@ -69,63 +69,65 @@ struct SettingsView: View {
                         .navigationTitle("Credits")
                     }
                 }
-                Section(header: HeaderLabel(text: "Exploits", icon: "ant")) {
-                    if mgr.supportsl0ckwire {
-                        Picker("", selection: $mgr.chosenExploit) {
-                            ForEach(ExploitOptions.allCases, id: \.self) { option in
-                                if option.rawValue != "none" {
-                                    Text(option.rawValue).tag(option)
+                Section(header: HeaderLabel(text: "Exploits", icon: "ant"), footer: Text("To fetch kernelcache, you should run the exploit first, and then click the \"Fetch Kernelcache\" button.")) {
+                    VStack {
+                        if mgr.supportsl0ckwire {
+                            Picker("", selection: $mgr.chosenExploit) {
+                                ForEach(ExploitOptions.allCases, id: \.self) { option in
+                                    if option.rawValue != "none" {
+                                        Text(option.rawValue).tag(option)
+                                    }
                                 }
                             }
+                            .pickerStyle(.segmented)
+                            .listRowSeparator(.hidden)
                         }
-                        .pickerStyle(.segmented)
-                        .listRowSeparator(.hidden)
-                    }
-                    if mgr.chosenExploit == .DarkSword {
-                        if !mgr.hasOffsets {
-                            Button(action: {
-                                guard !fetchingKcache else { return }
-                                fetchingKcache = true
-
-                                DispatchQueue.global(qos: .userInitiated).async {
-                                    let fetched = fetchkcache()
-
-                                    if fetched {
+                        if mgr.chosenExploit == .DarkSword {
+                            if !mgr.hasOffsets {
+                                Button(action: {
+                                    guard !fetchingKcache else { return }
+                                    fetchingKcache = true
+                                    
+                                    DispatchQueue.global(qos: .userInitiated).async {
+                                        let fetched = fetchkcache()
+                                        
+                                        if fetched {
+                                            DispatchQueue.main.async {
+                                                mgr.hasOffsets = true
+                                                fetchingKcache = false
+                                                Alertinator.shared.alert(title: "Successfully feteched kernelcache!", body: "Now, restart the app to finish setup and use dirtyZero.", showCancel: false, actionLabel: "Exit", action: { exitinator() })
+                                            }
+                                            return
+                                        }
+                                        
+                                        let dlkc = dlkcache()
+                                        
                                         DispatchQueue.main.async {
-                                            mgr.hasOffsets = true
+                                            mgr.hasOffsets = dlkc
+                                            if dlkc {
+                                                Alertinator.shared.alert(title: "Successfully downloaded kernelcache!", body: "Now, restart the app to finish setup and use dirtyZero.", showCancel: false, actionLabel: "Exit", action: { exitinator() })
+                                            }
                                             fetchingKcache = false
-                                            Alertinator.shared.alert(title: "Successfully feteched kernelcache!", body: "Now, restart the app to finish setup and use dirtyZero.", showCancel: false, actionLabel: "Exit", action: { exitinator() })
                                         }
-                                        return
                                     }
-
-                                    let dlkc = dlkcache()
-
-                                    DispatchQueue.main.async {
-                                        mgr.hasOffsets = dlkc
-                                        if dlkc {
-                                            Alertinator.shared.alert(title: "Successfully downloaded kernelcache!", body: "Now, restart the app to finish setup and use dirtyZero.", showCancel: false, actionLabel: "Exit", action: { exitinator() })
-                                        }
-                                        fetchingKcache = false
+                                }) {
+                                    if fetchingKcache {
+                                        ButtonLabel(text: "Fetching Kernelcache...", icon: "showMeProgressPlease")
+                                    } else {
+                                        ButtonLabel(text: "Fetch Kernelcache", icon: "externaldrive")
                                     }
                                 }
-                            }) {
-                                if fetchingKcache {
-                                    ButtonLabel(text: "Fetching Kernelcache...", icon: "showMeProgressPlease")
-                                } else {
-                                    ButtonLabel(text: "Fetch Kernelcache", icon: "externaldrive")
+                                .buttonStyle(TranslucentButtonStyle())
+                                .disabled(fetchingKcache)
+                            } else {
+                                Button(role: .destructive, action: {
+                                    clearkerncachedata()
+                                    mgr.hasOffsets = false
+                                }) {
+                                    ButtonLabel(text: "Delete Kernelcache", icon: "trash")
                                 }
+                                .buttonStyle(TranslucentButtonStyle(color: .red))
                             }
-                            .buttonStyle(TranslucentButtonStyle())
-                            .disabled(fetchingKcache)
-                        } else {
-                            Button(role: .destructive, action: {
-                                clearkerncachedata()
-                                mgr.hasOffsets = false
-                            }) {
-                                ButtonLabel(text: "Delete Kernelcache", icon: "trash")
-                            }
-                            .buttonStyle(TranslucentButtonStyle(color: .red))
                         }
                     }
                 }
