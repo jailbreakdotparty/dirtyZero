@@ -8,6 +8,7 @@
 import SwiftUI
 import PartyUI
 import DeviceKit
+import UniformTypeIdentifiers
 
 var weOnADebugBuild: Bool = false
 var pipe = Pipe()
@@ -22,6 +23,11 @@ struct dirtyZeroApp: App {
     let device = Device.current
     
     init() {
+        // file picker fix
+        let fixMethod = class_getInstanceMethod(UIDocumentPickerViewController.self, #selector(UIDocumentPickerViewController.fix_init(forOpeningContentTypes:asCopy:)))!
+        let origMethod = class_getInstanceMethod(UIDocumentPickerViewController.self, #selector(UIDocumentPickerViewController.init(forOpeningContentTypes:asCopy:)))!
+        method_exchangeImplementations(origMethod, fixMethod)
+        
         // Setup log stuff (redirect stdout)
         setvbuf(stdout, nil, _IONBF, 0)
         dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
@@ -66,7 +72,7 @@ struct dirtyZeroApp: App {
                                 mgr.applyIcon = "xmark.circle.fill"
                                 mgr.applyColor = .secondary
                             } else {
-                                mgr.applyShortStatus = "No offsets found!"
+                                mgr.applyShortStatus = "No kernelcache found!"
                                 mgr.applyIcon = "exclamationmark.triangle.fill"
                                 mgr.applyColor = Color.yellow
                             }
@@ -107,9 +113,9 @@ struct dirtyZeroApp: App {
                             }
                         } else if !mgr.hasOffsets {
                             mgr.isReady = false
-                            mgr.applyShortStatus = "No offsets found!"
-                            mgr.applyIcon = "exclaimationmark.triangle.fill"
-                            mgr.applyColor = .yellow
+                            mgr.applyShortStatus = "No kernelcache found!"
+                            mgr.applyIcon = "exclamationmark.triangle.fill"
+                            mgr.applyColor = Color.yellow
                         }
                     }
                 }
@@ -117,6 +123,14 @@ struct dirtyZeroApp: App {
     }
 }
 
+// file picker fixes
+extension UIDocumentPickerViewController {
+    @objc func fix_init(forOpeningContentTypes contentTypes: [UTType], asCopy: Bool) -> UIDocumentPickerViewController {
+        return fix_init(forOpeningContentTypes: contentTypes, asCopy: true)
+    }
+}
+
+// allows us to throw strings as errors
 extension String: @retroactive Error {}
 
 // allows us to put arrays into AppStorage

@@ -223,8 +223,8 @@ final class dirtyZeroManager: ObservableObject {
         } else {
             if isAppInstalled(respringAppBID) {
                 LSApplicationWorkspace.default().openApplication(withBundleID: respringAppBID)
-            } else if isAppInstalled("com.jbdotparty.respringr") { // check if old respringapp is installed
-                LSApplicationWorkspace.default().openApplication(withBundleID: "com.jbdotparty.respringr")
+            } else if isAppInstalled("com.respring.app") { // check if old respringapp is installed
+                LSApplicationWorkspace.default().openApplication(withBundleID: "com.respring.app")
             } else {
                 Alertinator.shared.alert(title: "RespringApp Not Detected", body: "Make sure you have RespringApp installed, then try again. Also ensure that you have the correct bundle id set in Settings.")
             }

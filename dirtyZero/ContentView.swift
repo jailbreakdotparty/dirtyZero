@@ -69,10 +69,13 @@ struct ContentView: View {
             } else {
                 NavigationSplitView(sidebar: {
                     List {
+                        AlertsSection
+                            .listRowSeparator(.hidden)
                         ApplyingSection
                             .listRowSeparator(.hidden)
                             .listRowInsets(.sectionInsets)
                         ApplyingButtons
+                            .listRowSeparator(.hidden)
                         if enableDebugSettings {
                             DebuggingSection
                                 .listRowSeparator(.hidden)
