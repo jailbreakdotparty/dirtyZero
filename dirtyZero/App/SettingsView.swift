@@ -82,7 +82,8 @@ struct SettingsView: View {
                             .pickerStyle(.segmented)
                             .listRowSeparator(.hidden)
                         }
-                        if mgr.chosenExploit == .DarkSword {
+                        // this check should keep the ux of hiding these options for devices that support both l0ckwire and DarkSword, while also forcing these options to be shown if this device supports only DarkSword.
+                        if mgr.chosenExploit == .DarkSword || defaultExploit() == .DarkSword {
                             if !mgr.hasOffsets {
                                 Button(action: {
                                     guard !fetchingKcache else { return }
