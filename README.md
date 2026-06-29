@@ -1,7 +1,11 @@
-## dirtyZero
-**A simple customization toolbox that utilizes [CVE-2025-24203](https://project-zero.issues.chromium.org/issues/391518636).** Supports iOS 16.0 - iOS 18.3.2.
-
-[Latest Release](https://github.com/jailbreakdotparty/dirtyZero/releases/latest) • [Discord Server](https://jailbreak.party/discord) • [Our Website](https://jailbreak.party/)
+<div align="center">
+  <br>
+  <a href="https://jailbreak.party/discord"><img src="https://github.com/jailbreakdotparty/dirtyZero/blob/main/PreviewIcon.png?raw=true" alt="App Icon" width="175"></a>
+  <br>
+  <h1>dirtyZero</h1>
+  <p>A simple customization toolbox that utilizes <a href="https://project-zero.issues.chromium.org/issues/391518636">CVE-2025-24203</a>. Supports iOS 16.0 - iOS 18.3.2.</p>
+  <p><a href="https://github.com/jailbreakdotparty/dirtyZero/releases/latest">Latest Release</a> • <a href="https://jailbreak.party/discord">Discord Server</a> • <a href="https://jailbreak.party">Our Website</a></p>
+</div>
 
 ## Installation
 Please ensure that your device is supported before usage. Refer to the table below.
