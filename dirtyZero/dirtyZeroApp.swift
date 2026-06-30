@@ -7,8 +7,6 @@
 
 import SwiftUI
 import PartyUI
-import DeviceKit
-import UniformTypeIdentifiers
 
 var weOnADebugBuild: Bool = false
 var pipe = Pipe()
@@ -17,17 +15,12 @@ var sema = DispatchSemaphore(value: 0)
 @main
 struct dirtyZeroApp: App {
     @StateObject private var mgr = dirtyZeroManager.shared
-    @AppStorage("enableDebugSettings") var enableDebugSettings: Bool = false
-    @AppStorage("storedChosenExploit") var storedChosenExploit: ExploitOptions = defaultExploit()
     
-    let device = Device.current
+    @AppStorage("enableDebugSettings") var enableDebugSettings: Bool = false
+    
+    let device = UIDevice.current
     
     init() {
-        // file picker fix
-        let fixMethod = class_getInstanceMethod(UIDocumentPickerViewController.self, #selector(UIDocumentPickerViewController.fix_init(forOpeningContentTypes:asCopy:)))!
-        let origMethod = class_getInstanceMethod(UIDocumentPickerViewController.self, #selector(UIDocumentPickerViewController.init(forOpeningContentTypes:asCopy:)))!
-        method_exchangeImplementations(origMethod, fixMethod)
-        
         // Setup log stuff (redirect stdout)
         setvbuf(stdout, nil, _IONBF, 0)
         dup2(pipe.fileHandleForWriting.fileDescriptor, STDOUT_FILENO)
@@ -53,84 +46,23 @@ struct dirtyZeroApp: App {
                     }
                 }
                 .onAppear {
-                    mgr.setAppCapabilities()
-                    
-                    if mgr.isSupported {
-                        if mgr.chosenExploit == .l0ckwire {
-                            mgr.isReady = true
-                            mgr.applyShortStatus = "Ready to Apply!"
-                            mgr.applyIcon = "checkmark.circle.fill"
-                            mgr.applyColor = Color(.label)
-                        } else {
-                            mgr.hasOffsets = emergencyfixfunctiontobereplacedlateronquestionmark()
-    
-                            init_offsets()
-                            offsets_init()
-                            
-                            if mgr.hasOffsets {
-                                mgr.applyShortStatus = "Waiting for DarkSword..."
-                                mgr.applyIcon = "xmark.circle.fill"
-                                mgr.applyColor = .secondary
-                            } else {
-                                mgr.applyShortStatus = "No kernelcache found!"
-                                mgr.applyIcon = "exclamationmark.triangle.fill"
-                                mgr.applyColor = Color.yellow
-                            }
-                        }
-                        print("[*] Welcome to dirtyZero! Running on \(device.systemName ?? "nil") \(device.systemVersion ?? "0.0"), \(device.description).")
+                    if isSupported() {
+                        print("\n[*] Welcome to dirtyZero! Running on \(device.systemName) \(device.systemVersion), \(device.model).")
                         print("[*] All tweaks are done in memory, so if something goes wrong, simply reboot your device.")
                     } else {
-                        mgr.applyShortStatus = "Unsupported device!"
-                        mgr.applyIcon = "xmark.circle.filll"
-                        mgr.applyColor = .red
-                        
-                        Alertinator.shared.alert(title: "This device combination is not supported.", body: "This device combination is not supported and never will be. dirtyZero only supports iOS 16.0 - iOS 18.7.1, and iOS 26.0 - iOS 26.0.1.", action: { exitinator() })
-                    }
-                }
-                .onChange(of: mgr.chosenExploit) { exploit in
-                    storedChosenExploit = exploit
-                    
-                    if exploit == .l0ckwire {
-                        mgr.applyShortStatus = "Ready to Apply!"
-                        mgr.applyIcon = "checkmark.circle.fill"
-                        mgr.applyColor = Color(.label)
-                    } else {
-                        mgr.hasOffsets = emergencyfixfunctiontobereplacedlateronquestionmark()
-                        
-                        if mgr.hasOffsets {
-                            init_offsets()
-                            offsets_init()
-                            
-                            if !mgr.dsready || !mgr.vfsready {
-                                mgr.isReady = false
-                                mgr.applyShortStatus = "Waiting for DarkSword..."
-                                mgr.applyIcon = "xmark.circle.fill"
-                                mgr.applyColor = .secondary
-                            } else if mgr.dsready && mgr.vfsready {
-                                mgr.applyShortStatus = "Ready to Apply!"
-                                mgr.applyIcon = "checkmark.circle.fill"
-                                mgr.applyColor = Color(.label)
-                            }
-                        } else if !mgr.hasOffsets {
-                            mgr.isReady = false
-                            mgr.applyShortStatus = "No kernelcache found!"
-                            mgr.applyIcon = "exclamationmark.triangle.fill"
-                            mgr.applyColor = Color.yellow
-                        }
+                        Alertinator.shared.alert(title: "This app is not supported!", body: "Your device configuration does not support dirtyZero. This tool only supports devices running iOS 16.0 - iOS 18.3, and will never support anything else.", actionLabel: "Exit", action: {
+                            exitinator()
+                        })
                     }
                 }
         }
     }
 }
 
-// file picker fixes
-extension UIDocumentPickerViewController {
-    @objc func fix_init(forOpeningContentTypes contentTypes: [UTType], asCopy: Bool) -> UIDocumentPickerViewController {
-        return fix_init(forOpeningContentTypes: contentTypes, asCopy: true)
-    }
+@MainActor func isSupported() -> Bool {
+    return doubleSystemVersion() <= 18.3
 }
 
-// allows us to throw strings as errors
 extension String: @retroactive Error {}
 
 // allows us to put arrays into AppStorage
@@ -151,5 +83,26 @@ extension Array: @retroactive RawRepresentable where Element: Codable {
             return "[]"
         }
         return result
+    }
+}
+
+// hex -> color
+extension Color {
+    init(hex: String) {
+        let v = Int("000000" + hex, radix: 16) ?? 0
+        let r = CGFloat(v / Int(powf(256, 2)) % 256) / 255
+        let g = CGFloat(v / Int(powf(256, 1)) % 256) / 255
+        let b = CGFloat(v / Int(powf(256, 0)) % 256) / 255
+        self.init(red: r, green: g, blue: b)
+    }
+}
+
+// color -> hex
+func hexCode(color: Color) -> String {
+    let ui = UIColor(color)
+    var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0
+    guard ui.getRed(&r, green: &g, blue: &b, alpha: nil) else { return "" }
+    return [r, g, b].reduce("") { res, v in
+        res + String(format: "%02X", Int(round(v * 255)))
     }
 }

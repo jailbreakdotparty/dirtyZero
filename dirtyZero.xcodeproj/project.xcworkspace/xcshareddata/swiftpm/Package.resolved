@@ -1,13 +1,13 @@
 {
-  "originHash" : "14d1b5b18fa12c7169145b34bd4aa11cb476f68eeca07d997bd7a54833c68f47",
+  "originHash" : "a4e73486a02d2419635914d2f02405775e232d507ab5e71334c3e54644f6978b",
   "pins" : [
     {
-      "identity" : "devicekit",
+      "identity" : "partyui",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/devicekit/DeviceKit",
+      "location" : "https://github.com/jailbreakdotparty/PartyUI",
       "state" : {
-        "revision" : "56b997e8a61707218f9af09f32b2a1d1806fd792",
-        "version" : "5.8.0"
+        "revision" : "6ed5a26c5ddf16c00b786d781fa246c08442e8b8",
+        "version" : "1.1.0"
       }
     }
   ],

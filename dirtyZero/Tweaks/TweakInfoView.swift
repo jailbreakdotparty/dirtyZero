@@ -14,11 +14,13 @@ struct TweakInfoView: View {
     @State private var isTweakSupported: Bool
     
     var tweak: ZeroTweak
+    var tweakType: SectionType
     
     let version = doubleSystemVersion()
     
-    init(tweak: ZeroTweak, isTweakSupported: Bool = false) {
+    init(tweak: ZeroTweak, tweakType: SectionType, isTweakSupported: Bool = false) {
         self.tweak = tweak
+        self.tweakType = tweakType
         if version >= tweak.minSupportedVersion && version <= tweak.maxSupportedVersion {
             self.isTweakSupported = true
         } else {
@@ -29,74 +31,65 @@ struct TweakInfoView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section(header: HeaderLabel(text: "Tweak Info", icon: "info.circle")) {
+                Section {
                     VStack(alignment: .leading) {
                         HStack {
                             Image(systemName: tweak.icon)
                             Text(tweak.name)
                         }
                         
-                        HStack {
+                        if tweakType == .custom {
+                            InfoBadge(text: "Custom", icon: "paintbrush", color: .purple)
+                        } else if tweakType == .risky {
+                            InfoBadge(text: "Risky", icon: "exclamationmark.triangle", color: .red)
+                        } else {
                             HStack {
-                                Image(systemName: isTweakSupported ? "checkmark.seal" : "xmark.seal")
-                                Text(isTweakSupported ? "Supported" : "Not Supported")
+                                InfoBadge(
+                                    text: isTweakSupported ? "Supported" : "Unsupported",
+                                    icon: isTweakSupported ? "checkmark.seal" : "xmark.seal",
+                                    color: isTweakSupported ? .green : .red
+                                )
+                                
+                                InfoBadge(text: tweak.maxSupportedVersion.description, icon: "arrow.up")
+                                InfoBadge(text: tweak.minSupportedVersion.description, icon: "arrow.down")
                             }
-                            .font(.callout)
-                            .foregroundStyle(isTweakSupported ? .green : .red)
-                            .padding(8)
-                            .background(isTweakSupported ? .green.opacity(0.2) : .red.opacity(0.2), in: .capsule)
-                            
-                            HStack {
-                                Image(systemName: "arrow.up")
-                                Text(tweak.maxSupportedVersion.description)
-                            }
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                            .padding(8)
-                            .background(Color(.tertiarySystemBackground), in: .capsule)
-                            
-                            HStack {
-                                Image(systemName: "arrow.down")
-                                Text(tweak.minSupportedVersion.description)
-                            }
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                            .padding(8)
-                            .background(Color(.tertiarySystemBackground), in: .capsule)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .modifier(SectionPlatter())
                     .listRowSeparator(.hidden)
                     .listRowInsets(.sectionInsets)
+                } header: {
+                    HeaderLabel(text: "Tweak Info", icon: "info.circle")
                 }
-                Section(header: HeaderLabel(text: "Target Paths", icon: "character.cursor.ibeam")) {
+                
+                Section {
                     ForEach(tweak.paths, id: \.self) { path in
                         Text(path)
                             .font(.system(.footnote, design: .monospaced))
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .background(Color(.secondarySystemBackground), in: .rect(cornerRadius: cornerRad.component))
+                            .modifier(SectionPlatter())
                             .contextMenu {
-                                Button(action: {
+                                Button {
                                     UIPasteboard.general.string = path
-                                }) {
+                                } label: {
                                     Label("Copy Path", systemImage: "doc.on.doc")
                                 }
                             }
                     }
                     .listRowSeparator(.hidden)
                     .listRowInsets(.sectionInsets)
+                } header: {
+                    HeaderLabel(text: "Target Paths", icon: "character.cursor.ibeam")
                 }
             }
             .listStyle(.plain)
             .navigationTitle("Details")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                Button(action: {
+                Button {
                     dismiss()
-                }) {
-                    Image(systemName: "xmark")
+                } label: {
+                    CloseSheetLabel()
                 }
             }
         }
@@ -104,5 +97,5 @@ struct TweakInfoView: View {
 }
 
 #Preview {
-    TweakInfoView(tweak: ZeroTweak(name: "Hide Dock Background", icon: "dock.rectangle", minSupportedVersion: 16.0, maxSupportedVersion: 18.9, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"]))
+    TweakInfoView(tweak: ZeroTweak(name: "Hide Dock Background", icon: "dock.rectangle", minSupportedVersion: 16.0, maxSupportedVersion: 18.3, paths: ["/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"]), tweakType: .normal)
 }

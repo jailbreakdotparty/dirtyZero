@@ -8,11 +8,11 @@
 import SwiftUI
 import PartyUI
 import UIKit
-import DeviceKit
 
 struct CustomTweaksView: View {
     @EnvironmentObject var mgr: dirtyZeroManager
     @Environment(\.dismiss) var dismiss
+    
     @AppStorage("tweakArray") var tweakArray: [ZeroSection] = TweakArray.tweaks
     @AppStorage("enableDebugSettings") var enableDebugSettings: Bool = false
     
@@ -24,26 +24,31 @@ struct CustomTweaksView: View {
         NavigationStack {
             List {
                 if enableDebugSettings {
-                    Section(header: HeaderLabel(text: "Debugging", icon: "ant")) {
+                    Section {
                         Button(action: {
                             tweakName = "Hide Dock Background"
                             targetPaths = ["/System/Library/PrivateFrameworks/CoreMaterial.framework/dockDark.materialrecipe", "/System/Library/PrivateFrameworks/CoreMaterial.framework/dockLight.materialrecipe"]
                         }) {
-                            ButtonLabel(text: "Populate Arrays", icon: "character.cursor.ibeam")
+                            ButtonLabel(text: "Populate Fields", icon: "character.cursor.ibeam")
                         }
                         .buttonStyle(TranslucentButtonStyle(color: .purple))
+                    } header: {
+                        HeaderLabel(text: "Debug", icon: "ant")
                     }
                     .listRowInsets(.sectionInsets)
                     .listRowSeparator(.hidden)
                 }
-                Section(header: HeaderLabel(text: "Create Tweak", icon: "paintbrush")) {
+                
+                Section {
                     VStack {
                         TextField("Tweak Name", text: $tweakName)
                             .modifier(TextFieldBackground())
+                        
                         HStack {
                             TextField("/path/to/zero", text: $path2Add)
                                 .modifier(TextFieldBackground())
-                            Button(action: {
+                            
+                            Button {
                                 if targetPaths.contains(path2Add) {
                                     Haptic.shared.play(.heavy)
                                     Alertinator.shared.alert(title: "Error!", body: "That path matches one or more paths that you have already included as a target path. Please try a different path.")
@@ -51,7 +56,7 @@ struct CustomTweaksView: View {
                                     Haptic.shared.play(.soft)
                                     targetPaths.append(path2Add)
                                 }
-                            }) {
+                            } label: {
                                 Image(systemName: "plus")
                                     .frame(width: 24, height: 24)
                             }
@@ -59,12 +64,14 @@ struct CustomTweaksView: View {
                             .disabled(path2Add.isEmpty || tweakName.isEmpty)
                         }
                     }
+                } header: {
+                    HeaderLabel(text: "Create Tweak", icon: "paintbrush")
                 }
                 .listRowInsets(.sectionInsets)
                 .listRowSeparator(.hidden)
                 
                 if !targetPaths.isEmpty {
-                    Section(header: HeaderLabel(text: "Target Paths", icon: "character.cursor.ibeam")) {
+                    Section {
                         ForEach(targetPaths, id: \.self) { path in
                             Text(path)
                                 .font(.system(.footnote, design: .monospaced))
@@ -72,14 +79,16 @@ struct CustomTweaksView: View {
                                 .padding()
                                 .background(Color(.secondarySystemBackground), in: .rect(cornerRadius: cornerRad.component))
                                 .swipeActions {
-                                    Button(role: .destructive, action: {
+                                    Button(role: .destructive) {
                                         targetPaths.removeAll { $0 == path }
-                                    }) {
-                                        Image(systemName: "xmark")
+                                    } label: {
+                                        Image(systemName: "trash")
                                     }
                                     .tint(.red)
                                 }
                         }
+                    } header: {
+                        HeaderLabel(text: "Target Paths", icon: "character.cursor.ibeam")
                     }
                     .listRowInsets(.sectionInsets)
                     .listRowSeparator(.hidden)
@@ -89,23 +98,24 @@ struct CustomTweaksView: View {
             .navigationTitle("Tweak Creator")
             .navigationBarTitleDisplayMode(.inline)
             .safeAreaInset(edge: .bottom) {
-                Button(action: {
+                Button {
+                    Haptic.shared.play(.soft)
                     let customTweaksIndex = tweakArray.firstIndex(where: { $0.name == "Custom Tweaks" }) ?? 0
                     tweakArray[customTweaksIndex].tweaks.append(ZeroTweak(name: tweakName, icon: "paintbrush", paths: targetPaths))
                     dismiss()
-                }) {
+                } label: {
                     ButtonLabel(text: "Add Tweak", icon: "plus")
                 }
-                .buttonStyle(TranslucentButtonStyle(color: .purple))
+                .buttonStyle(FancyButtonStyle(color: .purple))
                 .disabled(targetPaths.isEmpty || tweakName.isEmpty)
-                .modifier(OverlayBackground(stickBottomPadding: UIDevice.current.userInterfaceIdiom == .pad ? true : false))
+                .modifier(OverlayBackground(stickBottomPadding: UIDevice.current.userInterfaceIdiom == .pad))
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
+                    Button {
                         dismiss()
-                    }) {
-                        Image(systemName: "xmark")
+                    } label: {
+                        CloseSheetLabel("Cancel")
                     }
                 }
             }
