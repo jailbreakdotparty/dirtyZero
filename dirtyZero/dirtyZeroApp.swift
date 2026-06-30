@@ -50,7 +50,7 @@ struct dirtyZeroApp: App {
                         print("\n[*] Welcome to dirtyZero! Running on \(device.systemName) \(device.systemVersion), \(device.model).")
                         print("[*] All tweaks are done in memory, so if something goes wrong, simply reboot your device.")
                     } else {
-                        Alertinator.shared.alert(title: "This app is not supported!", body: "Your device configuration does not support dirtyZero. This tool only supports devices running iOS 16.0 - iOS 18.3, and will never support anything else.", actionLabel: "Exit", action: {
+                        Alertinator.shared.alert(title: "This app is not supported!", body: "Your device configuration does not support dirtyZero. This tool only supports devices running iOS 16.0 - iOS 18.3.2, and will never support anything else.", actionLabel: "Exit", action: {
                             exitinator()
                         })
                     }

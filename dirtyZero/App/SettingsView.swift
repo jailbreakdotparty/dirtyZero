@@ -37,7 +37,7 @@ struct SettingsView: View {
                             .buttonStyle(TranslucentButtonStyle(color: .discord))
                             
                             Button {
-                                openURL(URL(string: "https://jailbreak.party/discord")!)
+                                openURL(URL(string: "https://github.com/jailbreakdotparty/dirtyZero")!)
                             } label: {
                                 ButtonLabel(text: "GitHub", icon: "github", useImage: true)
                             }
@@ -45,7 +45,7 @@ struct SettingsView: View {
                         }
                         
                         Button {
-                            openURL(URL(string: "https://jailbreak.party/discord")!)
+                            openURL(URL(string: "https://jailbreak.party")!)
                         } label: {
                             ButtonLabel(text: "Website", icon: "globe")
                         }
@@ -60,10 +60,10 @@ struct SettingsView: View {
                 Section {
                     NavigationLink("Credits") {
                         List {
-                            LinkCreditCell(image: Image("skadz108"), name: "Skadz", description: "Initial developer, backend, and exploit-related management.", url: "https://github.com/skadz108")
-                            LinkCreditCell(image: Image("lunginspector"), name: "lunginspector", description: "Frontend developer, tweak creator, and app UI.", url: "https://github.com/skadz108")
+                            LinkCreditCell(image: Image("skadz108"), name: "Skadz", description: "Original project creator, rewrote exploit in Swift.", url: "https://github.com/skadz108")
+                            LinkCreditCell(image: Image("lunginspector"), name: "lunginspector", description: "Rewrote dirtyZero, contributed tweaks, features, and UI.", url: "https://github.com/skadz108")
                             LinkCreditCell(image: Image("ianbeer"), name: "Ian Beer (Gooogle Project Zero)", description: "Discovering & publishing CVE-2025-24203.", url: "https://project-zero.issues.chromium.org/issues/391518636")
-                            LinkCreditCell(image: Image("neonmodder123"), name: "neonmodder123", description: "Developed WebView respring method.", url: "https://github.com/neonmodder123")
+                            LinkCreditCell(image: Image("neonmodder123"), name: "neonmodder123", description: "Discovered WebView respring method.", url: "https://github.com/neonmodder123")
                         }
                         .navigationTitle("Credits")
                     }

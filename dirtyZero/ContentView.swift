@@ -71,6 +71,7 @@ struct ContentView: View {
                         ApplyingSection
                             .listRowSeparator(.hidden)
                         ApplyingButtons
+                            .listRowSeparator(.hidden)
                         if enableDebugSettings {
                             DebuggingSection
                                 .listRowSeparator(.hidden)
@@ -99,6 +100,7 @@ struct ContentView: View {
                 } detail: {
                     List {
                         ListedTweaksSection
+                            .listRowSeparator(.hidden)
                     }
                     .listStyle(.plain)
                     .navigationTitle("Tweaks")

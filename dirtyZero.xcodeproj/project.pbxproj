@@ -8,11 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		150BE9982FA580DC00BB8E0A /* PartyUI in Frameworks */ = {isa = PBXBuildFile; productRef = 150BE9972FA580DC00BB8E0A /* PartyUI */; };
-		1565910F2F9530BC00DEFE00 /* PartyUI in Frameworks */ = {isa = PBXBuildFile; productRef = 157E1DFD2F2B138600E52180 /* PartyUI */; };
-		156591102F9530BC00DEFE00 /* PartyUI in Frameworks */ = {isa = PBXBuildFile; productRef = 15CBF2B02F8F113300473207 /* PartyUI */; };
-		157371E52FF3427A000B008C /* PartyUI in Frameworks */ = {isa = PBXBuildFile; productRef = 157371E42FF3427A000B008C /* PartyUI */; };
 		435DD12F2DDD7DF00058DFCA /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 435DD12E2DDD7DF00058DFCA /* MobileCoreServices.framework */; };
-		43C255422F887AAE00BD7418 /* PartyUI in Frameworks */ = {isa = PBXBuildFile; productRef = 43C255412F887AAE00BD7418 /* PartyUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,12 +42,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				156591102F9530BC00DEFE00 /* PartyUI in Frameworks */,
-				1565910F2F9530BC00DEFE00 /* PartyUI in Frameworks */,
-				43C255422F887AAE00BD7418 /* PartyUI in Frameworks */,
 				435DD12F2DDD7DF00058DFCA /* MobileCoreServices.framework in Frameworks */,
 				150BE9982FA580DC00BB8E0A /* PartyUI in Frameworks */,
-				157371E52FF3427A000B008C /* PartyUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,7 +292,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 3374H767F3;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -320,7 +312,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jbdotparty.dirtyZero0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jbdotparty.dirtyZero;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -343,7 +335,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 3374H767F3;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -363,7 +355,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.jbdotparty.dirtyZero0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jbdotparty.dirtyZero;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
